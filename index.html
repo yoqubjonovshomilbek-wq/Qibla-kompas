@@ -2,710 +2,1068 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Qibla Kompas</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Islomiy Ilova</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  background:#0a0f1a;
-  color:#e8edf5;
-  font-family:'Nunito',sans-serif;
-  min-height:100dvh;
-  display:flex;flex-direction:column;align-items:center;
-  overflow-x:hidden;padding-bottom:24px;
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+:root{
+  --emerald:#1db954;
+  --emerald-dim:#158f3e;
+  --gold:#d4a843;
+  --gold-dim:#a07820;
+  --bg:#05111f;
+  --surface:#0b1e35;
+  --surface2:#102840;
+  --surface3:#163450;
+  --border:rgba(29,185,84,0.15);
+  --text:#e8f4fd;
+  --muted:#5a8aaa;
+  --glow:rgba(29,185,84,0.35);
 }
 
-/* Stars */
-.stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.star{position:absolute;border-radius:50%;background:#fff;opacity:0;animation:tw var(--d) ease-in-out infinite var(--dl)}
-@keyframes tw{0%,100%{opacity:0}50%{opacity:.65}}
+html,body{height:100%;overflow:hidden;}
 
-/* Header */
-.hdr{z-index:10;display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 0 6px}
-.arabic{font-family:'Amiri',serif;font-size:28px;color:#f0c040;line-height:1}
-.latin{font-size:11px;color:#6b7685;letter-spacing:4px;text-transform:uppercase;font-weight:700}
+body{
+  font-family:'Tajawal',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  height:100dvh;
+}
 
-/* Status */
-.status{z-index:10;display:flex;align-items:center;gap:7px;padding:2px 0 8px}
-.dot{width:8px;height:8px;border-radius:50%;background:#3a4455;transition:all .4s}
-.dot.on{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.6);animation:pd 1.8s infinite}
-@keyframes pd{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
-.stxt{font-size:11px;color:#6b7685;font-weight:700;letter-spacing:1px}
+/* ===== STARS BG ===== */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 75% 8%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 45% 60%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 88% 45%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 8% 80%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 55% 88%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(2px 2px at 28% 12%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(2px 2px at 92% 75%,rgba(255,255,255,.15) 0%,transparent 100%),
+    radial-gradient(1px 1px at 62% 35%,rgba(255,255,255,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 33% 90%,rgba(255,255,255,.25) 0%,transparent 100%);
+  pointer-events:none;z-index:0;
+}
+
+/* ===== TABS NAV ===== */
+.tab-nav{
+  display:flex;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:relative;
+  z-index:10;
+  flex-shrink:0;
+}
+.tab-btn{
+  flex:1;
+  padding:14px 8px 12px;
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  font-family:'Tajawal',sans-serif;
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  transition:color .25s;
+  position:relative;
+}
+.tab-btn .tab-icon{font-size:22px;line-height:1;}
+.tab-btn.active{color:var(--emerald);}
+.tab-btn::after{
+  content:'';
+  position:absolute;bottom:0;left:20%;right:20%;
+  height:2px;border-radius:2px 2px 0 0;
+  background:var(--emerald);
+  transform:scaleX(0);
+  transition:transform .25s;
+}
+.tab-btn.active::after{transform:scaleX(1);}
+
+/* ===== PAGES ===== */
+.pages{flex:1;overflow:hidden;position:relative;}
+.page{
+  position:absolute;inset:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s;
+}
+.page.active{opacity:1;pointer-events:all;}
+
+/* ===== SCROLLBAR ===== */
+.page::-webkit-scrollbar{width:4px;}
+.page::-webkit-scrollbar-track{background:transparent;}
+.page::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px;}
+
+/* ==================== QIBLA PAGE ==================== */
+.qibla-page{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:16px 16px 24px;
+  gap:16px;
+  min-height:100%;
+}
+
+.page-title{
+  text-align:center;
+  font-family:'Amiri',serif;
+  font-size:24px;
+  color:var(--gold);
+  text-shadow:0 0 20px rgba(212,168,67,.4);
+  letter-spacing:.5px;
+}
+.page-title small{display:block;font-family:'Tajawal',sans-serif;font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:1px;text-transform:uppercase;}
 
 /* Compass */
-.cwrap{z-index:10;position:relative;display:flex;align-items:center;justify-content:center;margin:2px 0 8px}
-.gring{
-  position:absolute;border-radius:50%;
-  width:306px;height:306px;
-  box-shadow:0 0 38px 5px rgba(34,197,94,.1);
-  transition:box-shadow .7s;pointer-events:none;
+.compass-wrap{
+  position:relative;
+  width:260px;height:260px;
+  flex-shrink:0;
 }
-.gring.on{
-  box-shadow:0 0 65px 22px rgba(34,197,94,.55),0 0 120px 45px rgba(34,197,94,.22);
-  animation:gp 1.1s ease-in-out infinite;
+
+.outer-ring{
+  position:absolute;inset:0;
+  border-radius:50%;
+  padding:5px;
+  background:conic-gradient(from 0deg,#1a3a5c,#0b1e35,#1a3a5c,#0b1e35,#1a3a5c);
+  box-shadow:0 0 25px rgba(11,30,53,.9),inset 0 0 15px rgba(0,0,0,.5);
+  transition:background .4s,box-shadow .4s;
 }
-@keyframes gp{
-  0%,100%{box-shadow:0 0 65px 22px rgba(34,197,94,.55),0 0 120px 45px rgba(34,197,94,.22)}
-  50%{box-shadow:0 0 85px 32px rgba(34,197,94,.75),0 0 160px 65px rgba(34,197,94,.3)}
+.outer-ring.aligned{
+  background:conic-gradient(from 0deg,var(--emerald),#0e7a30,var(--emerald),#0e7a30,var(--emerald));
+  box-shadow:0 0 35px var(--glow),0 0 70px var(--glow),inset 0 0 15px rgba(29,185,84,.15);
+  animation:pulse-ring 1s ease-in-out infinite alternate;
 }
-canvas{width:295px;height:295px;border-radius:50%;display:block}
-.kaaba{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:58px;height:58px;border-radius:50%;
-  background:radial-gradient(circle at 38% 32%,#42a5f5,#0d47a1);
+@keyframes pulse-ring{
+  from{box-shadow:0 0 25px var(--glow),0 0 50px var(--glow);}
+  to{box-shadow:0 0 45px var(--glow),0 0 90px var(--glow);}
+}
+
+.compass-dial{
+  position:absolute;inset:5px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 35% 30%,#1b3860,#061528 75%);
+  overflow:hidden;
+  will-change:transform;
+}
+.dial-svg{position:absolute;inset:0;width:100%;height:100%;}
+
+/* Arrow overlay - never rotates as element, only SVG group inside */
+.arrow-overlay{
+  position:absolute;inset:5px;
+  border-radius:50%;
+  pointer-events:none;
+}
+.arrow-svg{position:absolute;inset:0;width:100%;height:100%;}
+
+.center-kaaba{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:46px;height:46px;
+  background:radial-gradient(circle,#1a5030,#091e12);
+  border-radius:50%;
+  border:2.5px solid var(--gold);
   display:flex;align-items:center;justify-content:center;
-  font-size:28px;z-index:20;
-  box-shadow:0 0 0 3px rgba(255,255,255,.12),0 4px 18px rgba(0,0,0,.55);
-  transition:box-shadow .5s;
+  font-size:22px;
+  z-index:20;
+  box-shadow:0 0 12px rgba(212,168,67,.3);
 }
-.kaaba.on{box-shadow:0 0 0 4px #22c55e,0 0 24px rgba(34,197,94,.65)}
 
-/* Degree */
-.degwrap{z-index:10;text-align:center;margin-bottom:8px}
-.dval{font-size:56px;font-weight:800;color:#e8edf5;letter-spacing:-2px;line-height:1;transition:color .5s}
-.dval.on{color:#22c55e}
-.ddir{font-size:13px;color:#6b7685;letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-top:2px}
-.badge{
-  display:inline-block;background:#121826;
-  border:1px solid rgba(255,255,255,.07);border-radius:20px;
-  padding:5px 14px;font-size:12px;color:#6b7685;margin-top:5px;
+/* Degree card */
+.deg-card{
+  background:linear-gradient(135deg,var(--surface),var(--surface2));
+  border:1.5px solid var(--border);
+  border-radius:18px;
+  padding:14px 28px;
+  text-align:center;
+  width:100%;
+  position:relative;overflow:hidden;
 }
-.badge b{color:#f0c040;font-weight:700}
+.deg-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--emerald),transparent);
+}
+.deg-num{font-size:44px;font-weight:700;color:var(--text);line-height:1;}
+.deg-num span{color:var(--emerald);}
+.deg-dir{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;}
 
-/* Location */
-.loccard{
-  z-index:10;width:calc(100% - 32px);max-width:340px;
-  background:#131922;border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;padding:13px 16px;
-  display:flex;align-items:center;gap:12px;margin-bottom:10px;
+/* Status */
+.status-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 18px;border-radius:30px;
+  font-size:13px;font-weight:600;
+  background:var(--surface);
+  border:1.5px solid rgba(29,185,84,.2);
+  color:var(--muted);
+  transition:all .3s;
 }
-.locico{
-  width:38px;height:38px;border-radius:12px;
-  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);
-  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+.status-pill.aligned{
+  background:rgba(29,185,84,.12);
+  border-color:var(--emerald);
+  color:var(--emerald);
 }
-.locname{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.loccoords{font-size:11px;color:#6b7685;margin-top:1px}
+.s-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.status-pill.aligned .s-dot{background:var(--emerald);box-shadow:0 0 6px var(--emerald);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-/* Banner */
-.banner{
-  z-index:10;width:calc(100% - 32px);max-width:340px;
-  background:linear-gradient(135deg,rgba(34,197,94,.16),rgba(34,197,94,.05));
-  border:1px solid rgba(34,197,94,.35);border-radius:14px;padding:12px 16px;
+.aligned-txt{
+  font-family:'Amiri',serif;font-size:17px;
+  color:var(--gold);text-align:center;
+  text-shadow:0 0 12px rgba(212,168,67,.4);
+  opacity:0;transition:opacity .4s;height:0;overflow:hidden;
+}
+.aligned-txt.show{opacity:1;height:auto;}
+
+.loc-box{
   display:flex;align-items:center;gap:10px;
-  opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;
+  background:rgba(11,30,53,.7);
+  border:1px solid rgba(90,138,170,.2);
+  border-radius:12px;padding:10px 14px;
+  width:100%;font-size:12px;color:var(--muted);
 }
-.banner.show{opacity:1;transform:translateY(0)}
-.bt{font-size:14px;font-weight:800;color:#22c55e}
-.bs{font-size:11px;color:#6b7685}
+.loc-box strong{color:var(--text);font-size:13px;display:block;}
 
-/* Debug (hidden by default) */
-.dbg{
-  z-index:10;width:calc(100% - 32px);max-width:340px;
-  background:#0f1520;border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;padding:10px 14px;margin-top:8px;
-  font-size:11px;color:#6b7685;line-height:1.8;display:none;
+.start-btn{
+  background:linear-gradient(135deg,var(--emerald-dim),var(--emerald));
+  border:none;border-radius:14px;padding:13px 28px;
+  color:#fff;font-family:'Tajawal',sans-serif;
+  font-size:15px;font-weight:700;cursor:pointer;
+  width:100%;box-shadow:0 4px 18px var(--glow);
+  transition:transform .15s,opacity .15s;
 }
-.dbg.show{display:block}
+.start-btn:active{transform:scale(.97);opacity:.9;}
 
-/* Loading */
-.ls{
-  position:fixed;inset:0;background:#0a0f1a;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:300;gap:16px;transition:opacity .6s;
-}
-.ls.hide{opacity:0;pointer-events:none}
-.lic{font-size:66px;animation:fl 2.2s ease-in-out infinite}
-@keyframes fl{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-13px) rotate(3deg)}}
-.spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.08);border-top-color:#22c55e;animation:sp .8s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-.lsub{font-size:13px;color:rgba(107,118,133,.75)}
-.pbtn{
-  display:none;background:linear-gradient(135deg,#22c55e,#15803d);
-  border:none;color:#fff;padding:14px 32px;border-radius:50px;
-  font-size:15px;font-family:inherit;font-weight:800;
-  cursor:pointer;box-shadow:0 4px 22px rgba(34,197,94,.4);letter-spacing:.5px;
-}
-.pbtn:active{transform:scale(.96)}
+/* ==================== QURAN PAGE ==================== */
+.quran-page{padding:0;}
 
-@keyframes flash{0%,100%{background:#0a0f1a}45%{background:rgba(34,197,94,.07)}}
-body.fl{animation:flash .7s ease}
+.quran-header{
+  padding:16px 16px 12px;
+  background:linear-gradient(180deg,var(--surface) 0%,transparent 100%);
+  position:sticky;top:0;z-index:5;
+}
+.quran-header h2{
+  font-family:'Amiri',serif;
+  font-size:22px;color:var(--gold);
+  text-shadow:0 0 15px rgba(212,168,67,.3);
+  text-align:center;margin-bottom:10px;
+}
+
+/* Search */
+.search-box{
+  position:relative;
+}
+.search-box input{
+  width:100%;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:10px 14px 10px 38px;
+  color:var(--text);
+  font-family:'Tajawal',sans-serif;
+  font-size:14px;
+  outline:none;
+  transition:border-color .2s;
+}
+.search-box input:focus{border-color:var(--emerald);}
+.search-box input::placeholder{color:var(--muted);}
+.search-icon{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  font-size:15px;pointer-events:none;
+}
+
+/* Reciter select */
+.reciter-row{
+  display:flex;gap:8px;margin-top:8px;overflow-x:auto;padding-bottom:4px;
+}
+.reciter-row::-webkit-scrollbar{display:none;}
+.reciter-chip{
+  flex-shrink:0;
+  padding:6px 14px;border-radius:20px;
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  color:var(--muted);font-size:12px;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.reciter-chip.active{
+  background:rgba(29,185,84,.15);
+  border-color:var(--emerald);
+  color:var(--emerald);
+}
+
+/* Surah list */
+.surah-list{padding:8px 12px 24px;}
+.surah-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  margin-bottom:6px;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.surah-item:active{transform:scale(.98);}
+.surah-item.playing{
+  background:rgba(29,185,84,.1);
+  border-color:var(--emerald);
+}
+.surah-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--emerald);
+  transform:scaleY(0);transition:transform .2s;border-radius:0 2px 2px 0;
+}
+.surah-item.playing::before{transform:scaleY(1);}
+
+.surah-num{
+  width:34px;height:34px;
+  background:var(--surface2);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  color:var(--emerald);flex-shrink:0;
+  border:1px solid var(--border);
+}
+.surah-item.playing .surah-num{
+  background:var(--emerald);color:#fff;border-color:var(--emerald);
+}
+
+.surah-info{flex:1;min-width:0;}
+.surah-name-ar{
+  font-family:'Amiri',serif;
+  font-size:16px;color:var(--text);
+  line-height:1.2;
+}
+.surah-name-uz{
+  font-size:11px;color:var(--muted);margin-top:1px;
+}
+.surah-meta{
+  font-size:11px;color:var(--muted);
+  text-align:right;flex-shrink:0;
+  line-height:1.4;
+}
+
+.play-btn{
+  width:34px;height:34px;
+  border-radius:50%;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+  transition:background .2s,border-color .2s;
+}
+.surah-item.playing .play-btn{
+  background:var(--emerald);border-color:var(--emerald);
+}
+
+/* Sticky player */
+.audio-player{
+  position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,var(--surface) 0%,rgba(11,30,53,.98) 100%);
+  border-top:1px solid var(--border);
+  padding:10px 16px 16px;
+  z-index:100;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -8px 30px rgba(0,0,0,.5);
+}
+.audio-player.visible{transform:translateY(0);}
+
+.player-surah{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;
+}
+.player-title{
+  font-family:'Amiri',serif;font-size:16px;color:var(--gold);
+}
+.player-reciter{font-size:11px;color:var(--muted);margin-top:1px;}
+.close-player{
+  background:none;border:none;color:var(--muted);
+  font-size:18px;cursor:pointer;padding:4px;
+}
+
+.progress-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.time-txt{font-size:11px;color:var(--muted);min-width:35px;}
+.progress-bar{
+  flex:1;height:4px;background:var(--surface3);
+  border-radius:4px;cursor:pointer;position:relative;
+}
+.progress-fill{
+  height:100%;background:var(--emerald);border-radius:4px;
+  width:0%;transition:width .3s linear;pointer-events:none;
+}
+
+.player-controls{
+  display:flex;align-items:center;justify-content:center;gap:20px;
+}
+.ctrl-btn{
+  background:none;border:none;color:var(--muted);
+  font-size:20px;cursor:pointer;padding:6px;
+  transition:color .2s;
+}
+.ctrl-btn:hover{color:var(--text);}
+.play-pause{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--emerald);border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;
+  box-shadow:0 4px 15px var(--glow);
+  transition:transform .15s;
+}
+.play-pause:active{transform:scale(.93);}
+
+/* Loading spinner */
+.spin{
+  display:inline-block;
+  width:16px;height:16px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.no-results{
+  text-align:center;padding:40px 20px;
+  color:var(--muted);font-size:14px;
+}
+
+/* Scrollbar padding when player visible */
+.quran-page.player-open{padding-bottom:130px;}
 </style>
 </head>
 <body>
 
-<div class="stars" id="stars"></div>
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" id="tabQibla" onclick="switchTab('qibla')">
+    <span class="tab-icon">🧭</span>
+    <span>Qibla</span>
+  </button>
+  <button class="tab-btn" id="tabQuran" onclick="switchTab('quran')">
+    <span class="tab-icon">📖</span>
+    <span>Qur'on</span>
+  </button>
+</nav>
 
-<!-- LOADING -->
-<div class="ls" id="LS">
-  <div class="lic">🕌</div>
-  <div style="font-size:18px;font-weight:800">Qibla Kompas</div>
-  <div id="LSbody" style="display:flex;flex-direction:column;align-items:center;gap:11px">
-    <div class="spin"></div>
-    <div class="lsub">Yuklanmoqda...</div>
+<!-- PAGES -->
+<div class="pages">
+
+  <!-- ===== QIBLA PAGE ===== -->
+  <div class="page qibla-page active" id="pageQibla">
+
+    <div class="page-title">
+      🕌 Qibla Kompas
+      <small>Makka al-Mukarrama yo'nalishi</small>
+    </div>
+
+    <div class="compass-wrap" id="compassWrap">
+      <div class="outer-ring" id="outerRing"></div>
+
+      <div class="compass-dial" id="compassDial">
+        <svg class="dial-svg" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+          <g id="dialTicks"></g>
+          <!-- Cardinals -->
+          <text x="125" y="30" text-anchor="middle" font-family="Tajawal" font-weight="700" font-size="18" fill="#e74c3c">N</text>
+          <text x="125" y="236" text-anchor="middle" font-family="Tajawal" font-weight="700" font-size="16" fill="#5a8aaa">S</text>
+          <text x="228" y="131" text-anchor="middle" dominant-baseline="middle" font-family="Tajawal" font-weight="700" font-size="16" fill="#5a8aaa">E</text>
+          <text x="22" y="131" text-anchor="middle" dominant-baseline="middle" font-family="Tajawal" font-weight="700" font-size="16" fill="#5a8aaa">W</text>
+          <!-- Degree labels -->
+          <text x="125" y="50" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">0°</text>
+          <text x="196" y="64" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">45°</text>
+          <text x="215" y="133" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">90°</text>
+          <text x="196" y="200" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">135°</text>
+          <text x="125" y="218" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">180°</text>
+          <text x="54" y="200" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">225°</text>
+          <text x="35" y="133" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">270°</text>
+          <text x="54" y="64" text-anchor="middle" font-family="Tajawal" font-size="10" fill="#2a6090">315°</text>
+        </svg>
+      </div>
+
+      <!-- Arrow overlay (fixed, never rotates) -->
+      <div class="arrow-overlay">
+        <svg class="arrow-svg" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+          <g id="qiblaArrow">
+            <!-- Shadow -->
+            <polygon points="125,35 133,125 125,134 117,125" fill="rgba(0,0,0,.3)" transform="translate(2,2)"/>
+            <!-- Green arrow up -->
+            <polygon points="125,35 133,125 125,134 117,125" fill="#1db954"/>
+            <!-- Tail -->
+            <polygon points="125,134 133,125 142,148 125,142 108,148 117,125" fill="#158f3e"/>
+            <!-- Shine -->
+            <polygon points="125,35 133,75 117,75" fill="rgba(255,255,255,.25)"/>
+            <!-- QIBLA text -->
+            <text x="125" y="172" text-anchor="middle" font-family="Tajawal" font-size="10" font-weight="700" fill="#1db954" opacity=".9">QIBLA</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="center-kaaba">🕋</div>
+    </div>
+
+    <div class="deg-card">
+      <div class="deg-num"><span id="degVal">--</span>°</div>
+      <div class="deg-dir" id="degDir">Yo'nalish aniqlanmoqda...</div>
+    </div>
+
+    <div class="status-pill" id="statusPill">
+      <div class="s-dot" id="sDot"></div>
+      <span id="statusTxt">Kompas ishga tushirilmoqda</span>
+    </div>
+
+    <div class="aligned-txt" id="alignedTxt">🌿 Allahu Akbar! Qibla topildi 🌿</div>
+
+    <div class="loc-box">
+      <span>📍</span>
+      <div>
+        <strong id="locName">Joylashuv aniqlanmoqda...</strong>
+        <span id="locCoords"></span>
+      </div>
+    </div>
+
+    <button class="start-btn" id="startBtn" onclick="startCompass()">🧭 Kompasni Ishga Tushirish</button>
+
+    <p style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;">
+      GPS va kompas sensori orqali Qibla yo'nalishini aniqlaydi
+    </p>
   </div>
-  <button class="pbtn" id="pbtn">📍 Ruxsat berish</button>
-</div>
 
-<!-- MAIN -->
-<div class="hdr">
-  <div class="arabic">القبلة</div>
-  <div class="latin">Qibla Kompas</div>
-</div>
+  <!-- ===== QURAN PAGE ===== -->
+  <div class="page quran-page" id="pageQuran">
 
-<div class="status">
-  <div class="dot" id="dot"></div>
-  <div class="stxt" id="stxt">Sensor kutilmoqda...</div>
-</div>
+    <div class="quran-header">
+      <h2>📖 Qur'oni Karim</h2>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Sura nomi yoki raqamini kiriting..." oninput="filterSurahs()">
+      </div>
+      <div class="reciter-row" id="reciterRow"></div>
+    </div>
 
-<div class="cwrap">
-  <div class="gring" id="gring"></div>
-  <canvas id="cv" width="590" height="590"></canvas>
-  <div class="kaaba" id="kaaba">🕋</div>
-</div>
+    <div class="surah-list" id="surahList">
+      <div class="no-results" id="loadingMsg">⏳ Suralar yuklanmoqda...</div>
+    </div>
+  </div>
 
-<div class="degwrap">
-  <div class="dval" id="dval">--°</div>
-  <div class="ddir" id="ddir">Yuklanmoqda</div>
-  <div class="badge">Qibla: <b id="qbdg">--°</b></div>
-</div>
+</div><!-- /pages -->
 
-<div class="loccard">
-  <div class="locico">📍</div>
-  <div style="min-width:0;flex:1">
-    <div class="locname" id="lname">Joylashuv aniqlanmoqda...</div>
-    <div class="loccoords" id="lcoords"></div>
+<!-- AUDIO PLAYER -->
+<div class="audio-player" id="audioPlayer">
+  <div class="player-surah">
+    <div>
+      <div class="player-title" id="playerTitle">—</div>
+      <div class="player-reciter" id="playerReciter">—</div>
+    </div>
+    <button class="close-player" onclick="closePlayer()">✕</button>
+  </div>
+  <div class="progress-row">
+    <span class="time-txt" id="timeCurrent">0:00</span>
+    <div class="progress-bar" id="progressBar" onclick="seekAudio(event)">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <span class="time-txt" id="timeDuration">0:00</span>
+  </div>
+  <div class="player-controls">
+    <button class="ctrl-btn" onclick="playPrev()" title="Oldingi">⏮</button>
+    <button class="play-pause" id="playPauseBtn" onclick="togglePlay()">▶</button>
+    <button class="ctrl-btn" onclick="playNext()" title="Keyingi">⏭</button>
   </div>
 </div>
 
-<div class="banner" id="banner">
-  <div style="font-size:22px">✨</div>
-  <div>
-    <div class="bt">Qibla topildi!</div>
-    <div class="bs">Siz to'g'ri yo'nalishdasiz — Alloh qabul qilsin</div>
-  </div>
-</div>
-
-<!-- Debug panel (tap kaaba 5x to toggle) -->
-<div class="dbg" id="dbg"></div>
+<audio id="audioEl" preload="none"></audio>
 
 <script>
-/* ============================================================
-   QIBLA COMPASS — mathematically correct implementation
-   
-   THEORY:
-   ────────
-   • qiblaTrue  = great-circle bearing FROM user TO Mecca
-                  (0° = North, 90° = East, 180° = South, 270° = West)
-   
-   • deviceHead = compass heading of device's TOP edge
-                  (0° = North, clockwise)
-   
-   • To show a Qibla arrow FIXED on screen pointing at Mecca:
-       needleScreen = qiblaTrue - deviceHead   (mod 360)
-   
-     Why: if device top points North (head=0) and Qibla is 248°,
-          needle should be drawn at 248° from screen-up.
-          If device rotates clockwise by 30° (head=30°),
-          needle = 248-30 = 218° — still pointing at Mecca. ✓
-   
-   SENSOR SOURCES:
-   ───────────────
-   • iOS:     e.webkitCompassHeading  (already clockwise from magnetic N)
-   • Android: e.alpha is counter-clockwise rotation of device in screen frame
-              → heading = (360 - alpha) mod 360
-   
-   GPS + QIBLA:
-   ────────────
-   Uses navigator.geolocation with high accuracy.
-   Falls back to Toshkent default if GPS unavailable.
-============================================================ */
-
-// ── Stars ──────────────────────────────────────────────────
-(()=>{
-  const c=document.getElementById('stars');
-  for(let i=0;i<75;i++){
-    const s=document.createElement('div');s.className='star';
-    const sz=Math.random()<.25?3:Math.random()<.5?2:1;
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${1.8+Math.random()*5}s;--dl:-${Math.random()*7}s`;
-    c.appendChild(s);
-  }
-})();
-
-// ── Ka'ba coordinates (center of Masjid al-Haram) ──────────
-const KA_LAT = 21.4225;
-const KA_LON = 39.8262;
-
-// ── Application state ──────────────────────────────────────
-let userLat    = 41.2995;   // Toshkent default
-let userLon    = 69.2401;
-let qiblaTrue  = 0;         // bearing to Mecca (0=N, clockwise)
-let rawHead    = 0;         // latest raw device heading
-let smoothHead = 0;         // smoothed heading for rendering
-let sensorOK   = false;
-let gpsOK      = false;
-let prevAligned= false;
-let kaabaClicks= 0;
-
-// ── Great-circle bearing (Vincenty formula, simplified) ────
-function calcQibla(lat, lon) {
-  const R  = d => d * Math.PI / 180;
-  const φ1 = R(lat), φ2 = R(KA_LAT);
-  const Δλ = R(KA_LON - lon);
-  const y  = Math.sin(Δλ) * Math.cos(φ2);
-  const x  = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
-  return norm(Math.atan2(y,x) * 180 / Math.PI);
+// ===================== TAB SWITCHING =====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  document.getElementById('page' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
 }
 
-// ── Angle helpers ──────────────────────────────────────────
-function norm(a){ return ((a%360)+360)%360; }
+// ===================== QIBLA COMPASS =====================
+const KAABA = { lat: 21.4225, lng: 39.8262 };
+let userLat = null, userLng = null;
+let qiblaBearing = null;
+let currentHeading = 0;
+let isAligned = false;
+let compassStarted = false;
 
-// shortest-path lerp between angles
-function lerpAng(cur,tgt,t){
-  let d = norm(tgt)-norm(cur);
-  if(d>180)d-=360;if(d<-180)d+=360;
-  return cur+d*t;
-}
-
-function aligned(){
-  let d=norm(qiblaTrue)-norm(smoothHead);
-  if(d>180)d-=360;if(d<-180)d+=360;
-  return Math.abs(d)<5;
-}
-
-function cardDir(deg){
-  return ["Shimol","Shim-Sharq","Sharq","Jan-Sharq",
-          "Janub","Jan-Gʻarb","Gʻarb","Shim-Gʻarb"][Math.round(norm(deg)/45)%8];
-}
-
-// ── Canvas setup ───────────────────────────────────────────
-const cv = document.getElementById('cv');
-const ctx= cv.getContext('2d');
-const SZ = 590, CX=SZ/2, CY=SZ/2;
-
-function drawCompass(heading){
-  ctx.clearRect(0,0,SZ,SZ);
-  const aln = aligned();
-
-  // ── Outer rim ──
-  const rim=ctx.createLinearGradient(0,0,SZ,SZ);
-  if(aln){rim.addColorStop(0,'#4ade80');rim.addColorStop(1,'#16a34a');}
-  else    {rim.addColorStop(0,'#22c55e');rim.addColorStop(1,'#0b5e22');}
-  ctx.beginPath();ctx.arc(CX,CY,287,0,Math.PI*2);
-  ctx.fillStyle=rim;ctx.fill();
-
-  // ── Face ──
-  const face=ctx.createRadialGradient(CX,CY,50,CX,CY,255);
-  face.addColorStop(0,'#1a2030');face.addColorStop(1,'#0a0f1a');
-  ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);
-  ctx.fillStyle=face;
-  ctx.shadowColor=aln?'rgba(34,197,94,.28)':'transparent';
-  ctx.shadowBlur=aln?32:0;
-  ctx.fill();ctx.shadowBlur=0;
-
-  // ── ROTATING DISC — follows the real world ──
-  // Rotate canvas by -heading so that geographic North stays at top
-  ctx.save();
-  ctx.translate(CX,CY);
-  ctx.rotate(-heading*Math.PI/180);
-
-  // Ticks
-  for(let i=0;i<360;i++){
-    const rad=i*Math.PI/180;
-    const maj=i%30===0, med=i%10===0&&!maj;
-    const len=maj?25:med?15:8;
-    const r1=250,r2=r1-len;
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(rad)*r1,Math.sin(rad)*r1);
-    ctx.lineTo(Math.cos(rad)*r2,Math.sin(rad)*r2);
-    ctx.strokeStyle=maj?'rgba(255,255,255,.88)':med?'rgba(255,255,255,.35)':'rgba(255,255,255,.11)';
-    ctx.lineWidth=maj?2.6:1.6;
-    ctx.stroke();
-  }
-
-  // Degree numbers at 30° steps (skip 0/90/180/270)
-  ctx.font='600 17px Nunito,sans-serif';
-  ctx.fillStyle='rgba(190,205,225,.62)';
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let i=0;i<360;i+=30){
-    if(i%90===0)continue;
-    const rad=i*Math.PI/180;
-    ctx.save();
-    ctx.translate(Math.sin(rad)*182,-Math.cos(rad)*182);
-    ctx.rotate(rad);
-    ctx.fillText(i,0,0);
-    ctx.restore();
-  }
-
-  // Cardinal letters
-  const CARDS=['N','E','S','W'];
-  ctx.font='bold 37px Nunito,sans-serif';
-  for(let i=0;i<4;i++){
-    const rad=i*Math.PI/2;
-    ctx.fillStyle=i===0?'#ef4444':'rgba(255,255,255,.84)';
-    ctx.fillText(CARDS[i],Math.sin(rad)*210,-Math.cos(rad)*210);
-  }
-
-  // Intercardinals
-  const IC=['NE','SE','SW','NW'];
-  ctx.font='bold 15px Nunito,sans-serif';
-  ctx.fillStyle='rgba(255,255,255,.28)';
-  for(let i=0;i<4;i++){
-    const rad=(i*90+45)*Math.PI/180;
-    ctx.fillText(IC[i],Math.sin(rad)*203,-Math.cos(rad)*203);
-  }
-
-  ctx.restore(); // end rotating disc
-
-  /* ── QIBLA ARROW — screen-fixed, points at Mecca ──────────
-     
-     needleAngleDeg = qiblaTrue - deviceHeading  (mod 360)
-     
-     This is the angle (clockwise from screen-up) that points
-     toward Mecca regardless of how the device is oriented.
-  */
-  const needleDeg = norm(qiblaTrue - heading);
-  const needleRad = needleDeg * Math.PI / 180;
-
-  // unit vector toward Mecca on screen
-  const nx =  Math.sin(needleRad);
-  const ny = -Math.cos(needleRad);
-
-  ctx.save();
-  ctx.translate(CX,CY);
-
-  // Soft glow trail
-  const tg=ctx.createLinearGradient(0,0,nx*240,ny*240);
-  tg.addColorStop(0,'rgba(240,192,64,0)');
-  tg.addColorStop(.55,'rgba(240,192,64,.12)');
-  tg.addColorStop(1,'rgba(240,192,64,.48)');
-  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(nx*240,ny*240);
-  ctx.strokeStyle=tg;ctx.lineWidth=14;ctx.stroke();
-
-  // Gold arc on rim
-  const arcHalf=0.115;
-  const arcBase=needleRad-Math.PI/2;
-  ctx.beginPath();
-  ctx.arc(0,0,265,arcBase-arcHalf,arcBase+arcHalf);
-  ctx.strokeStyle='rgba(240,192,64,.78)';ctx.lineWidth=18;ctx.stroke();
-
-  // Gold arrow
-  ctx.save();
-  ctx.rotate(needleRad);
-  ctx.shadowColor='rgba(240,192,64,.85)';ctx.shadowBlur=22;
-
-  // Tip triangle
-  ctx.beginPath();
-  ctx.moveTo(0,-247);
-  ctx.lineTo(13,-212);ctx.lineTo(0,-223);ctx.lineTo(-13,-212);
-  ctx.closePath();
-  ctx.fillStyle='#f0c040';ctx.fill();
-
-  // Shaft
-  ctx.beginPath();
-  ctx.moveTo(6,-212);ctx.lineTo(5,-128);ctx.lineTo(-5,-128);ctx.lineTo(-6,-212);
-  ctx.closePath();
-  ctx.fillStyle='rgba(240,192,64,.58)';ctx.fill();
-  ctx.shadowBlur=0;
-  ctx.restore();
-
-  ctx.restore(); // end translate
-
-  // Aligned pulse ring
-  if(aln){
-    const p=(Math.sin(Date.now()/270)+1)/2;
-    ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);
-    ctx.strokeStyle=`rgba(34,197,94,${.28+p*.52})`;
-    ctx.lineWidth=7;ctx.stroke();
-  }
-
-  // Fixed green NORTH pointer at screen top
-  ctx.save();
-  ctx.translate(CX,CY);
-  ctx.shadowColor='#22c55e';ctx.shadowBlur=14;
-  ctx.beginPath();
-  ctx.moveTo(0,-263);ctx.lineTo(9,-243);ctx.lineTo(-9,-243);
-  ctx.closePath();
-  ctx.fillStyle='#22c55e';ctx.fill();
-  ctx.shadowBlur=0;
-  ctx.restore();
-}
-
-// ── Render loop ────────────────────────────────────────────
-function loop(){
-  smoothHead = lerpAng(smoothHead, rawHead, 0.10);
-  drawCompass(smoothHead);
-
-  const aln   = aligned();
-  const hdDeg = Math.round(norm(smoothHead));
-
-  // Update UI
-  const dv=document.getElementById('dval');
-  dv.textContent=hdDeg+'°';
-  dv.classList.toggle('on',aln);
-  document.getElementById('ddir').textContent=cardDir(smoothHead);
-  document.getElementById('gring').classList.toggle('on',aln);
-  document.getElementById('kaaba').classList.toggle('on',aln);
-  document.getElementById('banner').classList.toggle('show',aln);
-
-  // Debug
-  const dbg=document.getElementById('dbg');
-  if(dbg.classList.contains('show')){
-    dbg.innerHTML=`
-      <b style="color:#e8edf5">Debug:</b><br>
-      rawHead: <b>${rawHead.toFixed(2)}°</b><br>
-      smoothHead: <b>${smoothHead.toFixed(2)}°</b><br>
-      qiblaTrue: <b>${qiblaTrue.toFixed(2)}°</b><br>
-      needle: <b>${norm(qiblaTrue-smoothHead).toFixed(2)}°</b><br>
-      GPS: <b>${userLat.toFixed(5)}, ${userLon.toFixed(5)}</b><br>
-      aligned: <b>${aln}</b>
-    `;
-  }
-
-  // Vibrate + flash on align
-  if(aln && !prevAligned && sensorOK){
-    document.body.classList.add('fl');
-    setTimeout(()=>document.body.classList.remove('fl'),750);
-    if(navigator.vibrate)navigator.vibrate([65,45,100]);
-  }
-  prevAligned=aln;
-
-  requestAnimationFrame(loop);
-}
-
-// ── Device Orientation handler ─────────────────────────────
-function onOrient(e){
-  /*
-    iOS:     e.webkitCompassHeading = clockwise from magnetic North  → use directly
-    Android: e.alpha = device rotation counter-clockwise from North in lab frame
-             → True heading = (360 - alpha) mod 360
-    
-    Some Android devices also provide e.webkitCompassHeading (non-standard),
-    so we prefer it when available on any platform.
-  */
-  let heading;
-
-  if(typeof e.webkitCompassHeading==='number' && !isNaN(e.webkitCompassHeading)){
-    // iOS (and some Android with WebKit compass)
-    heading = e.webkitCompassHeading;
-  } else if(typeof e.alpha==='number' && e.alpha!==null){
-    // Standard Android DeviceOrientationEvent
-    // alpha: 0 when top of device points to North (initially), increases counter-clockwise
-    heading = norm(360 - e.alpha);
-  } else {
-    return; // no usable data
-  }
-
-  // If absolute orientation is available, prefer it (more accurate)
-  // e.absolute===true means alpha is relative to geographic North, not magnetic
-  // On most Android, alpha is already geographic if absolute===true
-
-  rawHead = heading;
-
-  if(!sensorOK){
-    sensorOK=true;
-    document.getElementById('dot').classList.add('on');
-    document.getElementById('stxt').textContent='Kompas faol';
-    hideLoading();
+function drawDialTicks() {
+  const svg = document.getElementById('dialTicks');
+  const cx = 125, cy = 125, r = 110;
+  for (let i = 0; i < 360; i += 5) {
+    const rad = (i - 90) * Math.PI / 180;
+    const isMain = i % 90 === 0;
+    const isMed = i % 45 === 0;
+    const isMin45 = i % 15 === 0;
+    const len = isMain ? 13 : isMed ? 10 : isMin45 ? 7 : 4;
+    const color = isMain ? '#4a90d9' : isMed ? '#336699' : isMin45 ? '#1e5070' : '#132e40';
+    const x1 = cx + r * Math.cos(rad), y1 = cy + r * Math.sin(rad);
+    const x2 = cx + (r - len) * Math.cos(rad), y2 = cy + (r - len) * Math.sin(rad);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke', color);
+    line.setAttribute('stroke-width', isMain ? '2' : '1');
+    svg.appendChild(line);
   }
 }
+drawDialTicks();
 
-// For Android: try AbsoluteOrientationSensor if available (most accurate)
-function tryAbsoluteSensor(){
-  if(typeof AbsoluteOrientationSensor==='undefined')return false;
-  try{
-    const s=new AbsoluteOrientationSensor({frequency:30,referenceFrame:'screen'});
-    s.addEventListener('reading',()=>{
-      // quaternion [x,y,z,w] → heading
-      const [x,y,z,w]=s.quaternion;
-      const sinA=2*(w*z+x*y);
-      const cosA=1-2*(y*y+z*z);
-      let a=Math.atan2(sinA,cosA)*180/Math.PI;
-      rawHead=norm(-a); // negate because sensor gives screen rotation
-      if(!sensorOK){
-        sensorOK=true;
-        document.getElementById('dot').classList.add('on');
-        document.getElementById('stxt').textContent='Kompas faol (Absolute)';
-        hideLoading();
-      }
-    });
-    s.addEventListener('error',()=>{
-      // Fall back to deviceorientation
-      window.addEventListener('deviceorientationabsolute',onOrient,true);
-      window.addEventListener('deviceorientation',onOrient,true);
-    });
-    s.start();
-    return true;
-  }catch(e){
-    return false;
-  }
+function calcBearing(lat1, lon1, lat2, lon2) {
+  const r = d => d * Math.PI / 180;
+  const y = Math.sin(r(lon2 - lon1)) * Math.cos(r(lat2));
+  const x = Math.cos(r(lat1)) * Math.sin(r(lat2)) - Math.sin(r(lat1)) * Math.cos(r(lat2)) * Math.cos(r(lon2 - lon1));
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 }
 
-// ── Geolocation ────────────────────────────────────────────
-function startGeo(){
-  setLocDisplay(userLat, userLon, "Toshkent, O'zbekiston"); // show default immediately
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qbdg').textContent=Math.round(qiblaTrue)+'°';
-
-  if(!navigator.geolocation)return;
-
-  // Try high-accuracy first
-  navigator.geolocation.getCurrentPosition(
-    onGPS,
-    (err)=>{
-      // If denied or timed out, try low accuracy
-      if(err.code!==1){
-        navigator.geolocation.getCurrentPosition(onGPS,onGPSErr,
-          {enableHighAccuracy:false,timeout:8000,maximumAge:60000});
-      } else {
-        onGPSErr(err);
-      }
-    },
-    {enableHighAccuracy:true,timeout:12000,maximumAge:0}
-  );
+function getDir(deg) {
+  const d = ['Shimol','Shimoli-sharq','Sharq','Janubi-sharq','Janub','Janubi-g\'arb','G\'arb','Shimoli-g\'arb'];
+  return d[Math.round(deg / 45) % 8];
 }
 
-function onGPS(pos){
-  userLat=pos.coords.latitude;
-  userLon=pos.coords.longitude;
-  gpsOK=true;
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qbdg').textContent=Math.round(qiblaTrue)+'°';
-  reverseGeo(userLat,userLon);
-}
+function updateCompass() {
+  if (qiblaBearing === null) return;
+  const arrowAngle = qiblaBearing - currentHeading;
+  // Arrow rotates around SVG center (125,125)
+  document.getElementById('qiblaArrow').setAttribute('transform', `rotate(${arrowAngle} 125 125)`);
+  // Dial counter-rotates with device
+  document.getElementById('compassDial').style.transform = `rotate(${-currentHeading}deg)`;
+  document.getElementById('degVal').textContent = Math.round(qiblaBearing);
+  document.getElementById('degDir').textContent = getDir(qiblaBearing);
 
-function onGPSErr(err){
-  // Keep default coords, show message
-  const msgs={1:'GPS ruxsati rad etildi',2:'GPS topilmadi',3:'GPS vaqt tugadi'};
-  document.getElementById('lname').textContent=(msgs[err.code]||'GPS xatosi')+' (Toshkent ishlatilmoqda)';
-  document.getElementById('lcoords').textContent=userLat.toFixed(4)+'°N, '+userLon.toFixed(4)+'°E';
-}
-
-function setLocDisplay(lat,lon,name){
-  document.getElementById('lname').textContent=name;
-  document.getElementById('lcoords').textContent=lat.toFixed(4)+'°N, '+lon.toFixed(4)+'°E';
-}
-
-function reverseGeo(lat,lon){
-  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json&accept-language=uz,en')
-    .then(r=>r.json())
-    .then(d=>{
-      const a=d.address||{};
-      const city=a.city||a.town||a.village||a.county||a.state||'Noma\'lum';
-      const country=a.country||'';
-      setLocDisplay(lat,lon,city+(country?', '+country:''));
-    })
-    .catch(()=>setLocDisplay(lat,lon,lat.toFixed(4)+'°N, '+lon.toFixed(4)+'°E'));
-}
-
-// ── Demo mode ──────────────────────────────────────────────
-let demoR;
-function startDemo(){
-  if(sensorOK)return;
-  sensorOK=true;
-  document.getElementById('dot').classList.add('on');
-  document.getElementById('stxt').textContent='Demo rejim';
-  let t=0;
-  (function tick(){demoR=requestAnimationFrame(tick);t+=.45;rawHead=t%360;})();
-  hideLoading();
-  startGeo();
-}
-
-// ── Loading helpers ────────────────────────────────────────
-function hideLoading(){
-  const ls=document.getElementById('LS');
-  ls.classList.add('hide');
-  setTimeout(()=>ls.style.display='none',700);
-}
-
-function showPermBtn(msg,label,fn){
-  document.getElementById('LSbody').innerHTML=
-    `<div class="lsub" style="text-align:center;padding:0 26px;line-height:1.8">${msg}</div>`;
-  const btn=document.getElementById('pbtn');
-  if(label)btn.textContent=label;
-  if(fn)btn.onclick=fn;
-  btn.style.display='block';
-}
-
-// ── iOS permission ─────────────────────────────────────────
-function askPermission(){
-  document.getElementById('pbtn').style.display='none';
-  document.getElementById('LSbody').innerHTML='<div class="spin"></div><div class="lsub">Ruxsat so\'ralmoqda...</div>';
-
-  const isIOS=typeof DeviceOrientationEvent!=='undefined' &&
-               typeof DeviceOrientationEvent.requestPermission==='function';
-  if(isIOS){
-    DeviceOrientationEvent.requestPermission()
-      .then(s=>{
-        if(s==='granted'){
-          window.addEventListener('deviceorientation',onOrient,true);
-          startGeo();
-        } else {
-          showPermBtn('Ruxsat rad etildi. Brauzer sozlamalarini tekshiring.','▶ Demo',startDemo);
-        }
-      })
-      .catch(e=>showPermBtn('Xato: '+e.message,'▶ Demo',startDemo));
-  } else {
-    window.addEventListener('deviceorientation',onOrient,true);
-    startGeo();
-  }
-}
-
-// ── Ka'ba tap → debug ──────────────────────────────────────
-document.getElementById('kaaba').addEventListener('click',()=>{
-  kaabaClicks++;
-  if(kaabaClicks>=5){
-    kaabaClicks=0;
-    document.getElementById('dbg').classList.toggle('show');
-  }
-});
-
-// ── Boot ───────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded',()=>{
-
-  // Telegram Mini App
-  if(window.Telegram?.WebApp){
-    const tg=window.Telegram.WebApp;
-    tg.ready();tg.expand();
-    tg.setHeaderColor?.('#0a0f1a');
-    tg.setBackgroundColor?.('#0a0f1a');
-  }
-
-  // Initial Qibla (default coords until GPS ready)
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qbdg').textContent=Math.round(qiblaTrue)+'°';
-
-  // Start render immediately
-  loop();
-
-  // Detect platform
-  const isIOS = typeof DeviceOrientationEvent!=='undefined' &&
-                typeof DeviceOrientationEvent.requestPermission==='function';
-
-  if(isIOS){
-    // iOS: must request permission via user gesture
-    showPermBtn('Kompasni ishlatish uchun qurilma ruxsatini bering','📍 Ruxsat berish',askPermission);
-  } else {
-    // Android / desktop
-    // Try sensors
-    const usedAbsolute = tryAbsoluteSensor();
-    if(!usedAbsolute){
-      // Prefer deviceorientationabsolute (gives geographic North, no magnetic declination needed)
-      window.addEventListener('deviceorientationabsolute', onOrient, true);
-      // Fallback to standard deviceorientation
-      window.addEventListener('deviceorientation', onOrient, true);
+  const norm = ((arrowAngle % 360) + 360) % 360;
+  const diff = Math.min(norm, 360 - norm);
+  const nowAligned = diff < 5;
+  if (nowAligned !== isAligned) {
+    isAligned = nowAligned;
+    const ring = document.getElementById('outerRing');
+    const pill = document.getElementById('statusPill');
+    const txt = document.getElementById('alignedTxt');
+    if (isAligned) {
+      ring.classList.add('aligned');
+      pill.classList.add('aligned');
+      pill.querySelector('span').textContent = '✅ Qibla topildi!';
+      txt.classList.add('show');
+    } else {
+      ring.classList.remove('aligned');
+      pill.classList.remove('aligned');
+      pill.querySelector('span').textContent = 'Qiblani izlang...';
+      txt.classList.remove('show');
     }
-    startGeo();
-
-    // After 4s, if still no sensor, offer demo
-    setTimeout(()=>{
-      if(!sensorOK){
-        showPermBtn('Kompas sensori ishlamayapti yoki ruxsat yo\'q','▶ Demo rejim',startDemo);
-      }
-    },4000);
   }
+}
+
+function getLocation() {
+  if (!navigator.geolocation) {
+    setDefaultLocation();
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    qiblaBearing = calcBearing(userLat, userLng, KAABA.lat, KAABA.lng);
+    document.getElementById('locName').textContent = `${userLat.toFixed(3)}°, ${userLng.toFixed(3)}°`;
+    document.getElementById('locCoords').textContent = `Qibla: ${Math.round(qiblaBearing)}° ${getDir(qiblaBearing)}`;
+    updateCompass();
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`)
+      .then(r => r.json())
+      .then(d => {
+        const c = d.address?.city || d.address?.town || d.address?.village || '';
+        const co = d.address?.country || '';
+        if (c || co) document.getElementById('locName').textContent = `${c}${c && co ? ', ' : ''}${co}`;
+      }).catch(() => {});
+  }, () => setDefaultLocation(), { timeout: 8000 });
+}
+
+function setDefaultLocation() {
+  userLat = 41.2995; userLng = 69.2401;
+  qiblaBearing = calcBearing(userLat, userLng, KAABA.lat, KAABA.lng);
+  document.getElementById('locName').textContent = 'Toshkent (taxminiy)';
+  document.getElementById('locCoords').textContent = `Qibla: ${Math.round(qiblaBearing)}°`;
+  updateCompass();
+}
+
+let targetHeading = 0;
+function handleOrientation(e) {
+  let h = null;
+  if (e.webkitCompassHeading != null) h = e.webkitCompassHeading;
+  else if (e.absolute && e.alpha != null) h = (360 - e.alpha) % 360;
+  else if (e.alpha != null) h = (360 - e.alpha) % 360;
+  if (h != null && !isNaN(h)) {
+    targetHeading = h;
+    let diff = targetHeading - currentHeading;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    currentHeading = (currentHeading + diff * 0.2 + 360) % 360;
+    updateCompass();
+  }
+}
+
+function simulateCompass() {
+  document.getElementById('statusTxt').textContent = 'Simulyatsiya rejimi';
+  let a = 0;
+  setInterval(() => { a = (a + 1) % 360; currentHeading = a; updateCompass(); }, 30);
+}
+
+function startCompass() {
+  if (compassStarted) return;
+  compassStarted = true;
+  document.getElementById('startBtn').style.display = 'none';
+  getLocation();
+  const listen = () => {
+    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+    window.addEventListener('deviceorientation', handleOrientation, true);
+    document.getElementById('statusTxt').textContent = 'Kompas faol';
+  };
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(s => {
+      if (s === 'granted') listen(); else simulateCompass();
+    }).catch(simulateCompass);
+  } else {
+    listen();
+    setTimeout(() => { if (currentHeading === 0 && qiblaBearing !== null) simulateCompass(); }, 3000);
+  }
+}
+
+// ===================== QURAN AUDIO =====================
+const RECITERS = [
+  { id: 'ar.alafasy',     name: 'Mishary Alafasy',  base: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/' },
+  { id: 'ar.abdurrahmaansudais', name: 'Sudais',    base: 'https://cdn.islamic.network/quran/audio/128/ar.abdurrahmaansudais/' },
+  { id: 'ar.husary',      name: 'Husary',            base: 'https://cdn.islamic.network/quran/audio/128/ar.husary/' },
+  { id: 'ar.minshawi',    name: "Minshawi",          base: 'https://cdn.islamic.network/quran/audio/128/ar.minshawi/' },
+];
+
+const SURAHS = [
+  {n:1,ar:'الفاتحة',uz:'Al-Fotiha',ayat:7,type:'Makka'},
+  {n:2,ar:'البقرة',uz:'Al-Baqara',ayat:286,type:'Madina'},
+  {n:3,ar:'آل عمران',uz:'Ali Imron',ayat:200,type:'Madina'},
+  {n:4,ar:'النساء',uz:'An-Niso',ayat:176,type:'Madina'},
+  {n:5,ar:'المائدة',uz:'Al-Moida',ayat:120,type:'Madina'},
+  {n:6,ar:'الأنعام',uz:'Al-An\'om',ayat:165,type:'Makka'},
+  {n:7,ar:'الأعراف',uz:'Al-A\'rof',ayat:206,type:'Makka'},
+  {n:8,ar:'الأنفال',uz:'Al-Anfol',ayat:75,type:'Madina'},
+  {n:9,ar:'التوبة',uz:'At-Tavba',ayat:129,type:'Madina'},
+  {n:10,ar:'يونس',uz:'Yunus',ayat:109,type:'Makka'},
+  {n:11,ar:'هود',uz:'Hud',ayat:123,type:'Makka'},
+  {n:12,ar:'يوسف',uz:'Yusuf',ayat:111,type:'Makka'},
+  {n:13,ar:'الرعد',uz:'Ar-Ra\'d',ayat:43,type:'Madina'},
+  {n:14,ar:'إبراهيم',uz:'Ibrohim',ayat:52,type:'Makka'},
+  {n:15,ar:'الحجر',uz:'Al-Hijr',ayat:99,type:'Makka'},
+  {n:16,ar:'النحل',uz:'An-Nahl',ayat:128,type:'Makka'},
+  {n:17,ar:'الإسراء',uz:'Al-Isro',ayat:111,type:'Makka'},
+  {n:18,ar:'الكهف',uz:'Al-Kahf',ayat:110,type:'Makka'},
+  {n:19,ar:'مريم',uz:'Maryam',ayat:98,type:'Makka'},
+  {n:20,ar:'طه',uz:'To Ha',ayat:135,type:'Makka'},
+  {n:21,ar:'الأنبياء',uz:'Al-Anbiyo',ayat:112,type:'Makka'},
+  {n:22,ar:'الحج',uz:'Al-Haj',ayat:78,type:'Madina'},
+  {n:23,ar:'المؤمنون',uz:'Al-Mo\'minun',ayat:118,type:'Makka'},
+  {n:24,ar:'النور',uz:'An-Nur',ayat:64,type:'Madina'},
+  {n:25,ar:'الفرقان',uz:'Al-Furqon',ayat:77,type:'Makka'},
+  {n:26,ar:'الشعراء',uz:'Ash-Shu\'aro',ayat:227,type:'Makka'},
+  {n:27,ar:'النمل',uz:'An-Naml',ayat:93,type:'Makka'},
+  {n:28,ar:'القصص',uz:'Al-Qasas',ayat:88,type:'Makka'},
+  {n:29,ar:'العنكبوت',uz:'Al-Ankabut',ayat:69,type:'Makka'},
+  {n:30,ar:'الروم',uz:'Ar-Rum',ayat:60,type:'Makka'},
+  {n:31,ar:'لقمان',uz:'Luqmon',ayat:34,type:'Makka'},
+  {n:32,ar:'السجدة',uz:'As-Sajda',ayat:30,type:'Makka'},
+  {n:33,ar:'الأحزاب',uz:'Al-Ahzob',ayat:73,type:'Madina'},
+  {n:34,ar:'سبأ',uz:'Saba',ayat:54,type:'Makka'},
+  {n:35,ar:'فاطر',uz:'Fotir',ayat:45,type:'Makka'},
+  {n:36,ar:'يس',uz:'Yo Sin',ayat:83,type:'Makka'},
+  {n:37,ar:'الصافات',uz:'As-Soffot',ayat:182,type:'Makka'},
+  {n:38,ar:'ص',uz:'Sod',ayat:88,type:'Makka'},
+  {n:39,ar:'الزمر',uz:'Az-Zumar',ayat:75,type:'Makka'},
+  {n:40,ar:'غافر',uz:"G'ofir",ayat:85,type:'Makka'},
+  {n:41,ar:'فصلت',uz:'Fussilat',ayat:54,type:'Makka'},
+  {n:42,ar:'الشورى',uz:'Ash-Shura',ayat:53,type:'Makka'},
+  {n:43,ar:'الزخرف',uz:'Az-Zukhruf',ayat:89,type:'Makka'},
+  {n:44,ar:'الدخان',uz:'Ad-Dukhan',ayat:59,type:'Makka'},
+  {n:45,ar:'الجاثية',uz:'Al-Josiya',ayat:37,type:'Makka'},
+  {n:46,ar:'الأحقاف',uz:'Al-Ahqof',ayat:35,type:'Makka'},
+  {n:47,ar:'محمد',uz:'Muhammad',ayat:38,type:'Madina'},
+  {n:48,ar:'الفتح',uz:'Al-Fath',ayat:29,type:'Madina'},
+  {n:49,ar:'الحجرات',uz:'Al-Hujurot',ayat:18,type:'Madina'},
+  {n:50,ar:'ق',uz:'Qof',ayat:45,type:'Makka'},
+  {n:51,ar:'الذاريات',uz:'Az-Zoriyot',ayat:60,type:'Makka'},
+  {n:52,ar:'الطور',uz:'At-Tur',ayat:49,type:'Makka'},
+  {n:53,ar:'النجم',uz:'An-Najm',ayat:62,type:'Makka'},
+  {n:54,ar:'القمر',uz:'Al-Qamar',ayat:55,type:'Makka'},
+  {n:55,ar:'الرحمن',uz:'Ar-Rohman',ayat:78,type:'Madina'},
+  {n:56,ar:'الواقعة',uz:'Al-Voqia',ayat:96,type:'Makka'},
+  {n:57,ar:'الحديد',uz:'Al-Hadid',ayat:29,type:'Madina'},
+  {n:58,ar:'المجادلة',uz:'Al-Mujodala',ayat:22,type:'Madina'},
+  {n:59,ar:'الحشر',uz:'Al-Hashr',ayat:24,type:'Madina'},
+  {n:60,ar:'الممتحنة',uz:'Al-Mumtahana',ayat:13,type:'Madina'},
+  {n:61,ar:'الصف',uz:'As-Saff',ayat:14,type:'Madina'},
+  {n:62,ar:'الجمعة',uz:'Al-Jum\'a',ayat:11,type:'Madina'},
+  {n:63,ar:'المنافقون',uz:'Al-Munofiqun',ayat:11,type:'Madina'},
+  {n:64,ar:'التغابن',uz:'At-Taghabun',ayat:18,type:'Madina'},
+  {n:65,ar:'الطلاق',uz:'At-Talaq',ayat:12,type:'Madina'},
+  {n:66,ar:'التحريم',uz:'At-Tahrim',ayat:12,type:'Madina'},
+  {n:67,ar:'الملك',uz:'Al-Mulk',ayat:30,type:'Makka'},
+  {n:68,ar:'القلم',uz:'Al-Qalam',ayat:52,type:'Makka'},
+  {n:69,ar:'الحاقة',uz:'Al-Haqqa',ayat:52,type:'Makka'},
+  {n:70,ar:'المعارج',uz:'Al-Ma\'orij',ayat:44,type:'Makka'},
+  {n:71,ar:'نوح',uz:'Nuh',ayat:28,type:'Makka'},
+  {n:72,ar:'الجن',uz:'Al-Jin',ayat:28,type:'Makka'},
+  {n:73,ar:'المزمل',uz:'Al-Muzzammil',ayat:20,type:'Makka'},
+  {n:74,ar:'المدثر',uz:'Al-Muddaththir',ayat:56,type:'Makka'},
+  {n:75,ar:'القيامة',uz:'Al-Qiyoma',ayat:40,type:'Makka'},
+  {n:76,ar:'الإنسان',uz:'Al-Inson',ayat:31,type:'Madina'},
+  {n:77,ar:'المرسلات',uz:'Al-Mursalot',ayat:50,type:'Makka'},
+  {n:78,ar:'النبأ',uz:'An-Naba',ayat:40,type:'Makka'},
+  {n:79,ar:'النازعات',uz:'An-Nozi\'ot',ayat:46,type:'Makka'},
+  {n:80,ar:'عبس',uz:'Abasa',ayat:42,type:'Makka'},
+  {n:81,ar:'التكوير',uz:'At-Takwir',ayat:29,type:'Makka'},
+  {n:82,ar:'الانفطار',uz:'Al-Infitor',ayat:19,type:'Makka'},
+  {n:83,ar:'المطففين',uz:'Al-Mutaffifin',ayat:36,type:'Makka'},
+  {n:84,ar:'الانشقاق',uz:'Al-Inshiqoq',ayat:25,type:'Makka'},
+  {n:85,ar:'البروج',uz:'Al-Buruj',ayat:22,type:'Makka'},
+  {n:86,ar:'الطارق',uz:'At-Toriq',ayat:17,type:'Makka'},
+  {n:87,ar:'الأعلى',uz:'Al-A\'lo',ayat:19,type:'Makka'},
+  {n:88,ar:'الغاشية',uz:'Al-G\'oshiya',ayat:26,type:'Makka'},
+  {n:89,ar:'الفجر',uz:'Al-Fajr',ayat:30,type:'Makka'},
+  {n:90,ar:'البلد',uz:'Al-Balad',ayat:20,type:'Makka'},
+  {n:91,ar:'الشمس',uz:'Ash-Shams',ayat:15,type:'Makka'},
+  {n:92,ar:'الليل',uz:'Al-Layl',ayat:21,type:'Makka'},
+  {n:93,ar:'الضحى',uz:'Ad-Duho',ayat:11,type:'Makka'},
+  {n:94,ar:'الشرح',uz:'Ash-Sharh',ayat:8,type:'Makka'},
+  {n:95,ar:'التين',uz:'At-Tin',ayat:8,type:'Makka'},
+  {n:96,ar:'العلق',uz:'Al-Alaq',ayat:19,type:'Makka'},
+  {n:97,ar:'القدر',uz:'Al-Qadr',ayat:5,type:'Makka'},
+  {n:98,ar:'البينة',uz:'Al-Bayyina',ayat:8,type:'Madina'},
+  {n:99,ar:'الزلزلة',uz:'Az-Zalzala',ayat:8,type:'Madina'},
+  {n:100,ar:'العاديات',uz:'Al-Odiyot',ayat:11,type:'Makka'},
+  {n:101,ar:'القارعة',uz:'Al-Qori\'a',ayat:11,type:'Makka'},
+  {n:102,ar:'التكاثر',uz:'At-Takosur',ayat:8,type:'Makka'},
+  {n:103,ar:'العصر',uz:'Al-Asr',ayat:3,type:'Makka'},
+  {n:104,ar:'الهمزة',uz:'Al-Humaza',ayat:9,type:'Makka'},
+  {n:105,ar:'الفيل',uz:'Al-Fil',ayat:5,type:'Makka'},
+  {n:106,ar:'قريش',uz:'Quraysh',ayat:4,type:'Makka'},
+  {n:107,ar:'الماعون',uz:'Al-Mo\'un',ayat:7,type:'Makka'},
+  {n:108,ar:'الكوثر',uz:'Al-Kavshar',ayat:3,type:'Makka'},
+  {n:109,ar:'الكافرون',uz:'Al-Kofirun',ayat:6,type:'Makka'},
+  {n:110,ar:'النصر',uz:'An-Nasr',ayat:3,type:'Madina'},
+  {n:111,ar:'المسد',uz:'Al-Masad',ayat:5,type:'Makka'},
+  {n:112,ar:'الإخلاص',uz:'Al-Ikhlos',ayat:4,type:'Makka'},
+  {n:113,ar:'الفلق',uz:'Al-Falaq',ayat:5,type:'Makka'},
+  {n:114,ar:'الناس',uz:'An-Nos',ayat:6,type:'Makka'},
+];
+
+let currentReciter = 0;
+let currentSurahIdx = null;
+let isPlaying = false;
+let filteredSurahs = [...SURAHS];
+
+const audio = document.getElementById('audioEl');
+
+// Build reciter chips
+function buildReciters() {
+  const row = document.getElementById('reciterRow');
+  row.innerHTML = '';
+  RECITERS.forEach((r, i) => {
+    const chip = document.createElement('button');
+    chip.className = 'reciter-chip' + (i === 0 ? ' active' : '');
+    chip.textContent = r.name;
+    chip.onclick = () => selectReciter(i);
+    row.appendChild(chip);
+  });
+}
+
+function selectReciter(i) {
+  currentReciter = i;
+  document.querySelectorAll('.reciter-chip').forEach((c, j) => c.classList.toggle('active', j === i));
+  if (currentSurahIdx !== null) {
+    const wasPlaying = isPlaying;
+    loadSurah(currentSurahIdx, wasPlaying);
+  }
+}
+
+// Build surah list
+function buildSurahList(list) {
+  const container = document.getElementById('surahList');
+  if (list.length === 0) {
+    container.innerHTML = '<div class="no-results">🔍 Hech narsa topilmadi</div>';
+    return;
+  }
+  container.innerHTML = '';
+  list.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'surah-item' + (currentSurahIdx === s.n - 1 ? ' playing' : '');
+    item.id = `surah-${s.n}`;
+    item.innerHTML = `
+      <div class="surah-num">${s.n}</div>
+      <div class="surah-info">
+        <div class="surah-name-ar">${s.ar}</div>
+        <div class="surah-name-uz">${s.uz}</div>
+      </div>
+      <div class="surah-meta">${s.ayat} oyat<br><small>${s.type}</small></div>
+      <div class="play-btn">${currentSurahIdx === s.n - 1 && isPlaying ? '⏸' : '▶'}</div>
+    `;
+    item.onclick = () => {
+      const idx = s.n - 1;
+      if (currentSurahIdx === idx) {
+        togglePlay();
+      } else {
+        loadSurah(idx, true);
+      }
+    };
+    container.appendChild(item);
+  });
+}
+
+function filterSurahs() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!q) {
+    filteredSurahs = [...SURAHS];
+  } else {
+    filteredSurahs = SURAHS.filter(s =>
+      s.uz.toLowerCase().includes(q) ||
+      s.ar.includes(q) ||
+      String(s.n).includes(q)
+    );
+  }
+  buildSurahList(filteredSurahs);
+}
+
+function getAudioUrl(surahNum) {
+  const num = String(surahNum).padStart(3, '0');
+  return RECITERS[currentReciter].base + num + '.mp3';
+}
+
+function loadSurah(idx, autoPlay = true) {
+  currentSurahIdx = idx;
+  const s = SURAHS[idx];
+  const url = getAudioUrl(s.n);
+
+  // Update player UI
+  document.getElementById('playerTitle').textContent = `${s.n}. ${s.ar} — ${s.uz}`;
+  document.getElementById('playerReciter').textContent = RECITERS[currentReciter].name;
+  document.getElementById('audioPlayer').classList.add('visible');
+  document.getElementById('pageQuran').classList.add('player-open');
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('timeCurrent').textContent = '0:00';
+  document.getElementById('timeDuration').textContent = '0:00';
+  document.getElementById('playPauseBtn').innerHTML = '<div class="spin"></div>';
+
+  audio.src = url;
+  audio.load();
+  if (autoPlay) {
+    audio.play().then(() => {
+      isPlaying = true;
+      document.getElementById('playPauseBtn').textContent = '⏸';
+    }).catch(() => {
+      isPlaying = false;
+      document.getElementById('playPauseBtn').textContent = '▶';
+    });
+  }
+
+  buildSurahList(filteredSurahs);
+}
+
+function togglePlay() {
+  if (currentSurahIdx === null) return;
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+    document.getElementById('playPauseBtn').textContent = '▶';
+  } else {
+    audio.play().then(() => {
+      isPlaying = true;
+      document.getElementById('playPauseBtn').textContent = '⏸';
+    });
+  }
+  buildSurahList(filteredSurahs);
+}
+
+function playNext() {
+  if (currentSurahIdx === null) return;
+  const next = (currentSurahIdx + 1) % SURAHS.length;
+  loadSurah(next, true);
+}
+
+function playPrev() {
+  if (currentSurahIdx === null) return;
+  const prev = (currentSurahIdx - 1 + SURAHS.length) % SURAHS.length;
+  loadSurah(prev, true);
+}
+
+function closePlayer() {
+  audio.pause();
+  isPlaying = false;
+  currentSurahIdx = null;
+  document.getElementById('audioPlayer').classList.remove('visible');
+  document.getElementById('pageQuran').classList.remove('player-open');
+  buildSurahList(filteredSurahs);
+}
+
+function seekAudio(e) {
+  if (!audio.duration) return;
+  const bar = document.getElementById('progressBar');
+  const rect = bar.getBoundingClientRect();
+  const ratio = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = ratio * audio.duration;
+}
+
+function fmtTime(s) {
+  if (isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('timeCurrent').textContent = fmtTime(audio.currentTime);
 });
+
+audio.addEventListener('durationchange', () => {
+  document.getElementById('timeDuration').textContent = fmtTime(audio.duration);
+});
+
+audio.addEventListener('ended', () => {
+  isPlaying = false;
+  playNext();
+});
+
+audio.addEventListener('canplay', () => {
+  if (isPlaying) document.getElementById('playPauseBtn').textContent = '⏸';
+});
+
+// ===================== INIT =====================
+buildReciters();
+document.getElementById('loadingMsg').style.display = 'none';
+buildSurahList(SURAHS);
+
+if (window.Telegram && window.Telegram.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+}
+
+window.addEventListener('load', () => setTimeout(startCompass, 600));
 </script>
 </body>
 </html>
