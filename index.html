@@ -1,932 +1,275 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Qibla Kompas</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --green: #2ec55e;
-    --green-dark: #1a8f42;
-    --green-glow: rgba(46,197,94,0.5);
-    --gold: #f0c040;
-    --bg: #0d1117;
-    --card: #161b22;
-    --surface: #1c2230;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --qibla-angle: 0deg;
-  }
-
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    padding-bottom: 20px;
-    position: relative;
-  }
-
-  /* Stars background */
-  .stars {
-    position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none;
-  }
-  .star {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: #fff;
-    border-radius: 50%;
-    opacity: 0;
-    animation: twinkle var(--d, 3s) ease-in-out infinite;
-    animation-delay: var(--delay, 0s);
-  }
-
-  @keyframes twinkle {
-    0%,100% { opacity: 0; transform: scale(1); }
-    50%      { opacity: 0.7; transform: scale(1.4); }
-  }
-
-  /* Header */
-  .header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 18px 20px 8px;
-    position: relative;
-    z-index: 10;
-  }
-
-  .header-title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-  }
-
-  .header-title .arabic {
-    font-family: 'Amiri', serif;
-    font-size: 22px;
-    color: var(--gold);
-    line-height: 1;
-  }
-
-  .header-title .latin {
-    font-size: 13px;
-    color: var(--muted);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-
-  /* Status */
-  .status-bar {
-    width: 100%;
-    max-width: 360px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 4px 20px 10px;
-    z-index: 10;
-  }
-
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  .status-dot.active {
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green-glow);
-  }
-
-  @keyframes pulse-dot {
-    0%,100% { transform: scale(1); opacity:1; }
-    50% { transform: scale(1.3); opacity:0.7; }
-  }
-
-  .status-text {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-
-  /* Compass Wrapper */
-  .compass-section {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 4px;
-  }
-
-  /* Outer glow ring */
-  .compass-glow-ring {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 290px; height: 290px;
-    border-radius: 50%;
-    background: transparent;
-    box-shadow: 0 0 40px 4px rgba(46,197,94,0.15);
-    pointer-events: none;
-    transition: box-shadow 0.8s ease;
-  }
-  .compass-glow-ring.aligned {
-    box-shadow: 0 0 60px 20px rgba(46,197,94,0.55), 0 0 120px 40px rgba(46,197,94,0.2);
-    animation: ring-pulse 1s ease-in-out infinite;
-  }
-
-  @keyframes ring-pulse {
-    0%,100% { box-shadow: 0 0 60px 20px rgba(46,197,94,0.55), 0 0 120px 40px rgba(46,197,94,0.2); }
-    50%      { box-shadow: 0 0 80px 30px rgba(46,197,94,0.8), 0 0 160px 60px rgba(46,197,94,0.35); }
-  }
-
-  /* The compass canvas element */
-  .compass-container {
-    width: 280px;
-    height: 280px;
-    position: relative;
-  }
-
-  canvas#compass {
-    width: 280px;
-    height: 280px;
-    border-radius: 50%;
-  }
-
-  /* Kaaba icon in center */
-  .kaaba-center {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 54px; height: 54px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 40% 35%, #2196f3 0%, #0d47a1 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.15), 0 4px 20px rgba(0,0,0,0.5);
-    z-index: 20;
-    cursor: default;
-    transition: box-shadow 0.5s;
-  }
-  .kaaba-center.aligned {
-    box-shadow: 0 0 0 4px var(--green), 0 0 24px var(--green-glow);
-  }
-
-  /* Degree display */
-  .degree-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 18px;
-    gap: 4px;
-  }
-
-  .degree-value {
-    font-size: 52px;
-    font-weight: 800;
-    color: var(--text);
-    line-height: 1;
-    letter-spacing: -2px;
-    transition: color 0.5s;
-  }
-  .degree-value.aligned { color: var(--green); }
-
-  .degree-label {
-    font-size: 14px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .qibla-degrees-badge {
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  .qibla-degrees-badge span {
-    color: var(--gold);
-    font-weight: 700;
-  }
-
-  /* Location card */
-  .location-card {
-    width: calc(100% - 40px);
-    max-width: 340px;
-    background: var(--card);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 18px;
-    z-index: 10;
-  }
-
-  .loc-icon {
-    width: 38px; height: 38px;
-    border-radius: 12px;
-    background: rgba(46,197,94,0.12);
-    border: 1px solid rgba(46,197,94,0.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .loc-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .loc-name {
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .loc-coords {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  /* Aligned banner */
-  .aligned-banner {
-    width: calc(100% - 40px);
-    max-width: 340px;
-    background: linear-gradient(135deg, rgba(46,197,94,0.2), rgba(46,197,94,0.08));
-    border: 1px solid rgba(46,197,94,0.4);
-    border-radius: 14px;
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 12px;
-    z-index: 10;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-  .aligned-banner.visible { opacity: 1; transform: translateY(0); }
-
-  .aligned-banner .banner-icon { font-size: 22px; }
-  .aligned-banner .banner-text {
-    font-size: 14px; font-weight: 700; color: var(--green);
-    line-height: 1.4;
-  }
-  .aligned-banner .banner-sub {
-    font-size: 11px; color: var(--muted); font-weight: 400;
-  }
-
-  /* Error state */
-  .error-card {
-    width: calc(100% - 40px);
-    max-width: 340px;
-    background: rgba(255, 100, 100, 0.08);
-    border: 1px solid rgba(255,100,100,0.3);
-    border-radius: 14px;
-    padding: 14px 18px;
-    text-align: center;
-    z-index: 10;
-    margin-top: 12px;
-    display: none;
-  }
-  .error-card.show { display: block; }
-  .error-card p { font-size: 13px; color: #ff7070; margin-bottom: 8px; }
-  .error-card button {
-    background: rgba(255,100,100,0.15);
-    border: 1px solid rgba(255,100,100,0.4);
-    color: #ff9090;
-    padding: 7px 16px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  /* Permission loading */
-  .loading-screen {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    gap: 20px;
-    transition: opacity 0.6s;
-  }
-  .loading-screen.hidden { opacity: 0; pointer-events: none; }
-
-  .loading-kaaba { font-size: 64px; animation: float 2s ease-in-out infinite; }
-  @keyframes float {
-    0%,100% { transform: translateY(0) rotate(-3deg); }
-    50%      { transform: translateY(-12px) rotate(3deg); }
-  }
-
-  .loading-text { font-size: 16px; color: var(--muted); font-weight: 600; letter-spacing: 1px; }
-  .loading-sub { font-size: 13px; color: rgba(139,148,158,0.6); }
-
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid rgba(255,255,255,0.1);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Permission button */
-  .permission-btn {
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border: none;
-    color: #fff;
-    padding: 13px 32px;
-    border-radius: 50px;
-    font-size: 15px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 24px rgba(46,197,94,0.4);
-    letter-spacing: 0.5px;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .permission-btn:active { transform: scale(0.96); box-shadow: 0 2px 12px rgba(46,197,94,0.3); }
-
-  /* Vibration flash */
-  @keyframes vibrate-flash {
-    0%   { background: var(--bg); }
-    25%  { background: rgba(46,197,94,0.08); }
-    50%  { background: var(--bg); }
-    75%  { background: rgba(46,197,94,0.05); }
-    100% { background: var(--bg); }
-  }
-  body.qibla-found { animation: vibrate-flash 0.6s ease; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qibla Kompas</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #compass-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 10px solid gray;
+            border-radius: 50%;
+        }
+        #compass {
+            width: 300px;
+            height: 300px;
+        }
+        #direction {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #location {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .border-green {
+            border-color: green;
+        }
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            pointer-events: none;
+            display: none;
+        }
+        .star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: gold;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            opacity: 0;
+            animation: sparkle 1s infinite;
+        }
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
+        }
+        .star1 { top: 10%; left: 20%; animation-delay: 0s; }
+        .star2 { top: 20%; left: 70%; animation-delay: 0.2s; }
+        .star3 { top: 50%; left: 10%; animation-delay: 0.4s; }
+        .star4 { top: 70%; left: 80%; animation-delay: 0.6s; }
+        .star5 { top: 40%; left: 50%; animation-delay: 0.8s; }
+        .star6 { top: 80%; left: 30%; animation-delay: 1s; }
+        .star7 { top: 30%; left: 40%; animation-delay: 1.2s; }
+        .star8 { top: 60%; left: 60%; animation-delay: 1.4s; }
+    </style>
 </head>
 <body>
-
-<!-- Stars -->
-<div class="stars" id="stars"></div>
-
-<!-- Loading Screen -->
-<div class="loading-screen" id="loadingScreen">
-  <div class="loading-kaaba">🕌</div>
-  <div class="loading-text">Qibla Kompas</div>
-  <div id="loadingState">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-      <div class="spinner"></div>
-      <div class="loading-sub">Joylashuvingiz aniqlanmoqda...</div>
+    <h1>Qibla Kompas</h1>
+    <div id="compass-container">
+        <canvas id="compass" width="300" height="300"></canvas>
+        <div class="stars" id="stars">
+            <div class="star star1"></div>
+            <div class="star star2"></div>
+            <div class="star star3"></div>
+            <div class="star star4"></div>
+            <div class="star star5"></div>
+            <div class="star star6"></div>
+            <div class="star star7"></div>
+            <div class="star star8"></div>
+        </div>
     </div>
-  </div>
-  <button class="permission-btn" id="permissionBtn" style="display:none" onclick="requestPermissions()">📍 Ruxsat berish</button>
-</div>
+    <div id="direction">0° N</div>
+    <div id="location">Joylashuv aniqlanmoqda...</div>
+    <script>
+        const meccaLat = 21.4225;
+        const meccaLon = 39.8262;
+        let qiblaBearing = 0;
+        let currentHeading = 0;
+        const canvas = document.getElementById('compass');
+        const ctx = canvas.getContext('2d');
+        const radius = 150;
+        const center = radius;
+        const container = document.getElementById('compass-container');
+        const directionText = document.getElementById('direction');
+        const locationText = document.getElementById('location');
+        const stars = document.getElementById('stars');
 
-<!-- Main UI -->
-<div class="header">
-  <div class="header-title">
-    <div class="arabic">القبلة</div>
-    <div class="latin">Qibla Kompas</div>
-  </div>
-</div>
+        function drawDial() {
+            // Doira
+            ctx.beginPath();
+            ctx.arc(center, center, radius - 10, 0, 2 * Math.PI);
+            ctx.strokeStyle = 'lightblue';
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
-<div class="status-bar">
-  <div class="status-dot" id="statusDot"></div>
-  <div class="status-text" id="statusText">Sensor kutilmoqda...</div>
-</div>
+            // Graduslar va chiziqlar
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i < 360; i += 10) {
+                const angle = (i * Math.PI / 180) - Math.PI / 2; // Topdan boshlab
+                const sin = Math.sin(angle);
+                const cos = Math.cos(angle);
+                ctx.beginPath();
+                ctx.moveTo(center + (radius - 20) * sin, center + (radius - 20) * cos);
+                ctx.lineTo(center + (radius - 5) * sin, center + (radius - 5) * cos);
+                ctx.strokeStyle = 'lightblue';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                if (i % 30 === 0) {
+                    ctx.fillText(i.toString(), center + (radius - 35) * sin, center + (radius - 35) * cos);
+                }
+            }
 
-<div class="compass-section">
-  <div style="position:relative; display:flex; align-items:center; justify-content:center;">
-    <div class="compass-glow-ring" id="glowRing"></div>
-    <div class="compass-container">
-      <canvas id="compass" width="560" height="560"></canvas>
-      <div class="kaaba-center" id="kaabaCenter">🕋</div>
-    </div>
-  </div>
-</div>
-
-<div class="degree-display">
-  <div class="degree-value" id="degreeValue">--°</div>
-  <div class="degree-label" id="directionLabel">Kompas yuklanmoqda</div>
-  <div class="qibla-degrees-badge">
-    Qibla yo'nalishi: <span id="qiblaAngleText">--°</span>
-  </div>
-</div>
-
-<div class="location-card">
-  <div class="loc-icon">📍</div>
-  <div class="loc-info">
-    <div class="loc-name" id="locationName">Joylashuv aniqlanmoqda...</div>
-    <div class="loc-coords" id="locationCoords"></div>
-  </div>
-</div>
-
-<div class="aligned-banner" id="alignedBanner">
-  <div class="banner-icon">✨</div>
-  <div>
-    <div class="banner-text">Qibla topildi!</div>
-    <div class="banner-sub">Siz to'g'ri yo'nalishdasiz</div>
-  </div>
-</div>
-
-<div class="error-card" id="errorCard">
-  <p id="errorMsg">Kompas sensori topilmadi</p>
-  <button onclick="requestPermissions()">Qayta urinish</button>
-</div>
-
-<script>
-// ─── Stars ───────────────────────────────────────────────────────────────────
-(function(){
-  const c = document.getElementById('stars');
-  for(let i=0;i<80;i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.left = Math.random()*100+'%';
-    s.style.top  = Math.random()*100+'%';
-    s.style.setProperty('--d', (2+Math.random()*4)+'s');
-    s.style.setProperty('--delay', (Math.random()*5)+'s');
-    s.style.opacity = 0;
-    c.appendChild(s);
-  }
-})();
-
-// ─── State ───────────────────────────────────────────────────────────────────
-let compassHeading = 0;       // current device heading (0=North)
-let qiblaAngle    = 256.5;    // default: Qibla from Uzbekistan (~256°)
-let userLat = 41.2995, userLon = 69.2401;
-let locationObtained = false;
-let compassActive = false;
-let lastVibrated  = false;
-let headingSmooth = 0;
-let prevSmooth    = 0;
-
-// ─── Qibla calculation (Great Circle bearing to Mecca) ───────────────────────
-const MECCA_LAT = 21.3891 * Math.PI/180;
-const MECCA_LON = 39.8579 * Math.PI/180;
-
-function calcQibla(lat, lon){
-  const φ1 = lat * Math.PI/180;
-  const λ1 = lon * Math.PI/180;
-  const Δλ = MECCA_LON - λ1;
-  const y = Math.sin(Δλ) * Math.cos(MECCA_LAT);
-  const x = Math.cos(φ1)*Math.sin(MECCA_LAT) - Math.sin(φ1)*Math.cos(MECCA_LAT)*Math.cos(Δλ);
-  let bearing = Math.atan2(y, x) * 180/Math.PI;
-  return ((bearing % 360) + 360) % 360;
-}
-
-// ─── Canvas Compass ───────────────────────────────────────────────────────────
-const canvas = document.getElementById('compass');
-const ctx    = canvas.getContext('2d');
-const CX = 280, CY = 280, R = 270;
-
-function lerp(a, b, t){ return a + (b-a)*t; }
-function lerpAngle(a, b, t){
-  let d = b - a;
-  while(d > 180) d -= 360;
-  while(d < -180) d += 360;
-  return a + d*t;
-}
-
-function isAligned(){
-  let diff = headingSmooth - qiblaAngle;
-  while(diff > 180) diff -= 360;
-  while(diff < -180) diff += 360;
-  return Math.abs(diff) < 5;
-}
-
-function drawCompass(headingDeg){
-  const rot = -headingDeg * Math.PI/180;
-  ctx.clearRect(0,0,560,560);
-
-  const aligned = isAligned();
-  const primaryGreen = aligned ? '#2ec55e' : '#3ddc84';
-  const rimColor1    = aligned ? '#2ec55e' : '#1e3a2e';
-  const rimColor2    = aligned ? '#1a8f42' : '#0d1f15';
-
-  // ── Outer rim ──
-  ctx.save();
-  const rimGrad = ctx.createLinearGradient(0,0,560,560);
-  rimGrad.addColorStop(0, aligned ? '#3ddc84' : '#2ec55e');
-  rimGrad.addColorStop(1, aligned ? '#1a8f42' : '#0b5e22');
-  ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
-  ctx.fillStyle = rimGrad; ctx.fill();
-  ctx.restore();
-
-  // ── Inner dark face ──
-  ctx.save();
-  const faceGrad = ctx.createRadialGradient(CX,CY,40,CX,CY,240);
-  faceGrad.addColorStop(0,'#1c2530');
-  faceGrad.addColorStop(1,'#0d1117');
-  ctx.beginPath(); ctx.arc(CX,CY,248,0,Math.PI*2);
-  ctx.fillStyle = faceGrad; ctx.fill();
-
-  // Subtle inner glow ring
-  ctx.strokeStyle = aligned ? 'rgba(46,197,94,0.3)' : 'rgba(61,220,132,0.12)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.restore();
-
-  // ── Rotate for heading ──
-  ctx.save();
-  ctx.translate(CX,CY);
-  ctx.rotate(rot);
-
-  // Degree ticks
-  for(let i=0;i<360;i++){
-    const rad = i * Math.PI/180;
-    const isMajor = i%30===0;
-    const isMed   = i%10===0 && !isMajor;
-    const len = isMajor?22 : isMed?14 : 8;
-    const r1 = 240; const r2 = r1-len;
-    const cos = Math.cos(rad); const sin = Math.sin(rad);
-    ctx.beginPath();
-    ctx.moveTo(cos*r1, sin*r1);
-    ctx.lineTo(cos*r2, sin*r2);
-    ctx.strokeStyle = isMajor ? 'rgba(255,255,255,0.8)' : isMed ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.14)';
-    ctx.lineWidth = isMajor ? 2.5 : 1.5;
-    ctx.stroke();
-  }
-
-  // Cardinal labels (N/S/E/W)
-  const cardinals = ['N','E','S','W'];
-  ctx.font = 'bold 32px Nunito, sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  for(let i=0;i<4;i++){
-    const rad = i*Math.PI/2;
-    const dist = 205;
-    const tx = Math.sin(rad)*dist;
-    const ty = -Math.cos(rad)*dist;
-    ctx.fillStyle = i===0 ? '#ef4444' : 'rgba(255,255,255,0.75)';
-    ctx.fillText(cardinals[i], tx, ty);
-  }
-
-  // Intercardinal (NE/SE/SW/NW) small
-  const inter = ['NE','SE','SW','NW'];
-  ctx.font = 'bold 16px Nunito, sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  for(let i=0;i<4;i++){
-    const rad = (i*90+45)*Math.PI/180;
-    const dist = 200;
-    ctx.fillText(inter[i], Math.sin(rad)*dist, -Math.cos(rad)*dist);
-  }
-
-  // Degree numbers at 30° intervals
-  ctx.font = '600 18px Nunito, sans-serif';
-  ctx.fillStyle = 'rgba(200,210,220,0.7)';
-  for(let i=0;i<360;i+=30){
-    if(i%90===0) continue;
-    const rad = i*Math.PI/180;
-    const dist = 175;
-    ctx.save();
-    ctx.translate(Math.sin(rad)*dist, -Math.cos(rad)*dist);
-    ctx.rotate(rad);
-    ctx.fillText(i, 0, 0);
-    ctx.restore();
-  }
-
-  ctx.restore(); // end heading rotation
-
-  // ── Qibla indicator (fixed in screen space, rotated to point at Qibla) ──
-  const qiblaRad = (qiblaAngle - headingDeg) * Math.PI/180;
-
-  ctx.save();
-  ctx.translate(CX,CY);
-
-  // Qibla arc glow on rim
-  ctx.save();
-  const arcSpan = 0.14;
-  const arcStart = qiblaRad - arcSpan - Math.PI/2;
-  const arcEnd   = qiblaRad + arcSpan - Math.PI/2;
-  const arcGrad = ctx.createLinearGradient(
-    Math.cos(qiblaRad)*200, Math.sin(qiblaRad)*200,
-    Math.cos(qiblaRad)*260, Math.sin(qiblaRad)*260
-  );
-  arcGrad.addColorStop(0,'rgba(240,192,64,0.7)');
-  arcGrad.addColorStop(1,'rgba(240,192,64,0)');
-  ctx.beginPath();
-  ctx.arc(0,0,262,arcStart,arcEnd);
-  ctx.lineWidth = 14;
-  ctx.strokeStyle = arcGrad;
-  ctx.stroke();
-  ctx.restore();
-
-  // Qibla arrow pointing outward
-  const arrowDist = 220;
-  const arrowTip  = 245;
-  const ax = Math.sin(qiblaRad), ay = -Math.cos(qiblaRad);
-  const px = Math.sin(qiblaRad + Math.PI/2), py = -Math.cos(qiblaRad + Math.PI/2);
-
-  ctx.save();
-  // Arrow shadow
-  ctx.shadowColor = 'rgba(240,192,64,0.7)';
-  ctx.shadowBlur  = 18;
-  ctx.beginPath();
-  ctx.moveTo(ax*arrowTip, ay*arrowTip);
-  ctx.lineTo(ax*arrowDist + px*8, ay*arrowDist + py*8);
-  ctx.lineTo(ax*(arrowDist-12), ay*(arrowDist-12));
-  ctx.lineTo(ax*arrowDist - px*8, ay*arrowDist - py*8);
-  ctx.closePath();
-  ctx.fillStyle = '#f0c040';
-  ctx.fill();
-  ctx.restore();
-
-  // Gold dot at qibla direction
-  ctx.beginPath();
-  ctx.arc(ax*192, ay*192, 5, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(240,192,64,0.5)';
-  ctx.fill();
-
-  ctx.restore(); // end translate
-
-  // ── North indicator arrow (always points up = current N direction) ──
-  ctx.save();
-  ctx.translate(CX,CY);
-  // Top triangle pointing UP (screen space north)
-  ctx.beginPath();
-  ctx.moveTo(0, -250);
-  ctx.lineTo(10, -228);
-  ctx.lineTo(-10, -228);
-  ctx.closePath();
-  ctx.fillStyle = '#2ec55e';
-  ctx.shadowColor = 'rgba(46,197,94,0.8)';
-  ctx.shadowBlur = 12;
-  ctx.fill();
-  ctx.restore();
-
-  // ── Center needle (green arrow) ──
-  // Draw rotating needle showing current heading direction
-  ctx.save();
-  ctx.translate(CX,CY);
-
-  // North needle (red)
-  ctx.beginPath();
-  ctx.moveTo(0,-110);
-  ctx.lineTo(12,20);
-  ctx.lineTo(0,6);
-  ctx.lineTo(-12,20);
-  ctx.closePath();
-  ctx.fillStyle = '#ef4444';
-  ctx.shadowColor='rgba(239,68,68,0.5)'; ctx.shadowBlur=8;
-  ctx.fill();
-
-  // South needle (dark)
-  ctx.beginPath();
-  ctx.moveTo(0,110);
-  ctx.lineTo(12,-20);
-  ctx.lineTo(0,-6);
-  ctx.lineTo(-12,-20);
-  ctx.closePath();
-  ctx.fillStyle = '#334155';
-  ctx.shadowBlur=0;
-  ctx.fill();
-
-  // Center dot
-  ctx.beginPath(); ctx.arc(0,0,10,0,Math.PI*2);
-  ctx.fillStyle = '#e6edf3'; ctx.fill();
-  ctx.beginPath(); ctx.arc(0,0,5,0,Math.PI*2);
-  ctx.fillStyle = '#0d1117'; ctx.fill();
-  ctx.restore();
-
-  // ── Aligned ring flash ──
-  if(aligned){
-    ctx.save();
-    const pulse = (Math.sin(Date.now()/300)+1)/2;
-    ctx.beginPath(); ctx.arc(CX,CY,248,0,Math.PI*2);
-    ctx.strokeStyle = `rgba(46,197,94,${0.3+pulse*0.4})`;
-    ctx.lineWidth = 6;
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
-// ─── Animation loop ───────────────────────────────────────────────────────────
-function animate(){
-  headingSmooth = lerpAngle(headingSmooth, compassHeading, 0.12);
-  drawCompass(headingSmooth);
-
-  const aligned = isAligned();
-  document.getElementById('glowRing').classList.toggle('aligned', aligned);
-  document.getElementById('kaabaCenter').classList.toggle('aligned', aligned);
-  document.getElementById('degreeValue').classList.toggle('aligned', aligned);
-  document.getElementById('alignedBanner').classList.toggle('visible', aligned);
-
-  const deg = Math.round(headingSmooth);
-  document.getElementById('degreeValue').textContent = deg+'°';
-  document.getElementById('directionLabel').textContent = getCardinal(deg);
-
-  // Vibrate when first aligned
-  if(aligned && !lastVibrated && compassActive){
-    lastVibrated = true;
-    document.body.classList.add('qibla-found');
-    setTimeout(()=>document.body.classList.remove('qibla-found'),700);
-    if(navigator.vibrate) navigator.vibrate([80,60,120]);
-  } else if(!aligned){
-    lastVibrated = false;
-  }
-
-  requestAnimationFrame(animate);
-}
-
-function getCardinal(d){
-  const dirs = ['Shimol','Shimol-Sharq','Sharq','Janub-Sharq','Janub','Janub-G\'arb','G\'arb','Shimol-G\'arb'];
-  return dirs[Math.round(d/45)%8];
-}
-
-// ─── Device Orientation ───────────────────────────────────────────────────────
-function handleOrientation(e){
-  let heading;
-  if(e.webkitCompassHeading !== undefined){
-    heading = e.webkitCompassHeading; // iOS: 0=North
-  } else if(e.alpha !== null){
-    heading = (360 - e.alpha) % 360;
-  } else {
-    return;
-  }
-  compassHeading = heading;
-
-  if(!compassActive){
-    compassActive = true;
-    document.getElementById('statusDot').classList.add('active');
-    document.getElementById('statusText').textContent = 'Kompas faol';
-    hideLoading();
-  }
-}
-
-function requestPermissions(){
-  document.getElementById('permissionBtn').style.display = 'none';
-  document.getElementById('loadingState').innerHTML = `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-      <div class="spinner"></div>
-      <div class="loading-sub">Ruxsat so'ralmoqda...</div>
-    </div>`;
-
-  if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-    // iOS 13+
-    DeviceOrientationEvent.requestPermission()
-      .then(state => {
-        if(state==='granted'){
-          window.addEventListener('deviceorientation', handleOrientation, true);
-          startGeolocation();
-        } else {
-          showError('Kompas ruxsati rad etildi. Brauzer sozlamalaridan ruxsat bering.');
+            // Tomonlar
+            const dirLabels = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+            const dirAngles = [0, 45, 90, 135, 180, 225, 270, 315];
+            for (let i = 0; i < 8; i++) {
+                const angle = (dirAngles[i] * Math.PI / 180) - Math.PI / 2;
+                const sin = Math.sin(angle);
+                const cos = Math.cos(angle);
+                ctx.fillText(dirLabels[i], center + (radius - 60) * sin, center + (radius - 60) * cos);
+            }
         }
-      })
-      .catch(err => {
-        showError('Ruxsat olishda xato: '+err.message);
-      });
-  } else {
-    // Android / non-iOS
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    startGeolocation();
-    // If no event fires after 3s, use demo mode
-    setTimeout(()=>{
-      if(!compassActive) startDemoMode();
-    }, 3000);
-  }
-}
 
-function startGeolocation(){
-  if(!navigator.geolocation){ updateQiblaFromDefault(); return; }
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      userLat = pos.coords.latitude;
-      userLon = pos.coords.longitude;
-      qiblaAngle = calcQibla(userLat, userLon);
-      document.getElementById('qiblaAngleText').textContent = Math.round(qiblaAngle)+'°';
-      reverseGeocode(userLat, userLon);
-    },
-    err => {
-      updateQiblaFromDefault();
-    },
-    { enableHighAccuracy: true, timeout: 10000 }
-  );
-}
+        function drawKaaba() {
+            // Oddiy Kaaba ikoni
+            ctx.beginPath();
+            ctx.rect(center - 20, center - 20, 40, 40);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(center, center, 20, 0, 2 * Math.PI);
+            ctx.fillStyle = 'blue';
+            ctx.fill();
+        }
 
-function updateQiblaFromDefault(){
-  qiblaAngle = calcQibla(userLat, userLon);
-  document.getElementById('qiblaAngleText').textContent = Math.round(qiblaAngle)+'°';
-  document.getElementById('locationName').textContent = 'Toshkent, O\'zbekiston';
-  document.getElementById('locationCoords').textContent =
-    userLat.toFixed(4)+'°N, '+userLon.toFixed(4)+'°E';
-}
+        function drawArrow() {
+            // Strelka (yashil uchburchak yuqoriga qarab)
+            ctx.beginPath();
+            ctx.moveTo(center, center - radius + 50);
+            ctx.lineTo(center - 20, center - 20);
+            ctx.lineTo(center + 20, center - 20);
+            ctx.closePath();
+            ctx.fillStyle = 'green';
+            ctx.fill();
+        }
 
-function reverseGeocode(lat, lon){
-  // Use a simple geocoding approach via nominatim
-  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-    .then(r=>r.json())
-    .then(d=>{
-      const addr = d.address;
-      const city = addr.city || addr.town || addr.village || addr.county || 'Joylashuv';
-      const country = addr.country || '';
-      document.getElementById('locationName').textContent = city+', '+country;
-      document.getElementById('locationCoords').textContent =
-        lat.toFixed(4)+'°N, '+lon.toFixed(4)+'°E';
-    })
-    .catch(()=>{
-      document.getElementById('locationName').textContent =
-        lat.toFixed(4)+'°N, '+lon.toFixed(4)+'°E';
-    });
-}
+        function updateCompass() {
+            let relative = qiblaBearing - currentHeading;
+            relative = (relative + 360) % 360;
+            if (relative > 180) relative -= 360;
 
-// Demo mode with animated compass (no real sensor)
-function startDemoMode(){
-  if(compassActive) return;
-  compassActive = true;
-  document.getElementById('statusDot').classList.add('active');
-  document.getElementById('statusText').textContent = 'Demo rejim';
-  let demo = 0;
-  setInterval(()=>{
-    demo = (demo+0.5)%360;
-    compassHeading = demo;
-  }, 16);
-  hideLoading();
-}
+            const isAligned = Math.abs(relative) < 5;
+            if (isAligned) {
+                container.classList.add('border-green');
+                stars.style.display = 'block';
+            } else {
+                container.classList.remove('border-green');
+                stars.style.display = 'none';
+            }
 
-function showError(msg){
-  document.getElementById('errorMsg').textContent = msg;
-  document.getElementById('errorCard').classList.add('show');
-  document.getElementById('permissionBtn').style.display = 'block';
-  document.getElementById('loadingState').innerHTML='';
-}
+            ctx.clearRect(0, 0, 300, 300);
+            drawDial();
+            drawKaaba();
+            ctx.save();
+            ctx.translate(center, center);
+            ctx.rotate(relative * Math.PI / 180);
+            ctx.translate(-center, -center);
+            drawArrow();
+            ctx.restore();
+        }
 
-function hideLoading(){
-  const ls = document.getElementById('loadingScreen');
-  ls.classList.add('hidden');
-  setTimeout(()=>ls.style.display='none', 700);
-}
+        function calculateQibla(lat, lon) {
+            const lat1 = lat * Math.PI / 180;
+            const lon1 = lon * Math.PI / 180;
+            const lat2 = meccaLat * Math.PI / 180;
+            const lon2 = meccaLon * Math.PI / 180;
+            const dLon = lon2 - lon1;
+            const y = Math.sin(dLon) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+            let bearing = Math.atan2(y, x) * 180 / Math.PI;
+            bearing = (bearing + 360) % 360;
+            qiblaBearing = bearing;
+            directionText.textContent = Math.round(bearing) + '° ' + bearingToDirection(bearing);
+            updateCompass();
+        }
 
-// ─── Boot ─────────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', ()=>{
-  // Start render loop immediately
-  animate();
+        function bearingToDirection(bearing) {
+            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+            const index = Math.round(bearing / 45) % 8;
+            return directions[index];
+        }
 
-  // Telegram Mini App init
-  if(window.Telegram && window.Telegram.WebApp){
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    tg.setHeaderColor('#0d1117');
-    tg.setBackgroundColor('#0d1117');
-  }
+        function getLocationName(lat, lon) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`)
+                .then(response => response.json())
+                .then(data => {
+                    locationText.textContent = data.display_name || 'Noma\'lum joy';
+                })
+                .catch(() => {
+                    locationText.textContent = 'Joylashuv nomi topilmadi';
+                });
+        }
 
-  // Try auto-start on Android (no permission dialog needed)
-  if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function'){
-    // Non-iOS: just listen
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    startGeolocation();
-    // Default Qibla angle
-    document.getElementById('qiblaAngleText').textContent = Math.round(qiblaAngle)+'°';
-    document.getElementById('locationName').textContent = 'Joylashuv aniqlanmoqda...';
-    // Hide loading after short delay if compass fires
-    setTimeout(()=>{ if(!compassActive) {
-      document.getElementById('loadingState').innerHTML=`
-        <div style="text-align:center;padding:0 20px">
-          <div class="loading-sub" style="margin-bottom:12px">Kompas sensori aniqlanmadi</div>
-        </div>`;
-      document.getElementById('permissionBtn').style.display='block';
-      document.getElementById('permissionBtn').textContent='▶ Demo rejim';
-      document.getElementById('permissionBtn').onclick=startDemoMode;
-    }}, 3000);
-  } else if(typeof DeviceOrientationEvent !== 'undefined'){
-    // iOS - need permission
-    document.getElementById('loadingState').innerHTML=`
-      <div class="loading-sub" style="text-align:center;padding:0 30px;line-height:1.7">
-        Qibla kompasi ishga tushirish uchun kompas ruxsatini bering
-      </div>`;
-    document.getElementById('permissionBtn').style.display='block';
-  } else {
-    // No sensor API - demo
-    document.getElementById('loadingState').innerHTML='';
-    document.getElementById('permissionBtn').style.display='block';
-    document.getElementById('permissionBtn').textContent='▶ Demo rejim';
-    document.getElementById('permissionBtn').onclick=startDemoMode;
-  }
+        function onOrientation(e) {
+            let heading;
+            if (e.webkitCompassHeading !== undefined) {
+                heading = e.webkitCompassHeading;
+            } else if (e.alpha !== null) {
+                heading = 360 - e.alpha;
+            } else {
+                return;
+            }
+            currentHeading = heading;
+            updateCompass();
+        }
 
-  // Default Qibla
-  updateQiblaFromDefault();
-});
-</script>
+        function requestPermission() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permission => {
+                        if (permission === 'granted') {
+                            window.addEventListener('deviceorientation', onOrientation);
+                        } else {
+                            alert('Ruxsat berilmadi');
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                window.addEventListener('deviceorientation', onOrientation);
+            }
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    calculateQibla(lat, lon);
+                    getLocationName(lat, lon);
+                    requestPermission();
+                },
+                error => {
+                    locationText.textContent = 'Joylashuvga ruxsat berilmadi';
+                    alert('Joylashuv ma\'lumotlariga ruxsat bering');
+                }
+            );
+        } else {
+            locationText.textContent = 'Geolokatsiya qo\'llab-quvvatlanmaydi';
+        }
+
+        // Dastlabki chizish
+        drawDial();
+        drawKaaba();
+        drawArrow();
+    </script>
 </body>
 </html>
