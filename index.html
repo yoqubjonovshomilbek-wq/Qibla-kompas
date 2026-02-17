@@ -1,340 +1,622 @@
 <!doctype html>
 <html lang="uz">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <title>Qibla Kompas</title>
+
+  <!-- Telegram Mini App -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
-    :root{color-scheme:dark;--ok:#62ffb0;--cyan:#00d2ff;--bg:#070a0c}
-    *{box-sizing:border-box}
-    body{
-      margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:
-        radial-gradient(900px 600px at 20% 10%, rgba(0,195,255,.18), transparent 55%),
-        radial-gradient(800px 520px at 80% 20%, rgba(255,0,200,.10), transparent 50%),
-        radial-gradient(1000px 800px at 50% 90%, rgba(0,255,140,.08), transparent 60%),
-        var(--bg);
-      color:#fff;padding:18px;
+    :root{
+      --bg1:#0f2027;
+      --bg2:#203a43;
+      --bg3:#2c5364;
+      --card:#0b1520cc;
+      --text:#ffffff;
+      --muted:#b9c7d6;
+      --ring:#35c46a;
+      --ringOff:#3a5f73;
+      --danger:#ff4d4d;
+      --accent:#2aa7ff;
     }
-    .card{
-      width:min(480px,100%);border-radius:22px;
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 26px 70px rgba(0,0,0,.48);
-      backdrop-filter:blur(14px);
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       padding:16px;
     }
-    .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-    h1{margin:0;font-size:18px;font-weight:900}
-    .sub{margin:6px 0 0;opacity:.82;font-size:13px;line-height:1.35}
-    .chip{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border-radius:999px;
-      background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.10);font-size:12px;white-space:nowrap}
-    .dot{width:9px;height:9px;border-radius:50%;background:#ffd166;box-shadow:0 0 0 6px rgba(255,209,102,.12)}
-    .dot.ok{background:var(--ok);box-shadow:0 0 0 6px rgba(98,255,176,.12)}
-    .dot.bad{background:#ff9a9a;box-shadow:0 0 0 6px rgba(255,154,154,.12)}
 
-    .compass{width:320px;height:320px;margin:14px auto 10px;position:relative}
-    .dial{position:absolute;inset:0;border-radius:50%;
-      background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), rgba(0,0,0,.30));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow:inset 0 0 0 10px rgba(255,255,255,.03), 0 22px 56px rgba(0,0,0,.45);overflow:hidden}
-    .dialRotate{position:absolute;inset:0;transform:rotate(0deg);transition:transform 90ms linear}
-    .ticks{position:absolute;inset:18px;border-radius:50%;
-      background:conic-gradient(rgba(255,255,255,.45) 0 1deg, transparent 1deg 10deg,
-                               rgba(255,255,255,.22) 10deg 11deg, transparent 11deg 30deg);
-      mask:radial-gradient(circle, transparent 0 62%, #000 63% 100%);opacity:.92}
-    .N{position:absolute;left:50%;top:10px;transform:translateX(-50%);
-      padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.12);font-weight:900;font-size:12px}
-
-    .needle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-      transform:rotate(0deg);transition:transform 90ms linear;pointer-events:none}
-    .shaft{width:18px;height:126px;border-radius:14px;
-      background:linear-gradient(to top, rgba(255,255,255,.10), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 34px rgba(0,0,0,.40);position:relative}
-    .shaft:before{
-      content:"";position:absolute;top:-24px;left:50%;transform:translateX(-50%);
-      width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;
-      border-bottom:28px solid var(--cyan);
-      filter:drop-shadow(0 8px 12px rgba(0,210,255,.22));
-      transition:border-bottom-color 120ms linear;
+    .wrap{
+      width:min(440px, 100%);
     }
-    .shaft.ok:before{border-bottom-color:var(--ok);filter:drop-shadow(0 10px 14px rgba(98,255,176,.22))}
-    .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-      width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.92);
-      box-shadow:0 0 0 10px rgba(255,255,255,.10)}
 
-    .big{margin-top:6px;text-align:center;font-weight:950;font-size:34px}
-    .big span{opacity:.85;font-size:20px;font-weight:900;margin-left:8px}
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+      gap:12px;
+    }
 
-    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    .tile{border-radius:16px;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
-    .tile b{display:block;font-size:12px;opacity:.75}
-    .tile div{margin-top:4px;font-weight:900;font-size:16px}
+    .title{
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size:20px;
+    }
 
-    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{border:0;cursor:pointer;padding:10px 12px;border-radius:14px;font-weight:900;color:#fff;
-      background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14)}
-    button:active{transform:translateY(1px)}
-    .primary{background:rgba(0,160,255,.22);border-color:rgba(0,160,255,.36)}
-    .danger{background:rgba(255,80,80,.18);border-color:rgba(255,80,80,.32)}
-    .hint{margin-top:10px;font-size:13px;opacity:.86;line-height:1.35}
+    .btn{
+      border:none;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition:.15s transform;
+      user-select:none;
+    }
+    .btn:active{ transform:scale(.98); }
+    .btn.primary{ background: rgba(42,167,255,.20); }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+    }
+
+    .compass-area{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      padding:10px 0 6px;
+    }
+
+    .compass{
+      width: 300px;
+      height: 300px;
+      max-width: 84vw;
+      max-height: 84vw;
+      position:relative;
+      border-radius: 50%;
+      display:grid;
+      place-items:center;
+    }
+
+    /* Outer ring that turns green when aligned */
+    .ring{
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      border: 10px solid var(--ringOff);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.08) inset;
+      transition: .20s ease;
+    }
+    .ring.on{
+      border-color: var(--ring);
+      box-shadow: 0 0 22px rgba(53,196,106,.35);
+    }
+
+    /* Dial face */
+    .dial{
+      position:absolute;
+      inset: 14px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #e8eef3 55%, #d8e1ea);
+      box-shadow: 0 14px 35px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+
+    /* Rotating dial (N/E/S/W + ticks rotate opposite to arrow so it looks like a compass) */
+    .dial-rot{
+      position:absolute;
+      inset:0;
+      transform: rotate(0deg);
+      transition: transform .04s linear;
+    }
+
+    .ticks{
+      position:absolute;
+      inset:0;
+    }
+    .tick{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:2px;
+      height:10px;
+      background: rgba(20,60,90,.35);
+      transform-origin: 0  -120px;
+      border-radius:2px;
+    }
+    .tick.major{
+      height:18px;
+      width:3px;
+      background: rgba(20,60,90,.55);
+    }
+
+    .dir{
+      position:absolute;
+      font-weight:900;
+      color: rgba(20,60,90,.75);
+      font-size:20px;
+      letter-spacing:.5px;
+      user-select:none;
+    }
+    .dir.n{ top:14px; left:50%; transform:translateX(-50%); color:#e53935; }
+    .dir.s{ bottom:14px; left:50%; transform:translateX(-50%); }
+    .dir.e{ right:16px; top:50%; transform:translateY(-50%); }
+    .dir.w{ left:16px; top:50%; transform:translateY(-50%); }
+
+    /* Arrow points to Qibla */
+    .arrow{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      transform: rotate(0deg);
+      transition: transform .04s linear;
+    }
+    .arrow-shape{
+      width: 0; height: 0;
+      border-left: 14px solid transparent;
+      border-right:14px solid transparent;
+      border-bottom: 100px solid #1aa37a;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.25));
+      transform: translateY(-34px);
+    }
+    .hub{
+      position:absolute;
+      width:56px; height:56px;
+      border-radius:50%;
+      background: #0e3a5c;
+      display:grid;
+      place-items:center;
+      border: 5px solid rgba(255,255,255,.75);
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
+    .kaaba{
+      width:34px; height:34px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background: #ffffff;
+      color:#000;
+      font-weight:900;
+      font-size:12px;
+    }
+
+    .readout{
+      text-align:center;
+      margin-top:2px;
+    }
+    .deg{
+      font-size:44px;
+      font-weight:950;
+      letter-spacing:.5px;
+      line-height:1.0;
+    }
+    .sub{
+      color: var(--muted);
+      font-weight:700;
+      margin-top:6px;
+      font-size:14px;
+    }
+
+    .pill{
+      margin-top:10px;
+      width:100%;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 14px;
+      border-radius:16px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .loc{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      color: var(--text);
+      font-weight:800;
+      min-width:0;
+    }
+    .loc span{
+      color: var(--muted);
+      font-weight:700;
+      display:block;
+      font-size:12px;
+    }
+    .loc strong{
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 240px;
+    }
+
+    .status{
+      font-weight:900;
+      padding:8px 10px;
+      border-radius:12px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.10);
+      min-width: 110px;
+      text-align:center;
+    }
+    .status.on{
+      background: rgba(53,196,106,.18);
+      border-color: rgba(53,196,106,.35);
+      color: #bff6cf;
+    }
+    .status.off{
+      background: rgba(255,77,77,.14);
+      border-color: rgba(255,77,77,.25);
+      color: #ffd0d0;
+    }
+
+    .note{
+      margin-top:10px;
+      color: rgba(255,255,255,.72);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .warn{
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      background: rgba(255,77,77,.10);
+      border: 1px solid rgba(255,77,77,.22);
+      color: #ffe4e4;
+      display:none;
+    }
+
+    .gridBtns{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
   </style>
 </head>
-<body>
-<div class="card">
-  <div class="top">
-    <div>
-      <h1>🧭 Qibla Kompas</h1>
-      <div class="sub">Telegram ichida ishlaydi. Qibla topilganda strelka yashil bo‘ladi.</div>
-    </div>
-    <div class="chip"><span class="dot" id="dot"></span><span id="status">Boshlash bosing…</span></div>
-  </div>
 
-  <div class="compass">
-    <div class="dial">
-      <div class="dialRotate" id="dialRotate">
-        <div class="ticks"></div>
-        <div class="N">N</div>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">🧭 Qibla Kompas</div>
+      <button class="btn primary" id="btnStart">Start</button>
+    </div>
+
+    <div class="card">
+      <div class="compass-area">
+        <div class="compass" aria-label="Qibla Compass">
+          <div class="ring" id="ring"></div>
+
+          <div class="dial">
+            <div class="dial-rot" id="dialRot">
+              <div class="ticks" id="ticks"></div>
+              <div class="dir n">N</div>
+              <div class="dir e">E</div>
+              <div class="dir s">S</div>
+              <div class="dir w">W</div>
+            </div>
+          </div>
+
+          <div class="arrow" id="arrow">
+            <div class="arrow-shape"></div>
+            <div class="hub">
+              <div class="kaaba">🕋</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="readout">
+          <div class="deg" id="degTxt">--°</div>
+          <div class="sub" id="dirTxt">Lokatsiya kutilyapti…</div>
+        </div>
+
+        <div class="pill">
+          <div class="loc">
+            📍
+            <div>
+              <strong id="locTxt">Aniqlanmagan</strong>
+              <span id="qiblaTxt">Qibla: --°</span>
+            </div>
+          </div>
+          <div class="status off" id="status">OFF</div>
+        </div>
+
+        <div class="warn" id="warn"></div>
+
+        <div class="gridBtns">
+          <button class="btn" id="btnGPS">📍 GPS</button>
+          <button class="btn" id="btnCalib">🧲 Kalibrovka</button>
+          <button class="btn" id="btnHelp">ℹ️ Yordam</button>
+        </div>
+
+        <div class="note">
+          Eslatma: kompas to‘g‘ri ishlashi uchun telefonda <b>Location</b> yoqilgan bo‘lsin va (Android) “device sensors” ruxsat berilsin.
+          iPhone’da esa “Motion & Orientation” ruxsatini so‘rashi mumkin.
+        </div>
       </div>
     </div>
-    <div class="needle" id="needle"><div class="shaft" id="shaft"></div></div>
-    <div class="center"></div>
   </div>
-
-  <div class="big" id="bigDeg">—<span id="bigDir"></span></div>
-
-  <div class="stats">
-    <div class="tile"><b>Qibla (bearing)</b><div id="qiblaTxt">—</div></div>
-    <div class="tile"><b>Heading</b><div id="headTxt">—</div></div>
-    <div class="tile"><b>Farq (±)</b><div id="diffTxt">—</div></div>
-    <div class="tile"><b>Joylashuv</b><div id="locTxt">—</div></div>
-  </div>
-
-  <div class="btns">
-    <button class="primary" id="btnStart">Boshlash</button>
-    <button id="btnPerm">Motion ruxsat</button>
-    <button id="btnChrome">Chrome’da ochish</button>
-    <button class="danger" id="btnStop">To‘xtatish</button>
-  </div>
-
-  <div class="hint" id="hint">
-    💡 Agar Telegram ichida kompas qotib qolsa — bu WebView cheklovi bo‘lishi mumkin.
-    “Chrome’da ochish” tugmasini bosing (1 bosishda ochadi).
-  </div>
-</div>
 
 <script>
 (() => {
   // Telegram init
-  try { if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } } catch(e){}
+  const tg = window.Telegram?.WebApp;
+  try { tg?.ready(); tg?.expand(); } catch(e){}
 
+  // Kaaba coordinates
   const KAABA = { lat: 21.422487, lon: 39.826206 };
-  const TOL = 2; // ±2° ichida yashil
 
-  const $ = id => document.getElementById(id);
-  const dot = $('dot'), statusEl = $('status');
-  const dialRotate = $('dialRotate');
-  const needle = $('needle');
-  const shaft = $('shaft');
+  // UI
+  const ring = document.getElementById('ring');
+  const arrow = document.getElementById('arrow');
+  const dialRot = document.getElementById('dialRot');
+  const degTxt = document.getElementById('degTxt');
+  const dirTxt = document.getElementById('dirTxt');
+  const locTxt = document.getElementById('locTxt');
+  const qiblaTxt = document.getElementById('qiblaTxt');
+  const status = document.getElementById('status');
+  const warn = document.getElementById('warn');
 
-  const qiblaTxt = $('qiblaTxt'), headTxt = $('headTxt'), diffTxt = $('diffTxt'), locTxt = $('locTxt');
-  const bigDeg = $('bigDeg'), bigDir = $('bigDir');
+  const btnStart = document.getElementById('btnStart');
+  const btnGPS = document.getElementById('btnGPS');
+  const btnCalib = document.getElementById('btnCalib');
+  const btnHelp = document.getElementById('btnHelp');
 
-  const btnStart = $('btnStart'), btnPerm = $('btnPerm'), btnStop = $('btnStop'), btnChrome = $('btnChrome');
-
-  let watchId=null;
-  let lat=null, lon=null;
-  let qibla=null;
-
-  let headingRaw=null;   // 0..360
-  let heading=null;      // smoothed 0..360
-  let gotAnySensorEvent = false;
-  let sensorTimer = null;
-
-  // throttle UI
-  let lastUpdate=0;
-  const UPDATE_MS=40;
-
-  const toRad = d => d*Math.PI/180;
-  const toDeg = r => r*180/Math.PI;
-  const norm360 = x => ((x%360)+360)%360;
-
-  function setStatus(t, kind){
-    statusEl.textContent=t;
-    dot.className = 'dot' + (kind==='ok'?' ok':kind==='bad'?' bad':'');
+  // Build ticks (every 10°, major every 30°)
+  const ticks = document.getElementById('ticks');
+  for (let i = 0; i < 360; i += 10) {
+    const t = document.createElement('div');
+    t.className = 'tick' + (i % 30 === 0 ? ' major' : '');
+    t.style.transform = `rotate(${i}deg) translateY(-120px)`;
+    ticks.appendChild(t);
   }
 
-  function dirText(deg){
-    const dirs=["N","NE","E","SE","S","SW","W","NW"];
-    return dirs[Math.round(deg/45)%8];
+  // Helpers
+  const toRad = d => d * Math.PI / 180;
+  const toDeg = r => r * 180 / Math.PI;
+  const norm360 = d => (d % 360 + 360) % 360;
+
+  function bearingBetween(lat1, lon1, lat2, lon2) {
+    // initial bearing from (lat1,lon1) to (lat2,lon2)
+    const φ1 = toRad(lat1), φ2 = toRad(lat2);
+    const Δλ = toRad(lon2 - lon1);
+    const y = Math.sin(Δλ) * Math.cos(φ2);
+    const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+    return norm360(toDeg(Math.atan2(y, x)));
   }
 
-  function angDiff(a,b){ // signed (-180..180)
-    return ((a - b + 540) % 360) - 180;
+  function degToCardinal(deg) {
+    // 16-wind compass
+    const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+    const idx = Math.round(norm360(deg) / 22.5) % 16;
+    return dirs[idx];
   }
 
-  function smoothAngle(prev,next,alpha=0.20){
-    if(prev==null) return next;
-    const d = angDiff(next, prev);
-    return norm360(prev + d*alpha);
+  function angleDiff(a, b) {
+    // smallest difference between angles (0..180)
+    const d = Math.abs(norm360(a) - norm360(b));
+    return Math.min(d, 360 - d);
   }
 
-  function bearing(lat1, lon1, lat2, lon2){
-    const φ1=toRad(lat1), φ2=toRad(lat2);
-    const Δλ=toRad(lon2-lon1);
-    const y=Math.sin(Δλ)*Math.cos(φ2);
-    const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
-    return norm360(toDeg(Math.atan2(y,x)));
+  // State
+  let userLat = null, userLon = null;
+  let qiblaBearing = null;
+
+  // Orientation (heading)
+  let heading = null;          // degrees 0..360, where device top points
+  let smoothHeading = null;    // smoothed heading
+  let smoothNeedle = null;     // smoothed needle rotation
+
+  // Config
+  const ALIGN_THRESHOLD = 3;   // degrees (242/243 atrofida yashil bo'lishi kabi)
+  const SMOOTH = 0.18;         // 0..1 low pass (bigger = faster)
+  const NEEDLE_SMOOTH = 0.22;
+
+  // Compute screen orientation offset
+  function screenAngle() {
+    const so = screen.orientation?.angle;
+    if (typeof so === 'number') return so;
+    // fallback (older iOS)
+    return window.orientation || 0;
   }
 
-  function screenAngle(){
-    const so = screen.orientation && typeof screen.orientation.angle === 'number'
-      ? screen.orientation.angle
-      : (typeof window.orientation === 'number' ? window.orientation : 0);
-    return so || 0;
+  function showWarn(msg) {
+    warn.style.display = 'block';
+    warn.textContent = msg;
+  }
+  function hideWarn() {
+    warn.style.display = 'none';
+    warn.textContent = '';
   }
 
-  function computeHeading(e){
-    // iOS best
-    if(typeof e.webkitCompassHeading === 'number') return norm360(e.webkitCompassHeading);
-
-    // Android WebView/Chrome
-    if(typeof e.alpha === 'number'){
-      // compensate screen rotation
-      return norm360(e.alpha + screenAngle());
+  // GPS
+  function requestGPS() {
+    hideWarn();
+    if (!navigator.geolocation) {
+      showWarn("Bu brauzer GPS (geolocation)ni qo‘llamaydi.");
+      return;
     }
-    return null;
-  }
+    locTxt.textContent = "Lokatsiya olinmoqda…";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        userLat = pos.coords.latitude;
+        userLon = pos.coords.longitude;
+        qiblaBearing = bearingBetween(userLat, userLon, KAABA.lat, KAABA.lon);
 
-  function updateUI(force=false){
-    const now=Date.now();
-    if(!force && now-lastUpdate<UPDATE_MS) return;
-    lastUpdate=now;
-
-    if(lat!=null && lon!=null){
-      locTxt.textContent = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-      qibla = bearing(lat, lon, KAABA.lat, KAABA.lon);
-      qiblaTxt.textContent = `${qibla.toFixed(1)}°`;
-      bigDeg.firstChild.nodeValue = `${Math.round(qibla)}°`;
-      bigDir.textContent = dirText(qibla);
-    }
-
-    if(headingRaw!=null){
-      heading = smoothAngle(heading, headingRaw);
-      headTxt.textContent = `${heading.toFixed(1)}°`;
-      dialRotate.style.transform = `rotate(${-heading}deg)`;
-    }
-
-    if(qibla!=null && heading!=null){
-      const rot = norm360(qibla - heading);
-      needle.style.transform = `rotate(${rot}deg)`;
-
-      const d = Math.abs(angDiff(qibla, heading));
-      diffTxt.textContent = `${d.toFixed(1)}°`;
-
-      const ok = d <= TOL;
-      shaft.classList.toggle('ok', ok);
-      setStatus(ok ? `Topildi ✅ (±${TOL}°)` : 'Yo‘naltiring…', ok?'ok':'');
-    } else {
-      setStatus('Ruxsat/GPS kutilyapti…', '');
-    }
-  }
-
-  // SENSOR
-  function onOri(e){
-    const h = computeHeading(e);
-    if(h==null) return;
-    gotAnySensorEvent = true;
-    headingRaw = h;
-    updateUI();
-  }
-
-  function startOri(){
-    window.addEventListener('deviceorientationabsolute', onOri, true);
-    window.addEventListener('deviceorientation', onOri, true);
-
-    // If in 2 seconds we got nothing -> show strong hint
-    clearTimeout(sensorTimer);
-    sensorTimer = setTimeout(() => {
-      if(!gotAnySensorEvent){
-        setStatus('Telegram WebView kompas bermayapti 😬', 'bad');
-      }
-    }, 2000);
-  }
-
-  function stopOri(){
-    window.removeEventListener('deviceorientationabsolute', onOri, true);
-    window.removeEventListener('deviceorientation', onOri, true);
-  }
-
-  async function requestMotion(){
-    try{
-      const D = window.DeviceOrientationEvent;
-      if(D && typeof D.requestPermission === 'function'){
-        const res = await D.requestPermission();
-        if(res === 'granted'){
-          setStatus('Motion ruxsat ✅', 'ok');
-          startOri();
-        } else setStatus('Motion ruxsat berilmadi', 'bad');
-      } else {
-        startOri();
-        setStatus('Kompas ishga tushdi…', '');
-      }
-    } catch(err){
-      setStatus('Motion xato: '+err.message, 'bad');
-    }
-  }
-
-  // GEO
-  function startGeo(){
-    if(!navigator.geolocation){ setStatus('GPS yo‘q', 'bad'); return; }
-    if(watchId!=null) return;
-    setStatus('GPS olinmoqda…', '');
-    watchId = navigator.geolocation.watchPosition(
-      p => { lat=p.coords.latitude; lon=p.coords.longitude; updateUI(true); },
-      e => { setStatus('GPS xato: '+e.message, 'bad'); },
-      { enableHighAccuracy:true, maximumAge:1500, timeout:15000 }
+        locTxt.textContent = `Sizning joylashuv`;
+        qiblaTxt.textContent = `Qibla: ${qiblaBearing.toFixed(0)}° (${degToCardinal(qiblaBearing)})`;
+        dirTxt.textContent = "Kompasni sekin aylantiring…";
+      },
+      (err) => {
+        showWarn("GPS ruxsat berilmadi yoki ishlamadi. Telefoningizda Location yoqilganini tekshiring.");
+        locTxt.textContent = "Aniqlanmagan";
+        qiblaTxt.textContent = "Qibla: --°";
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
     );
   }
 
-  function stopGeo(){
-    if(watchId!=null) navigator.geolocation.clearWatch(watchId);
-    watchId=null;
+  // Orientation permission (iOS)
+  async function requestMotionPermissionIfNeeded() {
+    const D = window.DeviceOrientationEvent;
+    if (!D) throw new Error("DeviceOrientationEvent yo‘q");
+    if (typeof D.requestPermission === "function") {
+      const res = await D.requestPermission();
+      if (res !== "granted") throw new Error("Motion ruxsat berilmadi");
+    }
+  }
+
+  // Read heading from events
+  function handleOrientation(e) {
+    // Many devices:
+    // - iOS gives webkitCompassHeading (0..360, where 0=N)
+    // - Others give alpha (0..360) relative to device coordinate frame; needs correction for screen angle
+    let h = null;
+
+    if (typeof e.webkitCompassHeading === 'number') {
+      h = e.webkitCompassHeading; // already true heading
+    } else if (typeof e.alpha === 'number') {
+      // alpha: 0 when device faces north? not always; treat as compass-like but correct with screen rotation
+      // Convert to heading:
+      // heading = 360 - alpha (common)
+      h = 360 - e.alpha;
+
+      // apply screen orientation correction
+      h = h + screenAngle();
+    }
+
+    if (h == null || Number.isNaN(h)) return;
+
+    heading = norm360(h);
+
+    // smooth heading
+    if (smoothHeading == null) smoothHeading = heading;
+    const dh = shortestDelta(smoothHeading, heading);
+    smoothHeading = norm360(smoothHeading + dh * SMOOTH);
+  }
+
+  function shortestDelta(from, to) {
+    // signed shortest delta (-180..180)
+    let d = norm360(to) - norm360(from);
+    if (d > 180) d -= 360;
+    if (d < -180) d += 360;
+    return d;
+  }
+
+  // Render loop
+  function animate() {
+    requestAnimationFrame(animate);
+
+    if (smoothHeading == null) return;
+
+    // rotate dial opposite to heading so N stays "world north"
+    dialRot.style.transform = `rotate(${-smoothHeading}deg)`;
+
+    if (qiblaBearing == null) {
+      degTxt.textContent = `${smoothHeading.toFixed(0)}°`;
+      status.classList.remove('on');
+      status.classList.add('off');
+      status.textContent = "OFF";
+      ring.classList.remove('on');
+      return;
+    }
+
+    // Needle should point to qibla relative to device top:
+    // needleRotation = qiblaBearing - heading
+    let needle = norm360(qiblaBearing - smoothHeading);
+
+    // smooth needle rotation (avoid jump at 0/360)
+    if (smoothNeedle == null) smoothNeedle = needle;
+    const dn = shortestDelta(smoothNeedle, needle);
+    smoothNeedle = norm360(smoothNeedle + dn * NEEDLE_SMOOTH);
+
+    arrow.style.transform = `rotate(${smoothNeedle}deg)`;
+
+    // Show target bearing big like screenshot (242° SW) - that is qibla bearing from current location
+    degTxt.textContent = `${qiblaBearing.toFixed(0)}° ${degToCardinal(qiblaBearing)}`;
+
+    // Alignment check: when device top points to Qibla => needle near 0°
+    const diff = angleDiff(0, smoothNeedle);
+
+    if (diff <= ALIGN_THRESHOLD) {
+      ring.classList.add('on');
+      status.classList.add('on');
+      status.classList.remove('off');
+      status.textContent = "TOPDI ✅";
+      dirTxt.textContent = `Zo‘r! Qibla yo‘nalishidasiz (±${ALIGN_THRESHOLD}°).`;
+      // Telegram haptic
+      try { tg?.HapticFeedback?.notificationOccurred("success"); } catch(e){}
+    } else {
+      ring.classList.remove('on');
+      status.classList.remove('on');
+      status.classList.add('off');
+      status.textContent = "QIDIR...";
+      dirTxt.textContent = `Qiblaga yaqinlashyapti… Farq: ${diff.toFixed(0)}°`;
+    }
+  }
+
+  // Calibration tip (not a real calibration, just a user hint)
+  function calibrationHint() {
+    hideWarn();
+    showWarn("Kalibrovka: telefonni ‘8’ shaklida 5–10 soniya aylantiring. Magnit g‘ilof/temir buyumlardan uzoqroq turing.");
+  }
+
+  function helpHint() {
+    hideWarn();
+    showWarn("Agar strelka qotib qolsa: 1) GPSni yoqing 2) Motion/Orientation ruxsat bering 3) Brauzerni qayta oching 4) Kompasni kalibrovka qiling.");
+  }
+
+  // Start
+  async function startAll() {
+    hideWarn();
+    requestGPS();
+
+    try {
+      await requestMotionPermissionIfNeeded();
+      window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+      window.addEventListener('deviceorientation', handleOrientation, true);
+
+      // some Androids need a user gesture; Start button already is gesture
+      btnStart.textContent = "Running";
+      btnStart.disabled = true;
+    } catch (e) {
+      showWarn("Orientation ruxsati berilmadi. iPhone bo‘lsa: Settings → Safari → Motion & Orientation Access yoqing (yoki ruxsat so‘raganda Allow bosing).");
+    }
   }
 
   // Buttons
-  btnStart.onclick = async () => { startGeo(); gotAnySensorEvent=false; await requestMotion(); updateUI(true); };
-  btnPerm.onclick  = requestMotion;
-  btnStop.onclick  = () => {
-    stopGeo(); stopOri();
-    lat=lon=qibla=headingRaw=heading=null;
-    gotAnySensorEvent=false;
-    needle.style.transform='rotate(0deg)';
-    dialRotate.style.transform='rotate(0deg)';
-    qiblaTxt.textContent=headTxt.textContent=diffTxt.textContent=locTxt.textContent='—';
-    bigDeg.firstChild.nodeValue='—'; bigDir.textContent='';
-    shaft.classList.remove('ok');
-    setStatus('To‘xtatildi', '');
-  };
+  btnStart.addEventListener('click', startAll);
+  btnGPS.addEventListener('click', requestGPS);
+  btnCalib.addEventListener('click', calibrationHint);
+  btnHelp.addEventListener('click', helpHint);
 
-  // Open in Chrome from Telegram (best workaround)
-  btnChrome.onclick = () => {
-    const url = window.location.href;
-    try{
-      if(window.Telegram?.WebApp?.openLink){
-        Telegram.WebApp.openLink(url, { try_instant_view: false });
-      } else {
-        window.open(url, '_blank');
-      }
-    }catch(e){
-      window.open(url, '_blank');
-    }
-  };
+  // Auto start attempt (some devices allow without prompt)
+  // But we keep Start button for iOS permission flow.
+  animate();
 
-  setStatus('Boshlash bosing…', '');
 })();
 </script>
 </body>
