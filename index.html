@@ -17,13 +17,9 @@
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);
   display:flex;flex-direction:column;height:100dvh;}
-
-/* Stars */
 .stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .star{position:absolute;border-radius:50%;background:#fff;opacity:0;animation:tw var(--d) ease-in-out infinite var(--dl)}
 @keyframes tw{0%,100%{opacity:0}50%{opacity:.65}}
-
-/* NAV */
 .nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-shrink:0;z-index:50;}
 .nb{flex:1;padding:13px 8px 11px;border:none;background:transparent;color:var(--mt);
   font-family:'Tajawal',sans-serif;font-size:12px;font-weight:500;cursor:pointer;
@@ -39,163 +35,80 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);
 .pg::-webkit-scrollbar{width:3px;}
 .pg::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px;}
 
-/* ═══════════ QIBLA (new design) ═══════════ */
-#pg0{
-  display:flex;flex-direction:column;align-items:center;
-  overflow-y:auto;overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  padding-bottom:24px;
-}
-/* Status */
+#pg0{display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding-bottom:24px;}
 .qstatus{z-index:10;display:flex;align-items:center;gap:7px;padding:10px 0 4px}
 .qdot{width:8px;height:8px;border-radius:50%;background:#3a4455;transition:all .4s}
 .qdot.on{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.6);animation:pd 1.8s infinite}
 @keyframes pd{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
 .qstxt{font-size:11px;color:#6b7685;font-weight:700;letter-spacing:1px}
-
-/* Compass wrap */
 .qcwrap{z-index:10;position:relative;display:flex;align-items:center;justify-content:center;margin:4px 0 8px}
-.qgring{
-  position:absolute;border-radius:50%;
-  width:306px;height:306px;
-  box-shadow:0 0 38px 5px rgba(34,197,94,.1);
-  transition:box-shadow .7s;pointer-events:none;
-}
-.qgring.on{
-  box-shadow:0 0 65px 22px rgba(34,197,94,.55),0 0 120px 45px rgba(34,197,94,.22);
-  animation:qgp 1.1s ease-in-out infinite;
-}
-@keyframes qgp{
-  0%,100%{box-shadow:0 0 65px 22px rgba(34,197,94,.55),0 0 120px 45px rgba(34,197,94,.22)}
-  50%{box-shadow:0 0 85px 32px rgba(34,197,94,.75),0 0 160px 65px rgba(34,197,94,.3)}
-}
+.qgring{position:absolute;border-radius:50%;width:306px;height:306px;
+  box-shadow:0 0 38px 5px rgba(34,197,94,.1);transition:box-shadow .7s;pointer-events:none;}
+.qgring.on{box-shadow:0 0 65px 22px rgba(34,197,94,.55),0 0 120px 45px rgba(34,197,94,.22);animation:qgp 1.1s ease-in-out infinite;}
+@keyframes qgp{0%,100%{box-shadow:0 0 65px 22px rgba(34,197,94,.55),0 0 120px 45px rgba(34,197,94,.22)}50%{box-shadow:0 0 85px 32px rgba(34,197,94,.75),0 0 160px 65px rgba(34,197,94,.3)}}
 #qcv{width:295px;height:295px;border-radius:50%;display:block}
-.qkaaba{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+.qkaaba{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:58px;height:58px;border-radius:50%;
   background:radial-gradient(circle at 38% 32%,#42a5f5,#0d47a1);
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;z-index:20;
-  box-shadow:0 0 0 3px rgba(255,255,255,.12),0 4px 18px rgba(0,0,0,.55);
-  transition:box-shadow .5s;
-}
+  display:flex;align-items:center;justify-content:center;font-size:28px;z-index:20;
+  box-shadow:0 0 0 3px rgba(255,255,255,.12),0 4px 18px rgba(0,0,0,.55);transition:box-shadow .5s;}
 .qkaaba.on{box-shadow:0 0 0 4px #22c55e,0 0 24px rgba(34,197,94,.65)}
-
-/* Degree */
 .qdegwrap{z-index:10;text-align:center;margin-bottom:8px}
 .qdval{font-family:'Nunito',sans-serif;font-size:52px;font-weight:800;color:#e8edf5;letter-spacing:-2px;line-height:1;transition:color .5s}
 .qdval.on{color:#22c55e}
 .qddir{font-size:13px;color:#6b7685;letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-top:2px}
-.qbadge{
-  display:inline-block;background:#121826;
-  border:1px solid rgba(255,255,255,.07);border-radius:20px;
-  padding:5px 14px;font-size:12px;color:#6b7685;margin-top:5px;
-}
+.qbadge{display:inline-block;background:#121826;border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:5px 14px;font-size:12px;color:#6b7685;margin-top:5px;}
 .qbadge b{color:#f0c040;font-weight:700}
-
-/* Location */
-.qloccard{
-  z-index:10;width:calc(100% - 32px);max-width:340px;
-  background:#131922;border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;padding:13px 16px;
-  display:flex;align-items:center;gap:12px;margin-bottom:10px;
-}
-.qlocico{
-  width:38px;height:38px;border-radius:12px;
-  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);
-  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
-}
+.qloccard{z-index:10;width:calc(100% - 32px);max-width:340px;background:#131922;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:13px 16px;display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.qlocico{width:38px;height:38px;border-radius:12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .qlocname{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qloccoords{font-size:11px;color:#6b7685;margin-top:1px}
-
-/* Banner */
-.qbanner{
-  z-index:10;width:calc(100% - 32px);max-width:340px;
-  background:linear-gradient(135deg,rgba(34,197,94,.16),rgba(34,197,94,.05));
-  border:1px solid rgba(34,197,94,.35);border-radius:14px;padding:12px 16px;
-  display:flex;align-items:center;gap:10px;
-  opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;
-}
+.qbanner{z-index:10;width:calc(100% - 32px);max-width:340px;background:linear-gradient(135deg,rgba(34,197,94,.16),rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.35);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;}
 .qbanner.show{opacity:1;transform:translateY(0)}
 .qbt{font-size:14px;font-weight:800;color:#22c55e}
 .qbs{font-size:11px;color:#6b7685}
-
-/* Debug */
-.qdbg{
-  z-index:10;width:calc(100% - 32px);max-width:340px;
-  background:#0f1520;border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;padding:10px 14px;margin-top:8px;
-  font-size:11px;color:#6b7685;line-height:1.8;display:none;
-}
+.qdbg{z-index:10;width:calc(100% - 32px);max-width:340px;background:#0f1520;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;margin-top:8px;font-size:11px;color:#6b7685;line-height:1.8;display:none;}
 .qdbg.show{display:block}
 
-/* Loading overlay */
-.qls{
-  position:fixed;inset:0;background:#0a0f1a;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:300;gap:16px;transition:opacity .6s;
-}
+.qls{position:fixed;inset:0;background:#0a0f1a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;gap:14px;transition:opacity .6s;}
 .qls.hide{opacity:0;pointer-events:none}
-.qlic{font-size:66px;animation:qfl 2.2s ease-in-out infinite}
-@keyframes qfl{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-13px) rotate(3deg)}}
+.qlic{font-size:60px;animation:qflI 2.2s ease-in-out infinite}
+@keyframes qflI{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-13px) rotate(3deg)}}
 .qspin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.08);border-top-color:#22c55e;animation:qsp .8s linear infinite}
 @keyframes qsp{to{transform:rotate(360deg)}}
-.qlsub{font-size:13px;color:rgba(107,118,133,.75)}
-.qpbtn{
-  display:none;background:linear-gradient(135deg,#22c55e,#15803d);
-  border:none;color:#fff;padding:14px 32px;border-radius:50px;
-  font-size:15px;font-family:inherit;font-weight:800;
-  cursor:pointer;box-shadow:0 4px 22px rgba(34,197,94,.4);letter-spacing:.5px;
-}
+.qlsub{font-size:12px;color:rgba(107,118,133,.85);text-align:center;max-width:280px;line-height:1.6}
+.qpbtn{background:linear-gradient(135deg,#22c55e,#15803d);border:none;color:#fff;padding:14px 32px;border-radius:50px;font-size:15px;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 4px 22px rgba(34,197,94,.4);letter-spacing:.5px;}
 .qpbtn:active{transform:scale(.96)}
-
 @keyframes qflash{0%,100%{background:#0a0f1a}45%{background:rgba(34,197,94,.07)}}
 body.qfl{animation:qflash .7s ease}
 
-/* ═══════════ QURAN ═══════════ */
 .qrp{display:flex;flex-direction:column;}
 .qhdr{padding:13px 13px 9px;background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10;}
-.qhdr h2{font-family:'Amiri',serif;font-size:20px;color:var(--gold);
-  text-shadow:0 0 12px rgba(212,168,67,.3);text-align:center;margin-bottom:8px;}
+.qhdr h2{font-family:'Amiri',serif;font-size:20px;color:var(--gold);text-shadow:0 0 12px rgba(212,168,67,.3);text-align:center;margin-bottom:8px;}
 .sbox{position:relative;}
-.sbox input{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:10px;
-  padding:9px 12px 9px 36px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;}
+.sbox input{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:10px;padding:9px 12px 9px 36px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;}
 .sbox input:focus{border-color:var(--g);}
 .sbox input::placeholder{color:var(--mt);}
 .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
 .rcrow{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:2px;}
 .rcrow::-webkit-scrollbar{display:none;}
-.rchip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1.5px solid var(--bdr);
-  background:var(--s2);color:var(--mt);font-size:11px;cursor:pointer;
-  transition:all .2s;font-family:'Tajawal',sans-serif;white-space:nowrap;}
+.rchip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1.5px solid var(--bdr);background:var(--s2);color:var(--mt);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Tajawal',sans-serif;white-space:nowrap;}
 .rchip.on{background:rgba(29,185,84,.15);border-color:var(--g);color:var(--g);}
 .slist{padding:8px 10px 160px;}
-.si2{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:11px;
-  background:var(--s1);border:1px solid var(--bdr);margin-bottom:5px;cursor:pointer;
-  transition:background .15s;position:relative;overflow:hidden;}
+.si2{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:11px;background:var(--s1);border:1px solid var(--bdr);margin-bottom:5px;cursor:pointer;transition:background .15s;position:relative;overflow:hidden;}
 .si2.pl{background:rgba(29,185,84,.1);border-color:var(--g);}
-.si2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--g);transform:scaleY(0);transition:transform .2s;border-radius:0 2px 2px 0;}
+.si2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g);transform:scaleY(0);transition:transform .2s;border-radius:0 2px 2px 0;}
 .si2.pl::before{transform:scaleY(1);}
-.sno{width:32px;height:32px;background:var(--s2);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
-  color:var(--g);flex-shrink:0;border:1px solid var(--bdr);}
+.sno{width:32px;height:32px;background:var(--s2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g);flex-shrink:0;border:1px solid var(--bdr);}
 .si2.pl .sno{background:var(--g);color:#fff;border-color:var(--g);}
 .sinf{flex:1;min-width:0;}
 .sar{font-family:'Amiri',serif;font-size:15px;color:var(--tx);}
 .suz{font-size:10px;color:var(--mt);margin-top:1px;}
 .smeta{font-size:10px;color:var(--mt);text-align:right;flex-shrink:0;line-height:1.5;}
-.pbtn{width:32px;height:32px;border-radius:50%;background:var(--s2);
-  border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.pbtn{width:32px;height:32px;border-radius:50%;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .si2.pl .pbtn{background:var(--g);border-color:var(--g);}
 .nores{text-align:center;padding:40px 20px;color:var(--mt);font-size:13px;}
-
-/* PLAYER */
-.player{position:fixed;bottom:0;left:0;right:0;
-  background:linear-gradient(0deg,#081828 0%,rgba(11,30,53,.99) 100%);
-  border-top:1px solid var(--bdr);padding:10px 14px 20px;z-index:200;
-  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 -8px 30px rgba(0,0,0,.7);}
+.player{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,#081828 0%,rgba(11,30,53,.99) 100%);border-top:1px solid var(--bdr);padding:10px 14px 20px;z-index:200;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 30px rgba(0,0,0,.7);}
 .player.vis{transform:translateY(0);}
 .pinfo{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
 .ptit{font-family:'Amiri',serif;font-size:15px;color:var(--gold);}
@@ -207,28 +120,23 @@ body.qfl{animation:qflash .7s ease}
 .pfil{height:100%;background:var(--g);border-radius:5px;width:0%;transition:width .25s linear;pointer-events:none;}
 .pctrls{display:flex;align-items:center;justify-content:center;gap:20px;}
 .cbtn{background:none;border:none;color:var(--mt);font-size:22px;cursor:pointer;padding:4px;}
-.ppbtn{width:50px;height:50px;border-radius:50%;background:var(--g);border:none;
-  display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;
-  box-shadow:0 4px 15px var(--gw);transition:transform .1s;}
+.ppbtn{width:50px;height:50px;border-radius:50%;background:var(--g);border:none;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 15px var(--gw);transition:transform .1s;}
 .ppbtn:active{transform:scale(.92);}
 .pmsg{font-size:11px;color:var(--mt);text-align:center;margin-top:5px;min-height:16px;line-height:1.4;}
 .pmsg.err{color:#e74c3c;}
 </style>
 </head>
 <body>
-
-<!-- Stars (for Qibla tab background) -->
 <div class="stars" id="stars"></div>
 
-<!-- Loading screen for compass -->
 <div class="qls" id="QLS">
   <div class="qlic">🕌</div>
   <div style="font-size:18px;font-weight:800;color:#e8edf5">Qibla Kompas</div>
-  <div id="QLSbody" style="display:flex;flex-direction:column;align-items:center;gap:11px">
+  <div id="QLSbody" style="display:flex;flex-direction:column;align-items:center;gap:12px">
     <div class="qspin"></div>
-    <div class="qlsub">Yuklanmoqda...</div>
+    <div class="qlsub" id="QLSmsg">Yuklanmoqda...</div>
   </div>
-  <button class="qpbtn" id="qpbtn">📍 Ruxsat berish</button>
+  <button class="qpbtn" id="qpbtn" style="display:none" onclick="onPermBtn()">📍 Ruxsat berish</button>
 </div>
 
 <nav class="nav">
@@ -236,27 +144,21 @@ body.qfl{animation:qflash .7s ease}
   <button class="nb" id="nb1" onclick="goTab(1)"><span class="ni">📖</span><span>Qur'on</span></button>
 </nav>
 <div class="pages">
-
-  <!-- QIBLA TAB -->
   <div class="pg on" id="pg0">
-
     <div class="qstatus">
       <div class="qdot" id="qdot"></div>
       <div class="qstxt" id="qstxt">Sensor kutilmoqda...</div>
     </div>
-
     <div class="qcwrap">
       <div class="qgring" id="qgring"></div>
       <canvas id="qcv" width="590" height="590"></canvas>
       <div class="qkaaba" id="qkaaba">🕋</div>
     </div>
-
     <div class="qdegwrap">
       <div class="qdval" id="qdval">--°</div>
       <div class="qddir" id="qddir">Yuklanmoqda</div>
       <div class="qbadge">Qibla: <b id="qqbdg">--°</b></div>
     </div>
-
     <div class="qloccard">
       <div class="qlocico">📍</div>
       <div style="min-width:0;flex:1">
@@ -264,7 +166,6 @@ body.qfl{animation:qflash .7s ease}
         <div class="qloccoords" id="qlcoords"></div>
       </div>
     </div>
-
     <div class="qbanner" id="qbanner">
       <div style="font-size:22px">✨</div>
       <div>
@@ -272,11 +173,9 @@ body.qfl{animation:qflash .7s ease}
         <div class="qbs">Siz to'g'ri yo'nalishdasiz — Alloh qabul qilsin</div>
       </div>
     </div>
-
     <div class="qdbg" id="qdbg"></div>
   </div>
 
-  <!-- QURAN TAB -->
   <div class="pg qrp" id="pg1">
     <div class="qhdr">
       <h2>📖 Qur'oni Karim</h2>
@@ -289,7 +188,6 @@ body.qfl{animation:qflash .7s ease}
   </div>
 </div>
 
-<!-- PLAYER -->
 <div class="player" id="player">
   <div class="pinfo">
     <div><div class="ptit" id="ptit">—</div><div class="psub" id="psub">—</div></div>
@@ -312,7 +210,6 @@ body.qfl{animation:qflash .7s ease}
 <script>
 'use strict';
 
-/* ── TAB ── */
 function goTab(i){
   [0,1].forEach(j=>{
     document.getElementById('nb'+j).classList.toggle('on',j===i);
@@ -320,461 +217,378 @@ function goTab(i){
   });
 }
 
-/* ══════════════════════════════════════════════════════════
-   QIBLA COMPASS — FIXED VERSION
-══════════════════════════════════════════════════════════ */
-
 // Stars
 (()=>{
   const c=document.getElementById('stars');
   for(let i=0;i<75;i++){
     const s=document.createElement('div');s.className='star';
-    const sz=Math.random()<.25?3:Math.random()<.5?2:1;
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${1.8+Math.random()*5}s;--dl:-${Math.random()*7}s`;
+    const z=Math.random()<.25?3:Math.random()<.5?2:1;
+    s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${1.8+Math.random()*5}s;--dl:-${Math.random()*7}s`;
     c.appendChild(s);
   }
 })();
 
-const KA_LAT=21.4225,KA_LON=39.8262;
-let userLat=41.2995,userLon=69.2401;
+/* ══════════════════════════════════
+   QIBLA COMPASS
+══════════════════════════════════ */
+const KA_LAT=21.4225, KA_LON=39.8262;
+let userLat=41.2995, userLon=69.2401;
 let qiblaTrue=0;
-// FIX: use separate target and current for smooth interpolation
-let targetHead=0, currentHead=0;
-let sensorOK=false,gpsOK=false,prevAligned=false,kaabaClicks=0;
-let hasFirstReading=false;
+let curHead=0, tgtHead=0, firstReading=false;
+let sensorOK=false, prevAligned=false, kaabaClicks=0;
+let permBtnAction=null;
 
 function calcQibla(lat,lon){
-  const R=d=>d*Math.PI/180,φ1=R(lat),φ2=R(KA_LAT),Δλ=R(KA_LON-lon);
+  const toR=d=>d*Math.PI/180;
+  const φ1=toR(lat),φ2=toR(KA_LAT),Δλ=toR(KA_LON-lon);
   const y=Math.sin(Δλ)*Math.cos(φ2);
   const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
   return norm(Math.atan2(y,x)*180/Math.PI);
 }
 function norm(a){return((a%360)+360)%360;}
-
-// FIX: proper angular interpolation that handles 359°→1° wraparound
-function lerpAngle(current, target, t){
-  let diff = target - current;
-  // Normalize diff to [-180, 180]
-  while(diff > 180) diff -= 360;
-  while(diff < -180) diff += 360;
-  return current + diff * t;
+function lerpAng(cur,tgt,t){
+  let d=tgt-cur;
+  while(d>180)d-=360;while(d<-180)d+=360;
+  return cur+d*t;
 }
-
 function isAligned(){
-  let d = qiblaTrue - norm(currentHead);
-  while(d > 180) d -= 360;
-  while(d < -180) d += 360;
-  return Math.abs(d) < 5;
+  let d=qiblaTrue-norm(curHead);
+  while(d>180)d-=360;while(d<-180)d+=360;
+  return Math.abs(d)<5;
 }
-
 function cardDir(deg){
-  return["Shimol","Shim-Sharq","Sharq","Jan-Sharq","Janub","Jan-Gʻarb","Gʻarb","Shim-Gʻarb"][Math.round(norm(deg)/45)%8];
+  return['Shimol','Shim-Sharq','Sharq','Jan-Sharq','Janub','Jan-Gʻarb','Gʻarb','Shim-Gʻarb'][Math.round(norm(deg)/45)%8];
 }
 
 const qcv=document.getElementById('qcv');
-const qctx=qcv.getContext('2d');
-const SZ=590,CX=SZ/2,CY=SZ/2;
+const ctx=qcv.getContext('2d');
+const SZ=590,CX=295,CY=295;
 
 function drawCompass(heading){
-  qctx.clearRect(0,0,SZ,SZ);
+  ctx.clearRect(0,0,SZ,SZ);
   const aln=isAligned();
-  const rim=qctx.createLinearGradient(0,0,SZ,SZ);
+  const rim=ctx.createLinearGradient(0,0,SZ,SZ);
   if(aln){rim.addColorStop(0,'#4ade80');rim.addColorStop(1,'#16a34a');}
   else{rim.addColorStop(0,'#22c55e');rim.addColorStop(1,'#0b5e22');}
-  qctx.beginPath();qctx.arc(CX,CY,287,0,Math.PI*2);qctx.fillStyle=rim;qctx.fill();
-  const face=qctx.createRadialGradient(CX,CY,50,CX,CY,255);
+  ctx.beginPath();ctx.arc(CX,CY,287,0,Math.PI*2);ctx.fillStyle=rim;ctx.fill();
+  const face=ctx.createRadialGradient(CX,CY,50,CX,CY,255);
   face.addColorStop(0,'#1a2030');face.addColorStop(1,'#0a0f1a');
-  qctx.beginPath();qctx.arc(CX,CY,257,0,Math.PI*2);
-  qctx.fillStyle=face;
-  qctx.shadowColor=aln?'rgba(34,197,94,.28)':'transparent';
-  qctx.shadowBlur=aln?32:0;
-  qctx.fill();qctx.shadowBlur=0;
-
-  qctx.save();qctx.translate(CX,CY);qctx.rotate(-heading*Math.PI/180);
+  ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);
+  ctx.fillStyle=face;ctx.shadowColor=aln?'rgba(34,197,94,.28)':'transparent';
+  ctx.shadowBlur=aln?32:0;ctx.fill();ctx.shadowBlur=0;
+  ctx.save();ctx.translate(CX,CY);ctx.rotate(-heading*Math.PI/180);
   for(let i=0;i<360;i++){
     const rad=i*Math.PI/180,maj=i%30===0,med=i%10===0&&!maj;
-    const len=maj?25:med?15:8,r1=250,r2=r1-len;
-    qctx.beginPath();
-    qctx.moveTo(Math.cos(rad)*r1,Math.sin(rad)*r1);
-    qctx.lineTo(Math.cos(rad)*r2,Math.sin(rad)*r2);
-    qctx.strokeStyle=maj?'rgba(255,255,255,.88)':med?'rgba(255,255,255,.35)':'rgba(255,255,255,.11)';
-    qctx.lineWidth=maj?2.6:1.6;qctx.stroke();
+    const len=maj?25:med?15:8,r1=250;
+    ctx.beginPath();ctx.moveTo(Math.cos(rad)*r1,Math.sin(rad)*r1);
+    ctx.lineTo(Math.cos(rad)*(r1-len),Math.sin(rad)*(r1-len));
+    ctx.strokeStyle=maj?'rgba(255,255,255,.88)':med?'rgba(255,255,255,.35)':'rgba(255,255,255,.11)';
+    ctx.lineWidth=maj?2.6:1.6;ctx.stroke();
   }
-  qctx.font='600 17px Nunito,sans-serif';qctx.fillStyle='rgba(190,205,225,.62)';
-  qctx.textAlign='center';qctx.textBaseline='middle';
+  ctx.font='600 17px Nunito,sans-serif';ctx.fillStyle='rgba(190,205,225,.62)';
+  ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<360;i+=30){
-    if(i%90===0)continue;const rad=i*Math.PI/180;
-    qctx.save();qctx.translate(Math.sin(rad)*182,-Math.cos(rad)*182);qctx.rotate(rad);
-    qctx.fillText(i,0,0);qctx.restore();
+    if(i%90===0)continue;
+    const rad=i*Math.PI/180;
+    ctx.save();ctx.translate(Math.sin(rad)*182,-Math.cos(rad)*182);ctx.rotate(rad);ctx.fillText(i,0,0);ctx.restore();
   }
-  const CARDS=['N','E','S','W'];qctx.font='bold 37px Nunito,sans-serif';
+  const CARDS=['N','E','S','W'];ctx.font='bold 37px Nunito,sans-serif';
   for(let i=0;i<4;i++){
-    const rad=i*Math.PI/2;qctx.fillStyle=i===0?'#ef4444':'rgba(255,255,255,.84)';
-    qctx.fillText(CARDS[i],Math.sin(rad)*210,-Math.cos(rad)*210);
+    const rad=i*Math.PI/2;ctx.fillStyle=i===0?'#ef4444':'rgba(255,255,255,.84)';
+    ctx.fillText(CARDS[i],Math.sin(rad)*210,-Math.cos(rad)*210);
   }
-  const IC=['NE','SE','SW','NW'];qctx.font='bold 15px Nunito,sans-serif';qctx.fillStyle='rgba(255,255,255,.28)';
-  for(let i=0;i<4;i++){
-    const rad=(i*90+45)*Math.PI/180;qctx.fillText(IC[i],Math.sin(rad)*203,-Math.cos(rad)*203);
-  }
-  qctx.restore();
-
-  const needleDeg=norm(qiblaTrue-heading),needleRad=needleDeg*Math.PI/180;
-  const nx=Math.sin(needleRad),ny=-Math.cos(needleRad);
-  qctx.save();qctx.translate(CX,CY);
-  const tg=qctx.createLinearGradient(0,0,nx*240,ny*240);
+  ctx.font='bold 15px Nunito,sans-serif';ctx.fillStyle='rgba(255,255,255,.28)';
+  ['NE','SE','SW','NW'].forEach((t,i)=>{
+    const rad=(i*90+45)*Math.PI/180;ctx.fillText(t,Math.sin(rad)*203,-Math.cos(rad)*203);
+  });
+  ctx.restore();
+  const nd=norm(qiblaTrue-heading),nr=nd*Math.PI/180;
+  const nx=Math.sin(nr),ny=-Math.cos(nr);
+  ctx.save();ctx.translate(CX,CY);
+  const tg=ctx.createLinearGradient(0,0,nx*240,ny*240);
   tg.addColorStop(0,'rgba(240,192,64,0)');tg.addColorStop(.55,'rgba(240,192,64,.12)');tg.addColorStop(1,'rgba(240,192,64,.48)');
-  qctx.beginPath();qctx.moveTo(0,0);qctx.lineTo(nx*240,ny*240);
-  qctx.strokeStyle=tg;qctx.lineWidth=14;qctx.stroke();
-  const arcHalf=0.115,arcBase=needleRad-Math.PI/2;
-  qctx.beginPath();qctx.arc(0,0,265,arcBase-arcHalf,arcBase+arcHalf);
-  qctx.strokeStyle='rgba(240,192,64,.78)';qctx.lineWidth=18;qctx.stroke();
-  qctx.save();qctx.rotate(needleRad);
-  qctx.shadowColor='rgba(240,192,64,.85)';qctx.shadowBlur=22;
-  qctx.beginPath();qctx.moveTo(0,-247);qctx.lineTo(13,-212);qctx.lineTo(0,-223);qctx.lineTo(-13,-212);
-  qctx.closePath();qctx.fillStyle='#f0c040';qctx.fill();
-  qctx.beginPath();qctx.moveTo(6,-212);qctx.lineTo(5,-128);qctx.lineTo(-5,-128);qctx.lineTo(-6,-212);
-  qctx.closePath();qctx.fillStyle='rgba(240,192,64,.58)';qctx.fill();
-  qctx.shadowBlur=0;qctx.restore();
-  qctx.restore();
-
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(nx*240,ny*240);ctx.strokeStyle=tg;ctx.lineWidth=14;ctx.stroke();
+  const arcH=0.115,arcB=nr-Math.PI/2;
+  ctx.beginPath();ctx.arc(0,0,265,arcB-arcH,arcB+arcH);ctx.strokeStyle='rgba(240,192,64,.78)';ctx.lineWidth=18;ctx.stroke();
+  ctx.save();ctx.rotate(nr);
+  ctx.shadowColor='rgba(240,192,64,.85)';ctx.shadowBlur=22;
+  ctx.beginPath();ctx.moveTo(0,-247);ctx.lineTo(13,-212);ctx.lineTo(0,-223);ctx.lineTo(-13,-212);ctx.closePath();ctx.fillStyle='#f0c040';ctx.fill();
+  ctx.beginPath();ctx.moveTo(6,-212);ctx.lineTo(5,-128);ctx.lineTo(-5,-128);ctx.lineTo(-6,-212);ctx.closePath();ctx.fillStyle='rgba(240,192,64,.58)';ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();ctx.restore();
   if(aln){
     const p=(Math.sin(Date.now()/270)+1)/2;
-    qctx.beginPath();qctx.arc(CX,CY,257,0,Math.PI*2);
-    qctx.strokeStyle=`rgba(34,197,94,${.28+p*.52})`;qctx.lineWidth=7;qctx.stroke();
+    ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(34,197,94,${.28+p*.52})`;ctx.lineWidth=7;ctx.stroke();
   }
-  qctx.save();qctx.translate(CX,CY);
-  qctx.shadowColor='#22c55e';qctx.shadowBlur=14;
-  qctx.beginPath();qctx.moveTo(0,-263);qctx.lineTo(9,-243);qctx.lineTo(-9,-243);
-  qctx.closePath();qctx.fillStyle='#22c55e';qctx.fill();
-  qctx.shadowBlur=0;qctx.restore();
+  ctx.save();ctx.translate(CX,CY);ctx.shadowColor='#22c55e';ctx.shadowBlur=14;
+  ctx.beginPath();ctx.moveTo(0,-263);ctx.lineTo(9,-243);ctx.lineTo(-9,-243);ctx.closePath();ctx.fillStyle='#22c55e';ctx.fill();
+  ctx.shadowBlur=0;ctx.restore();
 }
 
 function qLoop(){
-  // FIX: smooth interpolation with correct wraparound handling
-  currentHead = lerpAngle(currentHead, targetHead, 0.12);
-  // Keep in [0,360)
-  currentHead = norm(currentHead);
-
-  drawCompass(currentHead);
-  const aln=isAligned(),hdDeg=Math.round(norm(currentHead));
+  curHead=lerpAng(curHead,tgtHead,0.12);
+  curHead=norm(curHead);
+  drawCompass(curHead);
+  const aln=isAligned(),hd=Math.round(norm(curHead));
   const dv=document.getElementById('qdval');
-  dv.textContent=hdDeg+'°';dv.classList.toggle('on',aln);
-  document.getElementById('qddir').textContent=cardDir(currentHead);
+  dv.textContent=hd+'°';dv.classList.toggle('on',aln);
+  document.getElementById('qddir').textContent=cardDir(curHead);
   document.getElementById('qgring').classList.toggle('on',aln);
   document.getElementById('qkaaba').classList.toggle('on',aln);
   document.getElementById('qbanner').classList.toggle('show',aln);
   const dbg=document.getElementById('qdbg');
   if(dbg.classList.contains('show')){
-    dbg.innerHTML=`<b style="color:#e8edf5">Debug:</b><br>targetHead: <b>${targetHead.toFixed(2)}°</b><br>currentHead: <b>${currentHead.toFixed(2)}°</b><br>qiblaTrue: <b>${qiblaTrue.toFixed(2)}°</b><br>needle: <b>${norm(qiblaTrue-currentHead).toFixed(2)}°</b><br>GPS: <b>${userLat.toFixed(5)}, ${userLon.toFixed(5)}</b><br>aligned: <b>${aln}</b><br>sensorOK: <b>${sensorOK}</b>`;
+    dbg.innerHTML=`<b style="color:#e8edf5">Debug</b><br>tgt:<b>${tgtHead.toFixed(1)}°</b> cur:<b>${curHead.toFixed(1)}°</b><br>qibla:<b>${qiblaTrue.toFixed(1)}°</b> needle:<b>${norm(qiblaTrue-curHead).toFixed(1)}°</b><br>GPS:<b>${userLat.toFixed(4)},${userLon.toFixed(4)}</b><br>aligned:<b>${aln}</b> sensor:<b>${sensorOK}</b>`;
   }
   if(aln&&!prevAligned&&sensorOK){
-    document.body.classList.add('qfl');
-    setTimeout(()=>document.body.classList.remove('qfl'),750);
+    document.body.classList.add('qfl');setTimeout(()=>document.body.classList.remove('qfl'),750);
     if(navigator.vibrate)navigator.vibrate([65,45,100]);
   }
   prevAligned=aln;
   requestAnimationFrame(qLoop);
 }
 
-// FIX: Completely rewritten sensor handler — correct heading extraction for all platforms
-function onOrientEvent(e){
-  let heading = null;
-
-  // iOS: webkitCompassHeading is already true north heading (0-360)
-  if(typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading) && e.webkitCompassHeading >= 0){
-    heading = e.webkitCompassHeading;
-  }
-  // Android absolute: e.absolute===true means alpha is referenced to true north
-  else if(e.absolute === true && typeof e.alpha === 'number' && e.alpha !== null){
-    // alpha=0 means device top points North; compass heading = 360 - alpha
-    heading = norm(360 - e.alpha);
-  }
-  // Android non-absolute (magnetic): alpha relative to arbitrary 0
-  else if(typeof e.alpha === 'number' && e.alpha !== null){
-    heading = norm(360 - e.alpha);
-  }
-
-  if(heading === null) return;
-
-  // FIX: on first reading, snap instantly (no lerp from 0)
-  if(!hasFirstReading){
-    currentHead = heading;
-    hasFirstReading = true;
-  }
-  targetHead = heading;
-
+/* ── Sensor heading handler ── */
+function onHeading(h){
+  if(!firstReading){curHead=h;firstReading=true;}
+  tgtHead=h;
   if(!sensorOK){
-    sensorOK = true;
+    sensorOK=true;
     document.getElementById('qdot').classList.add('on');
-    document.getElementById('qstxt').textContent = e.absolute ? 'Kompas faol (Absolute)' : 'Kompas faol';
-    hideQLoading();
+    document.getElementById('qstxt').textContent='Kompas faol ✓';
+    hideLoading();
   }
 }
 
-// FIX: Try AbsoluteOrientationSensor (Generic Sensor API) with proper quaternion→heading
-function tryAbsoluteSensor(){
-  if(typeof AbsoluteOrientationSensor === 'undefined') return false;
+function onOrient(e){
+  // iOS: webkitCompassHeading — true north, ishonchli
+  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)&&e.webkitCompassHeading>=0){
+    onHeading(e.webkitCompassHeading); return;
+  }
+  // Android absolute event
+  if(typeof e.alpha==='number'&&e.alpha!==null){
+    onHeading(norm(360-e.alpha));
+  }
+}
+
+function addOrientListeners(){
+  // deviceorientationabsolute — Android Chrome, true north
+  window.addEventListener('deviceorientationabsolute',onOrient,true);
+  // deviceorientation — fallback (iOS, other)
+  window.addEventListener('deviceorientation',onOrient,true);
+}
+
+function tryGenericSensor(){
+  if(typeof AbsoluteOrientationSensor==='undefined') return false;
   try{
-    const sensor = new AbsoluteOrientationSensor({frequency:30, referenceFrame:'screen'});
-    sensor.addEventListener('reading', ()=>{
-      try{
-        const q = sensor.quaternion; // [x, y, z, w]
-        if(!q || q.length < 4) return;
-        const [x, y, z, w] = q;
-        // Convert quaternion to heading (yaw around Z axis pointing up)
-        const sinYaw = 2*(w*z + x*y);
-        const cosYaw = 1 - 2*(y*y + z*z);
-        let heading = Math.atan2(sinYaw, cosYaw) * 180 / Math.PI;
-        heading = norm(heading);
-
-        if(!hasFirstReading){
-          currentHead = heading;
-          hasFirstReading = true;
-        }
-        targetHead = heading;
-
-        if(!sensorOK){
-          sensorOK = true;
-          document.getElementById('qdot').classList.add('on');
-          document.getElementById('qstxt').textContent = 'Kompas faol (Sensor API)';
-          hideQLoading();
-        }
-      }catch(err){}
-    });
-    sensor.addEventListener('error', (e)=>{
-      console.warn('AbsoluteOrientationSensor error:', e.error);
-      // Fallback to DeviceOrientation events
-      window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
-      window.addEventListener('deviceorientation', onOrientEvent, true);
-    });
-    sensor.start();
+    // Permissions API orqali ruxsat so'rash
+    Promise.all([
+      navigator.permissions.query({name:'accelerometer'}),
+      navigator.permissions.query({name:'magnetometer'}),
+      navigator.permissions.query({name:'gyroscope'})
+    ]).then(results=>{
+      if(results.every(r=>r.state!=='denied')){
+        const s=new AbsoluteOrientationSensor({frequency:30,referenceFrame:'screen'});
+        s.addEventListener('reading',()=>{
+          try{
+            const[x,y,z,w]=s.quaternion;
+            const sinY=2*(w*z+x*y),cosY=1-2*(y*y+z*z);
+            onHeading(norm(Math.atan2(sinY,cosY)*180/Math.PI));
+          }catch(_){}
+        });
+        s.addEventListener('error',()=>addOrientListeners());
+        s.start();
+      } else {
+        addOrientListeners();
+      }
+    }).catch(()=>addOrientListeners());
     return true;
-  }catch(err){
-    console.warn('AbsoluteOrientationSensor unavailable:', err);
-    return false;
-  }
+  }catch(e){return false;}
 }
 
-function startGeo(){
-  setLocDisplay(userLat,userLon,"Toshkent, O'zbekiston");
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';
-  if(!navigator.geolocation)return;
-  navigator.geolocation.getCurrentPosition(
-    onGPS,
-    (err)=>{if(err.code!==1)navigator.geolocation.getCurrentPosition(onGPS,onGPSErr,{enableHighAccuracy:false,timeout:8000,maximumAge:60000});else onGPSErr(err);},
-    {enableHighAccuracy:true,timeout:12000,maximumAge:0}
-  );
-}
-function onGPS(pos){
-  userLat=pos.coords.latitude;userLon=pos.coords.longitude;gpsOK=true;
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';
-  reverseGeo(userLat,userLon);
-}
-function onGPSErr(err){
-  const msgs={1:'GPS ruxsati rad etildi',2:'GPS topilmadi',3:'GPS vaqt tugadi'};
-  document.getElementById('qlname').textContent=(msgs[err.code]||'GPS xatosi')+' (Toshkent)';
-  document.getElementById('qlcoords').textContent=userLat.toFixed(4)+'°N, '+userLon.toFixed(4)+'°E';
-}
-function setLocDisplay(lat,lon,name){
-  document.getElementById('qlname').textContent=name;
-  document.getElementById('qlcoords').textContent=lat.toFixed(4)+'°N, '+lon.toFixed(4)+'°E';
-}
-function reverseGeo(lat,lon){
-  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json&accept-language=uz,en')
-    .then(r=>r.json()).then(d=>{
-      const a=d.address||{};
-      const city=a.city||a.town||a.village||a.county||a.state||"Noma'lum";
-      const country=a.country||'';
-      setLocDisplay(lat,lon,city+(country?', '+country:''));
-    }).catch(()=>setLocDisplay(lat,lon,lat.toFixed(4)+'°N, '+lon.toFixed(4)+'°E'));
-}
+const isIOS=()=>typeof DeviceOrientationEvent!=='undefined'&&
+               typeof DeviceOrientationEvent.requestPermission==='function';
 
-function hideQLoading(){
-  const ls=document.getElementById('QLS');
-  ls.classList.add('hide');setTimeout(()=>ls.style.display='none',700);
-}
-function showPermBtn(msg,label,fn){
-  document.getElementById('QLSbody').innerHTML=`<div class="qlsub" style="text-align:center;padding:0 26px;line-height:1.8">${msg}</div>`;
-  const btn=document.getElementById('qpbtn');
-  if(label)btn.textContent=label;if(fn)btn.onclick=fn;btn.style.display='block';
-}
-
-// FIX: Unified permission request for iOS and Android
-function askPermission(){
-  document.getElementById('qpbtn').style.display='none';
-  document.getElementById('QLSbody').innerHTML='<div class="qspin"></div><div class="qlsub">Ruxsat so\'ralmoqda...</div>';
-
-  const isIOS = typeof DeviceOrientationEvent !== 'undefined' &&
-                typeof DeviceOrientationEvent.requestPermission === 'function';
-
-  if(isIOS){
+function requestSensor(){
+  if(isIOS()){
     DeviceOrientationEvent.requestPermission()
-      .then(state=>{
-        if(state === 'granted'){
-          // FIX: listen to both absolute and regular, absolute preferred
-          window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
-          window.addEventListener('deviceorientation', onOrientEvent, true);
-          startGeo();
-        } else {
-          showPermBtn('Ruxsat rad etildi. Brauzer sozlamalarini tekshiring.','▶ Demo',startDemo);
-        }
+      .then(st=>{
+        if(st==='granted') addOrientListeners();
+        else showBtn('Kompas ruxsati rad etildi','▶ Demo',startDemo);
       })
-      .catch(e=>showPermBtn('Xato: '+e.message,'▶ Demo',startDemo));
+      .catch(e=>showBtn('Xato: '+e.message,'▶ Demo',startDemo));
   } else {
-    window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
-    window.addEventListener('deviceorientation', onOrientEvent, true);
-    startGeo();
+    // Android: GenericSensor API yoki deviceorientation
+    if(!tryGenericSensor()) addOrientListeners();
   }
 }
 
-let demoAnimId;
+function onPermBtn(){ if(permBtnAction) permBtnAction(); }
+
+/* ── Loading UI ── */
+function setLoadMsg(msg){document.getElementById('QLSmsg').innerHTML=msg;}
+function showBtn(msg,label,fn){
+  setLoadMsg(msg);
+  const b=document.getElementById('qpbtn');
+  b.textContent=label;b.style.display='block';
+  permBtnAction=fn;
+}
+function hideLoading(){
+  const el=document.getElementById('QLS');
+  el.classList.add('hide');setTimeout(()=>el.style.display='none',700);
+}
+
+/* ── Demo rejim ── */
 function startDemo(){
-  if(sensorOK)return;
-  sensorOK=true;
-  hasFirstReading=true;
+  if(sensorOK) return;
+  sensorOK=true;firstReading=true;
   document.getElementById('qdot').classList.add('on');
   document.getElementById('qstxt').textContent='Demo rejim';
-  let t=0;
-  (function tick(){
-    demoAnimId=requestAnimationFrame(tick);
-    t+=0.45;
-    targetHead=t%360;
-  })();
-  hideQLoading();
-  startGeo();
+  let t=curHead;
+  (function tick(){requestAnimationFrame(tick);t=(t+0.5)%360;tgtHead=t;})();
+  hideLoading();
+}
+
+/* ══════════════════════════════════
+   JOYLASHUV — GPS → IP → Toshkent
+══════════════════════════════════ */
+function updateQibla(){
+  qiblaTrue=calcQibla(userLat,userLon);
+  document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';
+}
+function setLocUI(lat,lon,name){
+  document.getElementById('qlname').textContent=name;
+  document.getElementById('qlcoords').textContent=`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
+}
+
+// 1) GPS
+function startGPS(){
+  if(!navigator.geolocation){startIPGeo();return;}
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      userLat=pos.coords.latitude;userLon=pos.coords.longitude;
+      updateQibla();
+      reverseGeo(userLat,userLon);
+    },
+    ()=>startIPGeo(),
+    {enableHighAccuracy:true,timeout:10000,maximumAge:0}
+  );
+}
+
+// 2) IP Geolocation — ip-api.com (bepul, CORS ochiq, HTTPS)
+function startIPGeo(){
+  setLoadMsg('IP orqali joylashuv aniqlanmoqda...');
+  fetch('https://ip-api.com/json/?fields=status,lat,lon,city,country')
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.status==='success'&&d.lat&&d.lon){
+        userLat=d.lat;userLon=d.lon;updateQibla();
+        setLocUI(userLat,userLon,(d.city||'')+(d.country?', '+d.country:''));
+      } else {
+        // 3) fallback: ipinfo.io
+        return fetch('https://ipinfo.io/json?token=').then(r=>r.json()).then(d2=>{
+          if(d2.loc){
+            const[la,lo]=d2.loc.split(',').map(Number);
+            userLat=la;userLon=lo;updateQibla();
+            setLocUI(userLat,userLon,(d2.city||'')+(d2.country?', '+d2.country:''));
+          } else useTashkent();
+        });
+      }
+    })
+    .catch(()=>useTashkent());
+}
+
+// 3) Toshkent fallback
+function useTashkent(){
+  userLat=41.2995;userLon=69.2401;updateQibla();
+  setLocUI(userLat,userLon,"Toshkent, O'zbekiston (taxminiy)");
+}
+
+// Reverse geocoding
+function reverseGeo(lat,lon){
+  setLocUI(lat,lon,'Aniqlanmoqda...');
+  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=uz,en`)
+    .then(r=>r.json())
+    .then(d=>{
+      const a=d.address||{};
+      const city=a.city||a.town||a.village||a.county||a.state||'';
+      const country=a.country||'';
+      setLocUI(lat,lon,city&&country?`${city}, ${country}`:city||country||`${lat.toFixed(4)}°N`);
+    })
+    .catch(()=>setLocUI(lat,lon,`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`));
 }
 
 document.getElementById('qkaaba').addEventListener('click',()=>{
   kaabaClicks++;if(kaabaClicks>=5){kaabaClicks=0;document.getElementById('qdbg').classList.toggle('show');}
 });
 
-/* ══════════════════════════════════════════════════════════
-   QURAN AUDIO
-══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════
+   QUR'ON AUDIO
+══════════════════════════════════ */
 const EDITIONS=[
-  {name:'Mishary Alafasy',   ed:'ar.alafasy'},
+  {name:'Mishary Alafasy',ed:'ar.alafasy'},
   {name:'Abdurrahman Sudais',ed:'ar.abdurrahmaansudais'},
-  {name:'Husary',            ed:'ar.husary'},
-  {name:'Saad Al-Ghamdi',   ed:'ar.saoodshuraym'},
+  {name:'Husary',ed:'ar.husary'},
+  {name:'Saad Al-Ghamdi',ed:'ar.saoodshuraym'},
 ];
-
 const SURAHS=[
-  {n:1,ar:'الفاتحة',uz:'Al-Fotiha',a:7,t:'Makka'},
-  {n:2,ar:'البقرة',uz:'Al-Baqara',a:286,t:'Madina'},
-  {n:3,ar:'آل عمران',uz:'Ali Imron',a:200,t:'Madina'},
-  {n:4,ar:'النساء',uz:'An-Niso',a:176,t:'Madina'},
-  {n:5,ar:'المائدة',uz:'Al-Moida',a:120,t:'Madina'},
-  {n:6,ar:'الأنعام',uz:"Al-An'om",a:165,t:'Makka'},
-  {n:7,ar:'الأعراف',uz:"Al-A'rof",a:206,t:'Makka'},
-  {n:8,ar:'الأنفال',uz:'Al-Anfol',a:75,t:'Madina'},
-  {n:9,ar:'التوبة',uz:'At-Tavba',a:129,t:'Madina'},
-  {n:10,ar:'يونس',uz:'Yunus',a:109,t:'Makka'},
-  {n:11,ar:'هود',uz:'Hud',a:123,t:'Makka'},
-  {n:12,ar:'يوسف',uz:'Yusuf',a:111,t:'Makka'},
-  {n:13,ar:'الرعد',uz:"Ar-Ra'd",a:43,t:'Madina'},
-  {n:14,ar:'إبراهيم',uz:'Ibrohim',a:52,t:'Makka'},
-  {n:15,ar:'الحجر',uz:'Al-Hijr',a:99,t:'Makka'},
-  {n:16,ar:'النحل',uz:'An-Nahl',a:128,t:'Makka'},
-  {n:17,ar:'الإسراء',uz:'Al-Isro',a:111,t:'Makka'},
-  {n:18,ar:'الكهف',uz:'Al-Kahf',a:110,t:'Makka'},
-  {n:19,ar:'مريم',uz:'Maryam',a:98,t:'Makka'},
-  {n:20,ar:'طه',uz:'To Ha',a:135,t:'Makka'},
-  {n:21,ar:'الأنبياء',uz:'Al-Anbiyo',a:112,t:'Makka'},
-  {n:22,ar:'الحج',uz:'Al-Haj',a:78,t:'Madina'},
-  {n:23,ar:'المؤمنون',uz:"Al-Mo'minun",a:118,t:'Makka'},
-  {n:24,ar:'النور',uz:'An-Nur',a:64,t:'Madina'},
-  {n:25,ar:'الفرقان',uz:'Al-Furqon',a:77,t:'Makka'},
-  {n:26,ar:'الشعراء',uz:"Ash-Shu'aro",a:227,t:'Makka'},
-  {n:27,ar:'النمل',uz:'An-Naml',a:93,t:'Makka'},
-  {n:28,ar:'القصص',uz:'Al-Qasas',a:88,t:'Makka'},
-  {n:29,ar:'العنكبوت',uz:'Al-Ankabut',a:69,t:'Makka'},
-  {n:30,ar:'الروم',uz:'Ar-Rum',a:60,t:'Makka'},
-  {n:31,ar:'لقمان',uz:'Luqmon',a:34,t:'Makka'},
-  {n:32,ar:'السجدة',uz:'As-Sajda',a:30,t:'Makka'},
-  {n:33,ar:'الأحزاب',uz:'Al-Ahzob',a:73,t:'Madina'},
-  {n:34,ar:'سبأ',uz:'Saba',a:54,t:'Makka'},
-  {n:35,ar:'فاطر',uz:'Fotir',a:45,t:'Makka'},
-  {n:36,ar:'يس',uz:'Yo Sin',a:83,t:'Makka'},
-  {n:37,ar:'الصافات',uz:'As-Soffot',a:182,t:'Makka'},
-  {n:38,ar:'ص',uz:'Sod',a:88,t:'Makka'},
-  {n:39,ar:'الزمر',uz:'Az-Zumar',a:75,t:'Makka'},
-  {n:40,ar:'غافر',uz:"G'ofir",a:85,t:'Makka'},
-  {n:41,ar:'فصلت',uz:'Fussilat',a:54,t:'Makka'},
-  {n:42,ar:'الشورى',uz:'Ash-Shura',a:53,t:'Makka'},
-  {n:43,ar:'الزخرف',uz:'Az-Zukhruf',a:89,t:'Makka'},
-  {n:44,ar:'الدخان',uz:'Ad-Dukhan',a:59,t:'Makka'},
-  {n:45,ar:'الجاثية',uz:'Al-Josiya',a:37,t:'Makka'},
-  {n:46,ar:'الأحقاف',uz:'Al-Ahqof',a:35,t:'Makka'},
-  {n:47,ar:'محمد',uz:'Muhammad',a:38,t:'Madina'},
-  {n:48,ar:'الفتح',uz:'Al-Fath',a:29,t:'Madina'},
-  {n:49,ar:'الحجرات',uz:'Al-Hujurot',a:18,t:'Madina'},
-  {n:50,ar:'ق',uz:'Qof',a:45,t:'Makka'},
-  {n:51,ar:'الذاريات',uz:'Az-Zoriyot',a:60,t:'Makka'},
-  {n:52,ar:'الطور',uz:'At-Tur',a:49,t:'Makka'},
-  {n:53,ar:'النجم',uz:'An-Najm',a:62,t:'Makka'},
-  {n:54,ar:'القمر',uz:'Al-Qamar',a:55,t:'Makka'},
-  {n:55,ar:'الرحمن',uz:'Ar-Rohman',a:78,t:'Madina'},
-  {n:56,ar:'الواقعة',uz:'Al-Voqia',a:96,t:'Makka'},
-  {n:57,ar:'الحديد',uz:'Al-Hadid',a:29,t:'Madina'},
-  {n:58,ar:'المجادلة',uz:'Al-Mujodala',a:22,t:'Madina'},
-  {n:59,ar:'الحشر',uz:'Al-Hashr',a:24,t:'Madina'},
-  {n:60,ar:'الممتحنة',uz:'Al-Mumtahana',a:13,t:'Madina'},
-  {n:61,ar:'الصف',uz:'As-Saff',a:14,t:'Madina'},
-  {n:62,ar:'الجمعة',uz:"Al-Jum'a",a:11,t:'Madina'},
-  {n:63,ar:'المنافقون',uz:'Al-Munofiqun',a:11,t:'Madina'},
-  {n:64,ar:'التغابن',uz:'At-Taghabun',a:18,t:'Madina'},
-  {n:65,ar:'الطلاق',uz:'At-Talaq',a:12,t:'Madina'},
-  {n:66,ar:'التحريم',uz:'At-Tahrim',a:12,t:'Madina'},
-  {n:67,ar:'الملك',uz:'Al-Mulk',a:30,t:'Makka'},
-  {n:68,ar:'القلم',uz:'Al-Qalam',a:52,t:'Makka'},
-  {n:69,ar:'الحاقة',uz:'Al-Haqqa',a:52,t:'Makka'},
-  {n:70,ar:'المعارج',uz:"Al-Ma'orij",a:44,t:'Makka'},
-  {n:71,ar:'نوح',uz:'Nuh',a:28,t:'Makka'},
-  {n:72,ar:'الجن',uz:'Al-Jin',a:28,t:'Makka'},
-  {n:73,ar:'المزمل',uz:'Al-Muzzammil',a:20,t:'Makka'},
-  {n:74,ar:'المدثر',uz:'Al-Muddaththir',a:56,t:'Makka'},
-  {n:75,ar:'القيامة',uz:'Al-Qiyoma',a:40,t:'Makka'},
-  {n:76,ar:'الإنسان',uz:'Al-Inson',a:31,t:'Madina'},
-  {n:77,ar:'المرسلات',uz:'Al-Mursalot',a:50,t:'Makka'},
-  {n:78,ar:'النبأ',uz:'An-Naba',a:40,t:'Makka'},
-  {n:79,ar:'النازعات',uz:"An-Nozi'ot",a:46,t:'Makka'},
-  {n:80,ar:'عبس',uz:'Abasa',a:42,t:'Makka'},
-  {n:81,ar:'التكوير',uz:'At-Takwir',a:29,t:'Makka'},
-  {n:82,ar:'الانفطار',uz:'Al-Infitor',a:19,t:'Makka'},
-  {n:83,ar:'المطففين',uz:'Al-Mutaffifin',a:36,t:'Makka'},
-  {n:84,ar:'الانشقاق',uz:'Al-Inshiqoq',a:25,t:'Makka'},
-  {n:85,ar:'البروج',uz:'Al-Buruj',a:22,t:'Makka'},
-  {n:86,ar:'الطارق',uz:'At-Toriq',a:17,t:'Makka'},
-  {n:87,ar:'الأعلى',uz:"Al-A'lo",a:19,t:'Makka'},
-  {n:88,ar:'الغاشية',uz:"Al-G'oshiya",a:26,t:'Makka'},
-  {n:89,ar:'الفجر',uz:'Al-Fajr',a:30,t:'Makka'},
-  {n:90,ar:'البلد',uz:'Al-Balad',a:20,t:'Makka'},
-  {n:91,ar:'الشمس',uz:'Ash-Shams',a:15,t:'Makka'},
-  {n:92,ar:'الليل',uz:'Al-Layl',a:21,t:'Makka'},
-  {n:93,ar:'الضحى',uz:'Ad-Duho',a:11,t:'Makka'},
-  {n:94,ar:'الشرح',uz:'Ash-Sharh',a:8,t:'Makka'},
-  {n:95,ar:'التين',uz:'At-Tin',a:8,t:'Makka'},
-  {n:96,ar:'العلق',uz:'Al-Alaq',a:19,t:'Makka'},
-  {n:97,ar:'القدر',uz:'Al-Qadr',a:5,t:'Makka'},
-  {n:98,ar:'البينة',uz:'Al-Bayyina',a:8,t:'Madina'},
-  {n:99,ar:'الزلزلة',uz:'Az-Zalzala',a:8,t:'Madina'},
-  {n:100,ar:'العاديات',uz:'Al-Odiyot',a:11,t:'Makka'},
-  {n:101,ar:'القارعة',uz:"Al-Qori'a",a:11,t:'Makka'},
-  {n:102,ar:'التكاثر',uz:'At-Takosur',a:8,t:'Makka'},
-  {n:103,ar:'العصر',uz:'Al-Asr',a:3,t:'Makka'},
-  {n:104,ar:'الهمزة',uz:'Al-Humaza',a:9,t:'Makka'},
-  {n:105,ar:'الفيل',uz:'Al-Fil',a:5,t:'Makka'},
-  {n:106,ar:'قريش',uz:'Quraysh',a:4,t:'Makka'},
-  {n:107,ar:'الماعون',uz:"Al-Mo'un",a:7,t:'Makka'},
-  {n:108,ar:'الكوثر',uz:'Al-Kavshar',a:3,t:'Makka'},
-  {n:109,ar:'الكافرون',uz:'Al-Kofirun',a:6,t:'Makka'},
-  {n:110,ar:'النصر',uz:'An-Nasr',a:3,t:'Madina'},
-  {n:111,ar:'المسد',uz:'Al-Masad',a:5,t:'Makka'},
-  {n:112,ar:'الإخلاص',uz:'Al-Ikhlos',a:4,t:'Makka'},
-  {n:113,ar:'الفلق',uz:'Al-Falaq',a:5,t:'Makka'},
-  {n:114,ar:'الناس',uz:'An-Nos',a:6,t:'Makka'},
+  {n:1,ar:'الفاتحة',uz:'Al-Fotiha',a:7,t:'Makka'},{n:2,ar:'البقرة',uz:'Al-Baqara',a:286,t:'Madina'},
+  {n:3,ar:'آل عمران',uz:'Ali Imron',a:200,t:'Madina'},{n:4,ar:'النساء',uz:'An-Niso',a:176,t:'Madina'},
+  {n:5,ar:'المائدة',uz:'Al-Moida',a:120,t:'Madina'},{n:6,ar:'الأنعام',uz:"Al-An'om",a:165,t:'Makka'},
+  {n:7,ar:'الأعراف',uz:"Al-A'rof",a:206,t:'Makka'},{n:8,ar:'الأنفال',uz:'Al-Anfol',a:75,t:'Madina'},
+  {n:9,ar:'التوبة',uz:'At-Tavba',a:129,t:'Madina'},{n:10,ar:'يونس',uz:'Yunus',a:109,t:'Makka'},
+  {n:11,ar:'هود',uz:'Hud',a:123,t:'Makka'},{n:12,ar:'يوسف',uz:'Yusuf',a:111,t:'Makka'},
+  {n:13,ar:'الرعد',uz:"Ar-Ra'd",a:43,t:'Madina'},{n:14,ar:'إبراهيم',uz:'Ibrohim',a:52,t:'Makka'},
+  {n:15,ar:'الحجر',uz:'Al-Hijr',a:99,t:'Makka'},{n:16,ar:'النحل',uz:'An-Nahl',a:128,t:'Makka'},
+  {n:17,ar:'الإسراء',uz:'Al-Isro',a:111,t:'Makka'},{n:18,ar:'الكهف',uz:'Al-Kahf',a:110,t:'Makka'},
+  {n:19,ar:'مريم',uz:'Maryam',a:98,t:'Makka'},{n:20,ar:'طه',uz:'To Ha',a:135,t:'Makka'},
+  {n:21,ar:'الأنبياء',uz:'Al-Anbiyo',a:112,t:'Makka'},{n:22,ar:'الحج',uz:'Al-Haj',a:78,t:'Madina'},
+  {n:23,ar:'المؤمنون',uz:"Al-Mo'minun",a:118,t:'Makka'},{n:24,ar:'النور',uz:'An-Nur',a:64,t:'Madina'},
+  {n:25,ar:'الفرقان',uz:'Al-Furqon',a:77,t:'Makka'},{n:26,ar:'الشعراء',uz:"Ash-Shu'aro",a:227,t:'Makka'},
+  {n:27,ar:'النمل',uz:'An-Naml',a:93,t:'Makka'},{n:28,ar:'القصص',uz:'Al-Qasas',a:88,t:'Makka'},
+  {n:29,ar:'العنكبوت',uz:'Al-Ankabut',a:69,t:'Makka'},{n:30,ar:'الروم',uz:'Ar-Rum',a:60,t:'Makka'},
+  {n:31,ar:'لقمان',uz:'Luqmon',a:34,t:'Makka'},{n:32,ar:'السجدة',uz:'As-Sajda',a:30,t:'Makka'},
+  {n:33,ar:'الأحزاب',uz:'Al-Ahzob',a:73,t:'Madina'},{n:34,ar:'سبأ',uz:'Saba',a:54,t:'Makka'},
+  {n:35,ar:'فاطر',uz:'Fotir',a:45,t:'Makka'},{n:36,ar:'يس',uz:'Yo Sin',a:83,t:'Makka'},
+  {n:37,ar:'الصافات',uz:'As-Soffot',a:182,t:'Makka'},{n:38,ar:'ص',uz:'Sod',a:88,t:'Makka'},
+  {n:39,ar:'الزمر',uz:'Az-Zumar',a:75,t:'Makka'},{n:40,ar:'غافر',uz:"G'ofir",a:85,t:'Makka'},
+  {n:41,ar:'فصلت',uz:'Fussilat',a:54,t:'Makka'},{n:42,ar:'الشورى',uz:'Ash-Shura',a:53,t:'Makka'},
+  {n:43,ar:'الزخرف',uz:'Az-Zukhruf',a:89,t:'Makka'},{n:44,ar:'الدخان',uz:'Ad-Dukhan',a:59,t:'Makka'},
+  {n:45,ar:'الجاثية',uz:'Al-Josiya',a:37,t:'Makka'},{n:46,ar:'الأحقاف',uz:'Al-Ahqof',a:35,t:'Makka'},
+  {n:47,ar:'محمد',uz:'Muhammad',a:38,t:'Madina'},{n:48,ar:'الفتح',uz:'Al-Fath',a:29,t:'Madina'},
+  {n:49,ar:'الحجرات',uz:'Al-Hujurot',a:18,t:'Madina'},{n:50,ar:'ق',uz:'Qof',a:45,t:'Makka'},
+  {n:51,ar:'الذاريات',uz:'Az-Zoriyot',a:60,t:'Makka'},{n:52,ar:'الطور',uz:'At-Tur',a:49,t:'Makka'},
+  {n:53,ar:'النجم',uz:'An-Najm',a:62,t:'Makka'},{n:54,ar:'القمر',uz:'Al-Qamar',a:55,t:'Makka'},
+  {n:55,ar:'الرحمن',uz:'Ar-Rohman',a:78,t:'Madina'},{n:56,ar:'الواقعة',uz:'Al-Voqia',a:96,t:'Makka'},
+  {n:57,ar:'الحديد',uz:'Al-Hadid',a:29,t:'Madina'},{n:58,ar:'المجادلة',uz:'Al-Mujodala',a:22,t:'Madina'},
+  {n:59,ar:'الحشر',uz:'Al-Hashr',a:24,t:'Madina'},{n:60,ar:'الممتحنة',uz:'Al-Mumtahana',a:13,t:'Madina'},
+  {n:61,ar:'الصف',uz:'As-Saff',a:14,t:'Madina'},{n:62,ar:'الجمعة',uz:"Al-Jum'a",a:11,t:'Madina'},
+  {n:63,ar:'المنافقون',uz:'Al-Munofiqun',a:11,t:'Madina'},{n:64,ar:'التغابن',uz:'At-Taghabun',a:18,t:'Madina'},
+  {n:65,ar:'الطلاق',uz:'At-Talaq',a:12,t:'Madina'},{n:66,ar:'التحريم',uz:'At-Tahrim',a:12,t:'Madina'},
+  {n:67,ar:'الملك',uz:'Al-Mulk',a:30,t:'Makka'},{n:68,ar:'القلم',uz:'Al-Qalam',a:52,t:'Makka'},
+  {n:69,ar:'الحاقة',uz:'Al-Haqqa',a:52,t:'Makka'},{n:70,ar:'المعارج',uz:"Al-Ma'orij",a:44,t:'Makka'},
+  {n:71,ar:'نوح',uz:'Nuh',a:28,t:'Makka'},{n:72,ar:'الجن',uz:'Al-Jin',a:28,t:'Makka'},
+  {n:73,ar:'المزمل',uz:'Al-Muzzammil',a:20,t:'Makka'},{n:74,ar:'المدثر',uz:'Al-Muddaththir',a:56,t:'Makka'},
+  {n:75,ar:'القيامة',uz:'Al-Qiyoma',a:40,t:'Makka'},{n:76,ar:'الإنسان',uz:'Al-Inson',a:31,t:'Madina'},
+  {n:77,ar:'المرسلات',uz:'Al-Mursalot',a:50,t:'Makka'},{n:78,ar:'النبأ',uz:'An-Naba',a:40,t:'Makka'},
+  {n:79,ar:'النازعات',uz:"An-Nozi'ot",a:46,t:'Makka'},{n:80,ar:'عبس',uz:'Abasa',a:42,t:'Makka'},
+  {n:81,ar:'التكوير',uz:'At-Takwir',a:29,t:'Makka'},{n:82,ar:'الانفطار',uz:'Al-Infitor',a:19,t:'Makka'},
+  {n:83,ar:'المطففين',uz:'Al-Mutaffifin',a:36,t:'Makka'},{n:84,ar:'الانشقاق',uz:'Al-Inshiqoq',a:25,t:'Makka'},
+  {n:85,ar:'البروج',uz:'Al-Buruj',a:22,t:'Makka'},{n:86,ar:'الطارق',uz:'At-Toriq',a:17,t:'Makka'},
+  {n:87,ar:'الأعلى',uz:"Al-A'lo",a:19,t:'Makka'},{n:88,ar:'الغاشية',uz:"Al-G'oshiya",a:26,t:'Makka'},
+  {n:89,ar:'الفجر',uz:'Al-Fajr',a:30,t:'Makka'},{n:90,ar:'البلد',uz:'Al-Balad',a:20,t:'Makka'},
+  {n:91,ar:'الشمس',uz:'Ash-Shams',a:15,t:'Makka'},{n:92,ar:'الليل',uz:'Al-Layl',a:21,t:'Makka'},
+  {n:93,ar:'الضحى',uz:'Ad-Duho',a:11,t:'Makka'},{n:94,ar:'الشرح',uz:'Ash-Sharh',a:8,t:'Makka'},
+  {n:95,ar:'التين',uz:'At-Tin',a:8,t:'Makka'},{n:96,ar:'العلق',uz:'Al-Alaq',a:19,t:'Makka'},
+  {n:97,ar:'القدر',uz:'Al-Qadr',a:5,t:'Makka'},{n:98,ar:'البينة',uz:'Al-Bayyina',a:8,t:'Madina'},
+  {n:99,ar:'الزلزلة',uz:'Az-Zalzala',a:8,t:'Madina'},{n:100,ar:'العاديات',uz:'Al-Odiyot',a:11,t:'Makka'},
+  {n:101,ar:'القارعة',uz:"Al-Qori'a",a:11,t:'Makka'},{n:102,ar:'التكاثر',uz:'At-Takosur',a:8,t:'Makka'},
+  {n:103,ar:'العصر',uz:'Al-Asr',a:3,t:'Makka'},{n:104,ar:'الهمزة',uz:'Al-Humaza',a:9,t:'Makka'},
+  {n:105,ar:'الفيل',uz:'Al-Fil',a:5,t:'Makka'},{n:106,ar:'قريش',uz:'Quraysh',a:4,t:'Makka'},
+  {n:107,ar:'الماعون',uz:"Al-Mo'un",a:7,t:'Makka'},{n:108,ar:'الكوثر',uz:'Al-Kavshar',a:3,t:'Makka'},
+  {n:109,ar:'الكافرون',uz:'Al-Kofirun',a:6,t:'Makka'},{n:110,ar:'النصر',uz:'An-Nasr',a:3,t:'Madina'},
+  {n:111,ar:'المسد',uz:'Al-Masad',a:5,t:'Makka'},{n:112,ar:'الإخلاص',uz:'Al-Ikhlos',a:4,t:'Makka'},
+  {n:113,ar:'الفلق',uz:'Al-Falaq',a:5,t:'Makka'},{n:114,ar:'الناس',uz:'An-Nos',a:6,t:'Makka'},
 ];
 
 const au=document.getElementById('au');
@@ -787,16 +601,12 @@ function setPP(i){document.getElementById('ppbtn').textContent=i;}
 function fmtT(s){if(!isFinite(s)||isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;}
 
 async function fetchSurahAyahs(n,ed){
-  const k=`${n}|${ed}`;
-  if(apiCache[k])return apiCache[k];
-  const res=await fetch(`https://api.alquran.cloud/v1/surah/${n}/${ed}`);
-  if(!res.ok)throw new Error(`HTTP ${res.status}`);
-  const j=await res.json();
-  if(j.code!==200)throw new Error(`API kodi: ${j.code}`);
-  const urls=j.data.ayahs.map(a=>a.audio);
-  apiCache[k]=urls;return urls;
+  const k=`${n}|${ed}`;if(apiCache[k])return apiCache[k];
+  const r=await fetch(`https://api.alquran.cloud/v1/surah/${n}/${ed}`);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const j=await r.json();if(j.code!==200)throw new Error('API: '+j.code);
+  return apiCache[k]=j.data.ayahs.map(a=>a.audio);
 }
-
 async function loadSurah(idx,autoPlay=true){
   if(busy)return;
   curIdx=idx;ayahIdx=0;ayahUrls=[];playing=false;busy=true;
@@ -805,56 +615,34 @@ async function loadSurah(idx,autoPlay=true){
   document.getElementById('psub').textContent=ed.name;
   document.getElementById('player').classList.add('vis');
   document.getElementById('pfil').style.width='0%';
-  document.getElementById('tc').textContent='0:00';
-  document.getElementById('td').textContent='--:--';
-  setPP('⏳');setMsg(`${s.uz} yuklanmoqda...`);
-  renderList(filtered);
+  document.getElementById('tc').textContent='0:00';document.getElementById('td').textContent='--:--';
+  setPP('⏳');setMsg(`${s.uz} yuklanmoqda...`);renderList(filtered);
   try{
     ayahUrls=await fetchSurahAyahs(s.n,ed.ed);
-    busy=false;setMsg(`${ayahUrls.length} oyat | ${ed.name}`);
-    playAyah(0,autoPlay);
-  }catch(e){
-    busy=false;setPP('▶');setMsg(`❌ ${e.message}. Internet aloqasini tekshiring.`,true);
-    renderList(filtered);
-  }
+    busy=false;setMsg(`${ayahUrls.length} oyat | ${ed.name}`);playAyah(0,autoPlay);
+  }catch(e){busy=false;setPP('▶');setMsg('❌ '+e.message,true);renderList(filtered);}
 }
-
 function playAyah(idx,auto=true){
   if(idx>=ayahUrls.length){moveSurah(1);return;}
-  ayahIdx=idx;au.src=ayahUrls[idx];au.load();
-  setMsg(`${idx+1}/${ayahUrls.length} — oyat`);
-  if(auto){
-    au.play().then(()=>{playing=true;setPP('⏸');renderList(filtered);})
-      .catch(e=>{setPP('▶');setMsg('❌ '+e.message,true);});
-  } else {setPP('▶');}
+  ayahIdx=idx;au.src=ayahUrls[idx];au.load();setMsg(`${idx+1}/${ayahUrls.length} — oyat`);
+  if(auto){au.play().then(()=>{playing=true;setPP('⏸');renderList(filtered);}).catch(e=>{setPP('▶');setMsg('❌ '+e.message,true);});}
+  else setPP('▶');
 }
-
 function togglePlay(){
   if(curIdx===null||busy)return;
-  if(playing){au.pause();}
-  else{if(!au.src){playAyah(ayahIdx,true);return;}
-    au.play().then(()=>{playing=true;setPP('⏸');}).catch(e=>setMsg('❌ '+e.message,true));}
+  if(playing){au.pause();}else{
+    if(!au.src){playAyah(ayahIdx,true);return;}
+    au.play().then(()=>{playing=true;setPP('⏸');}).catch(e=>setMsg('❌ '+e.message,true));
+  }
 }
 function moveSurah(d){if(curIdx===null)return;loadSurah((curIdx+d+SURAHS.length)%SURAHS.length,true);}
-function closePlayer(){
-  au.pause();playing=false;curIdx=null;ayahUrls=[];
-  document.getElementById('player').classList.remove('vis');
-  renderList(filtered);
-}
-function seekAudio(e){
-  if(!au.duration)return;
-  const r=document.getElementById('pbar').getBoundingClientRect();
-  au.currentTime=((e.clientX-r.left)/r.width)*au.duration;
-}
+function closePlayer(){au.pause();playing=false;curIdx=null;ayahUrls=[];document.getElementById('player').classList.remove('vis');renderList(filtered);}
+function seekAudio(e){if(!au.duration)return;const r=document.getElementById('pbar').getBoundingClientRect();au.currentTime=((e.clientX-r.left)/r.width)*au.duration;}
 
 au.addEventListener('playing',()=>{playing=true;setPP('⏸');renderList(filtered);});
 au.addEventListener('pause',()=>{playing=false;setPP('▶');renderList(filtered);});
 au.addEventListener('ended',()=>playAyah(ayahIdx+1,true));
-au.addEventListener('timeupdate',()=>{
-  if(!au.duration)return;
-  document.getElementById('pfil').style.width=(au.currentTime/au.duration*100)+'%';
-  document.getElementById('tc').textContent=fmtT(au.currentTime);
-});
+au.addEventListener('timeupdate',()=>{if(!au.duration)return;document.getElementById('pfil').style.width=(au.currentTime/au.duration*100)+'%';document.getElementById('tc').textContent=fmtT(au.currentTime);});
 au.addEventListener('durationchange',()=>document.getElementById('td').textContent=fmtT(au.duration));
 au.addEventListener('error',()=>{setMsg(`${ayahIdx+1}-oyat xato, keyingisi...`,true);setTimeout(()=>playAyah(ayahIdx+1,true),600);});
 
@@ -866,7 +654,6 @@ function buildRec(){
     row.appendChild(b);
   });
 }
-
 function renderList(list){
   const el=document.getElementById('slist');
   if(!list.length){el.innerHTML='<div class="nores">🔍 Hech narsa topilmadi</div>';return;}
@@ -874,56 +661,59 @@ function renderList(list){
   list.forEach(s=>{
     const idx=s.n-1,isCur=curIdx===idx;
     const d=document.createElement('div');d.className='si2'+(isCur?' pl':'');
-    d.innerHTML=`<div class="sno">${s.n}</div>`+
-      `<div class="sinf"><div class="sar">${s.ar}</div><div class="suz">${s.uz}</div></div>`+
-      `<div class="smeta">${s.a} oyat<br><small>${s.t}</small></div>`+
-      `<div class="pbtn">${isCur&&playing?'⏸':'▶'}</div>`;
+    d.innerHTML=`<div class="sno">${s.n}</div><div class="sinf"><div class="sar">${s.ar}</div><div class="suz">${s.uz}</div></div><div class="smeta">${s.a} oyat<br><small>${s.t}</small></div><div class="pbtn">${isCur&&playing?'⏸':'▶'}</div>`;
     d.onclick=()=>{if(curIdx===idx&&!busy)togglePlay();else loadSurah(idx,true);};
     el.appendChild(d);
   });
 }
-
 function doFilter(){
   const q=document.getElementById('srch').value.toLowerCase().trim();
   filtered=q?SURAHS.filter(s=>s.uz.toLowerCase().includes(q)||s.ar.includes(q)||String(s.n).includes(q)):[...SURAHS];
   renderList(filtered);
 }
 
-/* ── BOOT ── */
-buildRec();
-renderList(SURAHS);
-if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();}
+/* ══ BOOT ══ */
+buildRec();renderList(SURAHS);
 
 window.addEventListener('DOMContentLoaded',()=>{
   if(window.Telegram?.WebApp){
-    const tg=window.Telegram.WebApp;tg.ready();tg.expand();
+    const tg=Telegram.WebApp;tg.ready();tg.expand();
     tg.setHeaderColor?.('#0a0f1a');tg.setBackgroundColor?.('#0a0f1a');
   }
 
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';
+  // Boshlang'ich qibla (Toshkent)
+  updateQibla();setLocUI(userLat,userLon,"Toshkent, O'zbekiston");
+
+  // Canvas render loop
   requestAnimationFrame(qLoop);
 
-  const isIOS = typeof DeviceOrientationEvent !== 'undefined' &&
-                typeof DeviceOrientationEvent.requestPermission === 'function';
+  // Joylashuvni aniqlash (GPS → IP → default)
+  startGPS();
 
-  if(isIOS){
-    // iOS requires user gesture to request permission — show button
-    showPermBtn('Kompasni ishlatish uchun qurilma ruxsatini bering','📍 Ruxsat berish', askPermission);
+  // Kompas sensorini boshlash
+  if(isIOS()){
+    // iOS: foydalanuvchi gesti talab qilinadi
+    showBtn(
+      'Kompasni ishlatish uchun qurilma ruxsatini bering',
+      '📍 Ruxsat berish',
+      ()=>{
+        document.getElementById('qpbtn').style.display='none';
+        setLoadMsg('Ruxsat so\'ralmoqda...');
+        requestSensor();
+      }
+    );
   } else {
-    // Android / Desktop: try Generic Sensor API first, fall back to DeviceOrientation
-    const usedAbsolute = tryAbsoluteSensor();
-    if(!usedAbsolute){
-      window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
-      window.addEventListener('deviceorientation', onOrientEvent, true);
-    }
-    startGeo();
-    // If no sensor fires after 4s, show demo button
+    // Android / Desktop
+    requestSensor();
     setTimeout(()=>{
       if(!sensorOK){
-        showPermBtn('Kompas sensori ishlamayapti yoki ruxsat yo\'q.<br>Telegram ilovasi orqali foydalaning yoki demo rejimni sinab ko\'ring.','▶ Demo rejim', startDemo);
+        showBtn(
+          'Kompas sensori javob bermadi.<br><small style="color:#4a5568">Telegram ilovasidan foydalaning yoki demo sinab ko\'ring</small>',
+          '▶ Demo rejim',
+          startDemo
+        );
       }
-    }, 4000);
+    },5000);
   }
 });
 </script>
