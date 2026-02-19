@@ -321,7 +321,7 @@ function goTab(i){
 }
 
 /* ══════════════════════════════════════════════════════════
-   QIBLA COMPASS — new design
+   QIBLA COMPASS — FIXED VERSION
 ══════════════════════════════════════════════════════════ */
 
 // Stars
@@ -337,7 +337,11 @@ function goTab(i){
 
 const KA_LAT=21.4225,KA_LON=39.8262;
 let userLat=41.2995,userLon=69.2401;
-let qiblaTrue=0,rawHead=0,smoothHead=0,sensorOK=false,gpsOK=false,prevAligned=false,kaabaClicks=0;
+let qiblaTrue=0;
+// FIX: use separate target and current for smooth interpolation
+let targetHead=0, currentHead=0;
+let sensorOK=false,gpsOK=false,prevAligned=false,kaabaClicks=0;
+let hasFirstReading=false;
 
 function calcQibla(lat,lon){
   const R=d=>d*Math.PI/180,φ1=R(lat),φ2=R(KA_LAT),Δλ=R(KA_LON-lon);
@@ -346,9 +350,26 @@ function calcQibla(lat,lon){
   return norm(Math.atan2(y,x)*180/Math.PI);
 }
 function norm(a){return((a%360)+360)%360;}
-function lerpAng(cur,tgt,t){let d=norm(tgt)-norm(cur);if(d>180)d-=360;if(d<-180)d+=360;return cur+d*t;}
-function isAligned(){let d=norm(qiblaTrue)-norm(smoothHead);if(d>180)d-=360;if(d<-180)d+=360;return Math.abs(d)<5;}
-function cardDir(deg){return["Shimol","Shim-Sharq","Sharq","Jan-Sharq","Janub","Jan-Gʻarb","Gʻarb","Shim-Gʻarb"][Math.round(norm(deg)/45)%8];}
+
+// FIX: proper angular interpolation that handles 359°→1° wraparound
+function lerpAngle(current, target, t){
+  let diff = target - current;
+  // Normalize diff to [-180, 180]
+  while(diff > 180) diff -= 360;
+  while(diff < -180) diff += 360;
+  return current + diff * t;
+}
+
+function isAligned(){
+  let d = qiblaTrue - norm(currentHead);
+  while(d > 180) d -= 360;
+  while(d < -180) d += 360;
+  return Math.abs(d) < 5;
+}
+
+function cardDir(deg){
+  return["Shimol","Shim-Sharq","Sharq","Jan-Sharq","Janub","Jan-Gʻarb","Gʻarb","Shim-Gʻarb"][Math.round(norm(deg)/45)%8];
+}
 
 const qcv=document.getElementById('qcv');
 const qctx=qcv.getContext('2d');
@@ -429,18 +450,22 @@ function drawCompass(heading){
 }
 
 function qLoop(){
-  smoothHead=lerpAng(smoothHead,rawHead,0.10);
-  drawCompass(smoothHead);
-  const aln=isAligned(),hdDeg=Math.round(norm(smoothHead));
+  // FIX: smooth interpolation with correct wraparound handling
+  currentHead = lerpAngle(currentHead, targetHead, 0.12);
+  // Keep in [0,360)
+  currentHead = norm(currentHead);
+
+  drawCompass(currentHead);
+  const aln=isAligned(),hdDeg=Math.round(norm(currentHead));
   const dv=document.getElementById('qdval');
   dv.textContent=hdDeg+'°';dv.classList.toggle('on',aln);
-  document.getElementById('qddir').textContent=cardDir(smoothHead);
+  document.getElementById('qddir').textContent=cardDir(currentHead);
   document.getElementById('qgring').classList.toggle('on',aln);
   document.getElementById('qkaaba').classList.toggle('on',aln);
   document.getElementById('qbanner').classList.toggle('show',aln);
   const dbg=document.getElementById('qdbg');
   if(dbg.classList.contains('show')){
-    dbg.innerHTML=`<b style="color:#e8edf5">Debug:</b><br>rawHead: <b>${rawHead.toFixed(2)}°</b><br>smoothHead: <b>${smoothHead.toFixed(2)}°</b><br>qiblaTrue: <b>${qiblaTrue.toFixed(2)}°</b><br>needle: <b>${norm(qiblaTrue-smoothHead).toFixed(2)}°</b><br>GPS: <b>${userLat.toFixed(5)}, ${userLon.toFixed(5)}</b><br>aligned: <b>${aln}</b>`;
+    dbg.innerHTML=`<b style="color:#e8edf5">Debug:</b><br>targetHead: <b>${targetHead.toFixed(2)}°</b><br>currentHead: <b>${currentHead.toFixed(2)}°</b><br>qiblaTrue: <b>${qiblaTrue.toFixed(2)}°</b><br>needle: <b>${norm(qiblaTrue-currentHead).toFixed(2)}°</b><br>GPS: <b>${userLat.toFixed(5)}, ${userLon.toFixed(5)}</b><br>aligned: <b>${aln}</b><br>sensorOK: <b>${sensorOK}</b>`;
   }
   if(aln&&!prevAligned&&sensorOK){
     document.body.classList.add('qfl');
@@ -451,28 +476,83 @@ function qLoop(){
   requestAnimationFrame(qLoop);
 }
 
-function onOrient(e){
-  let heading;
-  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)){heading=e.webkitCompassHeading;}
-  else if(typeof e.alpha==='number'&&e.alpha!==null){heading=norm(360-e.alpha);}
-  else return;
-  rawHead=heading;
-  if(!sensorOK){sensorOK=true;document.getElementById('qdot').classList.add('on');document.getElementById('qstxt').textContent='Kompas faol';hideQLoading();}
+// FIX: Completely rewritten sensor handler — correct heading extraction for all platforms
+function onOrientEvent(e){
+  let heading = null;
+
+  // iOS: webkitCompassHeading is already true north heading (0-360)
+  if(typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading) && e.webkitCompassHeading >= 0){
+    heading = e.webkitCompassHeading;
+  }
+  // Android absolute: e.absolute===true means alpha is referenced to true north
+  else if(e.absolute === true && typeof e.alpha === 'number' && e.alpha !== null){
+    // alpha=0 means device top points North; compass heading = 360 - alpha
+    heading = norm(360 - e.alpha);
+  }
+  // Android non-absolute (magnetic): alpha relative to arbitrary 0
+  else if(typeof e.alpha === 'number' && e.alpha !== null){
+    heading = norm(360 - e.alpha);
+  }
+
+  if(heading === null) return;
+
+  // FIX: on first reading, snap instantly (no lerp from 0)
+  if(!hasFirstReading){
+    currentHead = heading;
+    hasFirstReading = true;
+  }
+  targetHead = heading;
+
+  if(!sensorOK){
+    sensorOK = true;
+    document.getElementById('qdot').classList.add('on');
+    document.getElementById('qstxt').textContent = e.absolute ? 'Kompas faol (Absolute)' : 'Kompas faol';
+    hideQLoading();
+  }
 }
 
+// FIX: Try AbsoluteOrientationSensor (Generic Sensor API) with proper quaternion→heading
 function tryAbsoluteSensor(){
-  if(typeof AbsoluteOrientationSensor==='undefined')return false;
+  if(typeof AbsoluteOrientationSensor === 'undefined') return false;
   try{
-    const s=new AbsoluteOrientationSensor({frequency:30,referenceFrame:'screen'});
-    s.addEventListener('reading',()=>{
-      const [x,y,z,w]=s.quaternion;
-      const sinA=2*(w*z+x*y),cosA=1-2*(y*y+z*z);
-      rawHead=norm(-Math.atan2(sinA,cosA)*180/Math.PI);
-      if(!sensorOK){sensorOK=true;document.getElementById('qdot').classList.add('on');document.getElementById('qstxt').textContent='Kompas faol (Absolute)';hideQLoading();}
+    const sensor = new AbsoluteOrientationSensor({frequency:30, referenceFrame:'screen'});
+    sensor.addEventListener('reading', ()=>{
+      try{
+        const q = sensor.quaternion; // [x, y, z, w]
+        if(!q || q.length < 4) return;
+        const [x, y, z, w] = q;
+        // Convert quaternion to heading (yaw around Z axis pointing up)
+        const sinYaw = 2*(w*z + x*y);
+        const cosYaw = 1 - 2*(y*y + z*z);
+        let heading = Math.atan2(sinYaw, cosYaw) * 180 / Math.PI;
+        heading = norm(heading);
+
+        if(!hasFirstReading){
+          currentHead = heading;
+          hasFirstReading = true;
+        }
+        targetHead = heading;
+
+        if(!sensorOK){
+          sensorOK = true;
+          document.getElementById('qdot').classList.add('on');
+          document.getElementById('qstxt').textContent = 'Kompas faol (Sensor API)';
+          hideQLoading();
+        }
+      }catch(err){}
     });
-    s.addEventListener('error',()=>{window.addEventListener('deviceorientationabsolute',onOrient,true);window.addEventListener('deviceorientation',onOrient,true);});
-    s.start();return true;
-  }catch(e){return false;}
+    sensor.addEventListener('error', (e)=>{
+      console.warn('AbsoluteOrientationSensor error:', e.error);
+      // Fallback to DeviceOrientation events
+      window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
+      window.addEventListener('deviceorientation', onOrientEvent, true);
+    });
+    sensor.start();
+    return true;
+  }catch(err){
+    console.warn('AbsoluteOrientationSensor unavailable:', err);
+    return false;
+  }
 }
 
 function startGeo(){
@@ -521,25 +601,49 @@ function showPermBtn(msg,label,fn){
   if(label)btn.textContent=label;if(fn)btn.onclick=fn;btn.style.display='block';
 }
 
+// FIX: Unified permission request for iOS and Android
 function askPermission(){
   document.getElementById('qpbtn').style.display='none';
   document.getElementById('QLSbody').innerHTML='<div class="qspin"></div><div class="qlsub">Ruxsat so\'ralmoqda...</div>';
-  const isIOS=typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function';
+
+  const isIOS = typeof DeviceOrientationEvent !== 'undefined' &&
+                typeof DeviceOrientationEvent.requestPermission === 'function';
+
   if(isIOS){
     DeviceOrientationEvent.requestPermission()
-      .then(s=>{if(s==='granted'){window.addEventListener('deviceorientation',onOrient,true);startGeo();}
-        else showPermBtn('Ruxsat rad etildi. Brauzer sozlamalarini tekshiring.','▶ Demo',startDemo);})
+      .then(state=>{
+        if(state === 'granted'){
+          // FIX: listen to both absolute and regular, absolute preferred
+          window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
+          window.addEventListener('deviceorientation', onOrientEvent, true);
+          startGeo();
+        } else {
+          showPermBtn('Ruxsat rad etildi. Brauzer sozlamalarini tekshiring.','▶ Demo',startDemo);
+        }
+      })
       .catch(e=>showPermBtn('Xato: '+e.message,'▶ Demo',startDemo));
-  } else {window.addEventListener('deviceorientation',onOrient,true);startGeo();}
+  } else {
+    window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
+    window.addEventListener('deviceorientation', onOrientEvent, true);
+    startGeo();
+  }
 }
 
-let demoR;
+let demoAnimId;
 function startDemo(){
-  if(sensorOK)return;sensorOK=true;
+  if(sensorOK)return;
+  sensorOK=true;
+  hasFirstReading=true;
   document.getElementById('qdot').classList.add('on');
   document.getElementById('qstxt').textContent='Demo rejim';
-  let t=0;(function tick(){demoR=requestAnimationFrame(tick);t+=.45;rawHead=t%360;})();
-  hideQLoading();startGeo();
+  let t=0;
+  (function tick(){
+    demoAnimId=requestAnimationFrame(tick);
+    t+=0.45;
+    targetHead=t%360;
+  })();
+  hideQLoading();
+  startGeo();
 }
 
 document.getElementById('qkaaba').addEventListener('click',()=>{
@@ -795,21 +899,31 @@ window.addEventListener('DOMContentLoaded',()=>{
     const tg=window.Telegram.WebApp;tg.ready();tg.expand();
     tg.setHeaderColor?.('#0a0f1a');tg.setBackgroundColor?.('#0a0f1a');
   }
+
   qiblaTrue=calcQibla(userLat,userLon);
   document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';
   requestAnimationFrame(qLoop);
 
-  const isIOS=typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function';
+  const isIOS = typeof DeviceOrientationEvent !== 'undefined' &&
+                typeof DeviceOrientationEvent.requestPermission === 'function';
+
   if(isIOS){
-    showPermBtn('Kompasni ishlatish uchun qurilma ruxsatini bering','📍 Ruxsat berish',askPermission);
+    // iOS requires user gesture to request permission — show button
+    showPermBtn('Kompasni ishlatish uchun qurilma ruxsatini bering','📍 Ruxsat berish', askPermission);
   } else {
-    const usedAbsolute=tryAbsoluteSensor();
+    // Android / Desktop: try Generic Sensor API first, fall back to DeviceOrientation
+    const usedAbsolute = tryAbsoluteSensor();
     if(!usedAbsolute){
-      window.addEventListener('deviceorientationabsolute',onOrient,true);
-      window.addEventListener('deviceorientation',onOrient,true);
+      window.addEventListener('deviceorientationabsolute', onOrientEvent, true);
+      window.addEventListener('deviceorientation', onOrientEvent, true);
     }
     startGeo();
-    setTimeout(()=>{if(!sensorOK)showPermBtn('Kompas sensori ishlamayapti yoki ruxsat yo\'q','▶ Demo rejim',startDemo);},4000);
+    // If no sensor fires after 4s, show demo button
+    setTimeout(()=>{
+      if(!sensorOK){
+        showPermBtn('Kompas sensori ishlamayapti yoki ruxsat yo\'q.<br>Telegram ilovasi orqali foydalaning yoki demo rejimni sinab ko\'ring.','▶ Demo rejim', startDemo);
+      }
+    }, 4000);
   }
 });
 </script>
