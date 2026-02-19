@@ -20,12 +20,14 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);
 .stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .star{position:absolute;border-radius:50%;background:#fff;opacity:0;animation:tw var(--d) ease-in-out infinite var(--dl)}
 @keyframes tw{0%,100%{opacity:0}50%{opacity:.65}}
+
+/* NAV */
 .nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-shrink:0;z-index:50;}
-.nb{flex:1;padding:13px 8px 11px;border:none;background:transparent;color:var(--mt);
-  font-family:'Tajawal',sans-serif;font-size:12px;font-weight:500;cursor:pointer;
+.nb{flex:1;padding:11px 6px 9px;border:none;background:transparent;color:var(--mt);
+  font-family:'Tajawal',sans-serif;font-size:11px;font-weight:500;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;transition:color .2s;}
-.nb .ni{font-size:22px;}.nb.on{color:var(--g);}
-.nb::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2px;
+.nb .ni{font-size:20px;}.nb.on{color:var(--g);}
+.nb::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;
   border-radius:2px 2px 0 0;background:var(--g);transform:scaleX(0);transition:transform .2s;}
 .nb.on::after{transform:scaleX(1);}
 .pages{flex:1;position:relative;overflow:hidden;}
@@ -35,7 +37,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);
 .pg::-webkit-scrollbar{width:3px;}
 .pg::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px;}
 
-#pg0{display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding-bottom:24px;}
+/* ══════════ TAB 1: QIBLA ══════════ */
+#pg0{display:flex;flex-direction:column;align-items:center;padding-bottom:24px;}
 .qstatus{z-index:10;display:flex;align-items:center;gap:7px;padding:10px 0 4px}
 .qdot{width:8px;height:8px;border-radius:50%;background:#3a4455;transition:all .4s}
 .qdot.on{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.6);animation:pd 1.8s infinite}
@@ -65,11 +68,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);
 .qloccoords{font-size:11px;color:#6b7685;margin-top:1px}
 .qbanner{z-index:10;width:calc(100% - 32px);max-width:340px;background:linear-gradient(135deg,rgba(34,197,94,.16),rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.35);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;}
 .qbanner.show{opacity:1;transform:translateY(0)}
-.qbt{font-size:14px;font-weight:800;color:#22c55e}
-.qbs{font-size:11px;color:#6b7685}
+.qbt{font-size:14px;font-weight:800;color:#22c55e}.qbs{font-size:11px;color:#6b7685}
 .qdbg{z-index:10;width:calc(100% - 32px);max-width:340px;background:#0f1520;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;margin-top:8px;font-size:11px;color:#6b7685;line-height:1.8;display:none;}
 .qdbg.show{display:block}
 
+/* Loading */
 .qls{position:fixed;inset:0;background:#0a0f1a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;gap:14px;transition:opacity .6s;}
 .qls.hide{opacity:0;pointer-events:none}
 .qlic{font-size:60px;animation:qflI 2.2s ease-in-out infinite}
@@ -82,6 +85,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);
 @keyframes qflash{0%,100%{background:#0a0f1a}45%{background:rgba(34,197,94,.07)}}
 body.qfl{animation:qflash .7s ease}
 
+/* ══════════ TAB 2: QUR'ON ══════════ */
 .qrp{display:flex;flex-direction:column;}
 .qhdr{padding:13px 13px 9px;background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10;}
 .qhdr h2{font-family:'Amiri',serif;font-size:20px;color:var(--gold);text-shadow:0 0 12px rgba(212,168,67,.3);text-align:center;margin-bottom:8px;}
@@ -89,7 +93,7 @@ body.qfl{animation:qflash .7s ease}
 .sbox input{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:10px;padding:9px 12px 9px 36px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;}
 .sbox input:focus{border-color:var(--g);}
 .sbox input::placeholder{color:var(--mt);}
-.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
+.sbico{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
 .rcrow{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:2px;}
 .rcrow::-webkit-scrollbar{display:none;}
 .rchip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1.5px solid var(--bdr);background:var(--s2);color:var(--mt);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Tajawal',sans-serif;white-space:nowrap;}
@@ -108,6 +112,8 @@ body.qfl{animation:qflash .7s ease}
 .pbtn{width:32px;height:32px;border-radius:50%;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .si2.pl .pbtn{background:var(--g);border-color:var(--g);}
 .nores{text-align:center;padding:40px 20px;color:var(--mt);font-size:13px;}
+
+/* Player */
 .player{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,#081828 0%,rgba(11,30,53,.99) 100%);border-top:1px solid var(--bdr);padding:10px 14px 20px;z-index:200;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 30px rgba(0,0,0,.7);}
 .player.vis{transform:translateY(0);}
 .pinfo{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
@@ -124,14 +130,71 @@ body.qfl{animation:qflash .7s ease}
 .ppbtn:active{transform:scale(.92);}
 .pmsg{font-size:11px;color:var(--mt);text-align:center;margin-top:5px;min-height:16px;line-height:1.4;}
 .pmsg.err{color:#e74c3c;}
+
+/* ══════════ TAB 3: NAMOZ ══════════ */
+#pg2{display:flex;flex-direction:column;padding-bottom:30px;}
+.nhdr{padding:14px 14px 10px;background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.nhdr h2{font-family:'Amiri',serif;font-size:20px;color:var(--gold);text-align:center;text-shadow:0 0 12px rgba(212,168,67,.3);}
+/* Category tabs */
+.ncats{display:flex;gap:0;background:var(--s2);border-radius:12px;margin:10px 14px 0;padding:3px;border:1px solid var(--bdr);}
+.ncat{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;transition:all .2s;text-align:center;}
+.ncat.on{background:var(--g);color:#fff;box-shadow:0 2px 10px rgba(29,185,84,.4);}
+/* Content area */
+.ncontent{flex:1;overflow-y:auto;padding:0 14px 20px;}
+
+/* Section title */
+.nsectitle{font-family:'Amiri',serif;font-size:17px;color:var(--gold);margin:16px 0 10px;text-align:center;}
+/* Step card */
+.nstep{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;margin-bottom:10px;overflow:hidden;}
+.nstep-hd{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
+.nstep-num{width:32px;height:32px;border-radius:50%;background:rgba(29,185,84,.15);border:1.5px solid rgba(29,185,84,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--g);flex-shrink:0;}
+.nstep-ico{font-size:22px;flex-shrink:0;}
+.nstep-ttl{flex:1;font-size:14px;font-weight:700;color:var(--tx);}
+.nstep-arr{color:var(--mt);font-size:14px;transition:transform .2s;}
+.nstep.open .nstep-arr{transform:rotate(180deg);}
+.nstep-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.nstep.open .nstep-body{max-height:600px;}
+.nstep-inner{padding:0 14px 14px;}
+.nstep-ar{font-family:'Amiri',serif;font-size:22px;direction:rtl;text-align:center;color:#c8d8e8;line-height:1.7;margin-bottom:8px;padding:10px;background:rgba(0,0,0,.2);border-radius:10px;}
+.nstep-uz{font-size:13px;color:var(--mt);line-height:1.7;margin-bottom:6px;}
+.nstep-desc{font-size:12px;color:#3d5a72;line-height:1.6;border-top:1px solid var(--bdr);padding-top:8px;margin-top:4px;}
+
+/* Prayer cards */
+.nprayer{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+.nprayer-hd{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;}
+.nprayer-ico{font-size:28px;}
+.nprayer-info{flex:1;}
+.nprayer-name{font-family:'Amiri',serif;font-size:18px;color:var(--gold);}
+.nprayer-sub{font-size:11px;color:var(--mt);margin-top:2px;}
+.nprayer-rakat{background:rgba(29,185,84,.12);border:1px solid rgba(29,185,84,.3);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--g);font-weight:700;white-space:nowrap;}
+.nprayer-arr{color:var(--mt);font-size:14px;transition:transform .2s;}
+.nprayer.open .nprayer-arr{transform:rotate(180deg);}
+.nprayer-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.nprayer.open .nprayer-body{max-height:2000px;}
+.nprayer-inner{padding:0 14px 14px;}
+
+/* Rakat step */
+.nrak{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.nrak:last-child{border-bottom:none;}
+.nrak-num{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g);flex-shrink:0;margin-top:1px;}
+.nrak-cont{flex:1;}
+.nrak-ttl{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.nrak-ar{font-family:'Amiri',serif;font-size:18px;direction:rtl;color:#a8c0d4;line-height:1.6;margin-bottom:3px;}
+.nrak-tr{font-size:11px;color:#4a6a82;font-style:italic;margin-bottom:3px;}
+.nrak-uz{font-size:12px;color:var(--mt);line-height:1.5;}
+
+/* Info box */
+.ninfo{background:rgba(29,185,84,.06);border:1px solid rgba(29,185,84,.2);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#4a8a6a;line-height:1.6;}
+.ninfo b{color:var(--g);}
 </style>
 </head>
 <body>
 <div class="stars" id="stars"></div>
 
+<!-- Loading overlay -->
 <div class="qls" id="QLS">
   <div class="qlic">🕌</div>
-  <div style="font-size:18px;font-weight:800;color:#e8edf5">Qibla Kompas</div>
+  <div style="font-size:18px;font-weight:800;color:#e8edf5">Islomiy Ilova</div>
   <div id="QLSbody" style="display:flex;flex-direction:column;align-items:center;gap:12px">
     <div class="qspin"></div>
     <div class="qlsub" id="QLSmsg">Yuklanmoqda...</div>
@@ -142,8 +205,12 @@ body.qfl{animation:qflash .7s ease}
 <nav class="nav">
   <button class="nb on" id="nb0" onclick="goTab(0)"><span class="ni">🧭</span><span>Qibla</span></button>
   <button class="nb" id="nb1" onclick="goTab(1)"><span class="ni">📖</span><span>Qur'on</span></button>
+  <button class="nb" id="nb2" onclick="goTab(2)"><span class="ni">🤲</span><span>Namoz</span></button>
 </nav>
+
 <div class="pages">
+
+  <!-- ══ TAB 1: QIBLA ══ -->
   <div class="pg on" id="pg0">
     <div class="qstatus">
       <div class="qdot" id="qdot"></div>
@@ -176,18 +243,33 @@ body.qfl{animation:qflash .7s ease}
     <div class="qdbg" id="qdbg"></div>
   </div>
 
+  <!-- ══ TAB 2: QUR'ON ══ -->
   <div class="pg qrp" id="pg1">
     <div class="qhdr">
       <h2>📖 Qur'oni Karim</h2>
-      <div class="sbox"><span class="si">🔍</span>
+      <div class="sbox"><span class="sbico">🔍</span>
         <input id="srch" type="text" placeholder="Sura nomi yoki raqami..." oninput="doFilter()">
       </div>
       <div class="rcrow" id="rcrow"></div>
     </div>
     <div class="slist" id="slist"></div>
   </div>
+
+  <!-- ══ TAB 3: NAMOZ ══ -->
+  <div class="pg" id="pg2">
+    <div class="nhdr">
+      <h2>🤲 Namoz O'rgatish</h2>
+      <div class="ncats">
+        <button class="ncat on" id="nc0" onclick="nTab(0)">💧 Tahorat</button>
+        <button class="ncat" id="nc1" onclick="nTab(1)">🕌 5 Vaqt</button>
+      </div>
+    </div>
+    <div class="ncontent" id="ncontent"></div>
+  </div>
+
 </div>
 
+<!-- Audio Player -->
 <div class="player" id="player">
   <div class="pinfo">
     <div><div class="ptit" id="ptit">—</div><div class="psub" id="psub">—</div></div>
@@ -210,14 +292,15 @@ body.qfl{animation:qflash .7s ease}
 <script>
 'use strict';
 
+/* ── TAB ── */
 function goTab(i){
-  [0,1].forEach(j=>{
+  [0,1,2].forEach(j=>{
     document.getElementById('nb'+j).classList.toggle('on',j===i);
     document.getElementById('pg'+j).classList.toggle('on',j===i);
   });
 }
 
-// Stars
+/* ── STARS ── */
 (()=>{
   const c=document.getElementById('stars');
   for(let i=0;i<75;i++){
@@ -228,14 +311,13 @@ function goTab(i){
   }
 })();
 
-/* ══════════════════════════════════
+/* ══════════════════════════
    QIBLA COMPASS
-══════════════════════════════════ */
-const KA_LAT=21.4225, KA_LON=39.8262;
-let userLat=41.2995, userLon=69.2401;
-let qiblaTrue=0;
-let curHead=0, tgtHead=0, firstReading=false;
-let sensorOK=false, prevAligned=false, kaabaClicks=0;
+══════════════════════════ */
+const KA_LAT=21.4225,KA_LON=39.8262;
+let userLat=41.2995,userLon=69.2401;
+let qiblaTrue=0,curHead=0,tgtHead=0,firstReading=false;
+let sensorOK=false,prevAligned=false,kaabaClicks=0;
 let permBtnAction=null;
 
 function calcQibla(lat,lon){
@@ -246,23 +328,11 @@ function calcQibla(lat,lon){
   return norm(Math.atan2(y,x)*180/Math.PI);
 }
 function norm(a){return((a%360)+360)%360;}
-function lerpAng(cur,tgt,t){
-  let d=tgt-cur;
-  while(d>180)d-=360;while(d<-180)d+=360;
-  return cur+d*t;
-}
-function isAligned(){
-  let d=qiblaTrue-norm(curHead);
-  while(d>180)d-=360;while(d<-180)d+=360;
-  return Math.abs(d)<5;
-}
-function cardDir(deg){
-  return['Shimol','Shim-Sharq','Sharq','Jan-Sharq','Janub','Jan-Gʻarb','Gʻarb','Shim-Gʻarb'][Math.round(norm(deg)/45)%8];
-}
+function lerpAng(cur,tgt,t){let d=tgt-cur;while(d>180)d-=360;while(d<-180)d+=360;return cur+d*t;}
+function isAligned(){let d=qiblaTrue-norm(curHead);while(d>180)d-=360;while(d<-180)d+=360;return Math.abs(d)<5;}
+function cardDir(deg){return['Shimol','Shim-Sharq','Sharq','Jan-Sharq','Janub','Jan-Gʻarb','Gʻarb','Shim-Gʻarb'][Math.round(norm(deg)/45)%8];}
 
-const qcv=document.getElementById('qcv');
-const ctx=qcv.getContext('2d');
-const SZ=590,CX=295,CY=295;
+const qcv=document.getElementById('qcv'),ctx=qcv.getContext('2d'),SZ=590,CX=295,CY=295;
 
 function drawCompass(heading){
   ctx.clearRect(0,0,SZ,SZ);
@@ -273,264 +343,101 @@ function drawCompass(heading){
   ctx.beginPath();ctx.arc(CX,CY,287,0,Math.PI*2);ctx.fillStyle=rim;ctx.fill();
   const face=ctx.createRadialGradient(CX,CY,50,CX,CY,255);
   face.addColorStop(0,'#1a2030');face.addColorStop(1,'#0a0f1a');
-  ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);
-  ctx.fillStyle=face;ctx.shadowColor=aln?'rgba(34,197,94,.28)':'transparent';
-  ctx.shadowBlur=aln?32:0;ctx.fill();ctx.shadowBlur=0;
+  ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);ctx.fillStyle=face;
+  ctx.shadowColor=aln?'rgba(34,197,94,.28)':'transparent';ctx.shadowBlur=aln?32:0;ctx.fill();ctx.shadowBlur=0;
   ctx.save();ctx.translate(CX,CY);ctx.rotate(-heading*Math.PI/180);
   for(let i=0;i<360;i++){
-    const rad=i*Math.PI/180,maj=i%30===0,med=i%10===0&&!maj;
-    const len=maj?25:med?15:8,r1=250;
-    ctx.beginPath();ctx.moveTo(Math.cos(rad)*r1,Math.sin(rad)*r1);
-    ctx.lineTo(Math.cos(rad)*(r1-len),Math.sin(rad)*(r1-len));
-    ctx.strokeStyle=maj?'rgba(255,255,255,.88)':med?'rgba(255,255,255,.35)':'rgba(255,255,255,.11)';
-    ctx.lineWidth=maj?2.6:1.6;ctx.stroke();
+    const rad=i*Math.PI/180,maj=i%30===0,med=i%10===0&&!maj,len=maj?25:med?15:8,r1=250;
+    ctx.beginPath();ctx.moveTo(Math.cos(rad)*r1,Math.sin(rad)*r1);ctx.lineTo(Math.cos(rad)*(r1-len),Math.sin(rad)*(r1-len));
+    ctx.strokeStyle=maj?'rgba(255,255,255,.88)':med?'rgba(255,255,255,.35)':'rgba(255,255,255,.11)';ctx.lineWidth=maj?2.6:1.6;ctx.stroke();
   }
-  ctx.font='600 17px Nunito,sans-serif';ctx.fillStyle='rgba(190,205,225,.62)';
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  for(let i=0;i<360;i+=30){
-    if(i%90===0)continue;
-    const rad=i*Math.PI/180;
-    ctx.save();ctx.translate(Math.sin(rad)*182,-Math.cos(rad)*182);ctx.rotate(rad);ctx.fillText(i,0,0);ctx.restore();
-  }
+  ctx.font='600 17px Nunito,sans-serif';ctx.fillStyle='rgba(190,205,225,.62)';ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<360;i+=30){if(i%90===0)continue;const rad=i*Math.PI/180;ctx.save();ctx.translate(Math.sin(rad)*182,-Math.cos(rad)*182);ctx.rotate(rad);ctx.fillText(i,0,0);ctx.restore();}
   const CARDS=['N','E','S','W'];ctx.font='bold 37px Nunito,sans-serif';
-  for(let i=0;i<4;i++){
-    const rad=i*Math.PI/2;ctx.fillStyle=i===0?'#ef4444':'rgba(255,255,255,.84)';
-    ctx.fillText(CARDS[i],Math.sin(rad)*210,-Math.cos(rad)*210);
-  }
+  for(let i=0;i<4;i++){const rad=i*Math.PI/2;ctx.fillStyle=i===0?'#ef4444':'rgba(255,255,255,.84)';ctx.fillText(CARDS[i],Math.sin(rad)*210,-Math.cos(rad)*210);}
   ctx.font='bold 15px Nunito,sans-serif';ctx.fillStyle='rgba(255,255,255,.28)';
-  ['NE','SE','SW','NW'].forEach((t,i)=>{
-    const rad=(i*90+45)*Math.PI/180;ctx.fillText(t,Math.sin(rad)*203,-Math.cos(rad)*203);
-  });
+  ['NE','SE','SW','NW'].forEach((t,i)=>{const rad=(i*90+45)*Math.PI/180;ctx.fillText(t,Math.sin(rad)*203,-Math.cos(rad)*203);});
   ctx.restore();
-  const nd=norm(qiblaTrue-heading),nr=nd*Math.PI/180;
-  const nx=Math.sin(nr),ny=-Math.cos(nr);
+  const nd=norm(qiblaTrue-heading),nr=nd*Math.PI/180,nx=Math.sin(nr),ny=-Math.cos(nr);
   ctx.save();ctx.translate(CX,CY);
   const tg=ctx.createLinearGradient(0,0,nx*240,ny*240);
   tg.addColorStop(0,'rgba(240,192,64,0)');tg.addColorStop(.55,'rgba(240,192,64,.12)');tg.addColorStop(1,'rgba(240,192,64,.48)');
   ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(nx*240,ny*240);ctx.strokeStyle=tg;ctx.lineWidth=14;ctx.stroke();
   const arcH=0.115,arcB=nr-Math.PI/2;
   ctx.beginPath();ctx.arc(0,0,265,arcB-arcH,arcB+arcH);ctx.strokeStyle='rgba(240,192,64,.78)';ctx.lineWidth=18;ctx.stroke();
-  ctx.save();ctx.rotate(nr);
-  ctx.shadowColor='rgba(240,192,64,.85)';ctx.shadowBlur=22;
+  ctx.save();ctx.rotate(nr);ctx.shadowColor='rgba(240,192,64,.85)';ctx.shadowBlur=22;
   ctx.beginPath();ctx.moveTo(0,-247);ctx.lineTo(13,-212);ctx.lineTo(0,-223);ctx.lineTo(-13,-212);ctx.closePath();ctx.fillStyle='#f0c040';ctx.fill();
   ctx.beginPath();ctx.moveTo(6,-212);ctx.lineTo(5,-128);ctx.lineTo(-5,-128);ctx.lineTo(-6,-212);ctx.closePath();ctx.fillStyle='rgba(240,192,64,.58)';ctx.fill();
   ctx.shadowBlur=0;ctx.restore();ctx.restore();
-  if(aln){
-    const p=(Math.sin(Date.now()/270)+1)/2;
-    ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);
-    ctx.strokeStyle=`rgba(34,197,94,${.28+p*.52})`;ctx.lineWidth=7;ctx.stroke();
-  }
+  if(aln){const p=(Math.sin(Date.now()/270)+1)/2;ctx.beginPath();ctx.arc(CX,CY,257,0,Math.PI*2);ctx.strokeStyle=`rgba(34,197,94,${.28+p*.52})`;ctx.lineWidth=7;ctx.stroke();}
   ctx.save();ctx.translate(CX,CY);ctx.shadowColor='#22c55e';ctx.shadowBlur=14;
-  ctx.beginPath();ctx.moveTo(0,-263);ctx.lineTo(9,-243);ctx.lineTo(-9,-243);ctx.closePath();ctx.fillStyle='#22c55e';ctx.fill();
-  ctx.shadowBlur=0;ctx.restore();
+  ctx.beginPath();ctx.moveTo(0,-263);ctx.lineTo(9,-243);ctx.lineTo(-9,-243);ctx.closePath();ctx.fillStyle='#22c55e';ctx.fill();ctx.shadowBlur=0;ctx.restore();
 }
 
 function qLoop(){
-  curHead=lerpAng(curHead,tgtHead,0.12);
-  curHead=norm(curHead);
-  drawCompass(curHead);
+  curHead=lerpAng(curHead,tgtHead,0.12);curHead=norm(curHead);drawCompass(curHead);
   const aln=isAligned(),hd=Math.round(norm(curHead));
-  const dv=document.getElementById('qdval');
-  dv.textContent=hd+'°';dv.classList.toggle('on',aln);
+  const dv=document.getElementById('qdval');dv.textContent=hd+'°';dv.classList.toggle('on',aln);
   document.getElementById('qddir').textContent=cardDir(curHead);
   document.getElementById('qgring').classList.toggle('on',aln);
   document.getElementById('qkaaba').classList.toggle('on',aln);
   document.getElementById('qbanner').classList.toggle('show',aln);
   const dbg=document.getElementById('qdbg');
-  if(dbg.classList.contains('show')){
-    dbg.innerHTML=`<b style="color:#e8edf5">Debug</b><br>tgt:<b>${tgtHead.toFixed(1)}°</b> cur:<b>${curHead.toFixed(1)}°</b><br>qibla:<b>${qiblaTrue.toFixed(1)}°</b> needle:<b>${norm(qiblaTrue-curHead).toFixed(1)}°</b><br>GPS:<b>${userLat.toFixed(4)},${userLon.toFixed(4)}</b><br>aligned:<b>${aln}</b> sensor:<b>${sensorOK}</b>`;
-  }
-  if(aln&&!prevAligned&&sensorOK){
-    document.body.classList.add('qfl');setTimeout(()=>document.body.classList.remove('qfl'),750);
-    if(navigator.vibrate)navigator.vibrate([65,45,100]);
-  }
-  prevAligned=aln;
-  requestAnimationFrame(qLoop);
+  if(dbg.classList.contains('show'))dbg.innerHTML=`tgt:<b>${tgtHead.toFixed(1)}°</b> cur:<b>${curHead.toFixed(1)}°</b> qibla:<b>${qiblaTrue.toFixed(1)}°</b> GPS:<b>${userLat.toFixed(3)},${userLon.toFixed(3)}</b>`;
+  if(aln&&!prevAligned&&sensorOK){document.body.classList.add('qfl');setTimeout(()=>document.body.classList.remove('qfl'),750);if(navigator.vibrate)navigator.vibrate([65,45,100]);}
+  prevAligned=aln;requestAnimationFrame(qLoop);
 }
 
-/* ── Sensor heading handler ── */
 function onHeading(h){
-  if(!firstReading){curHead=h;firstReading=true;}
-  tgtHead=h;
-  if(!sensorOK){
-    sensorOK=true;
-    document.getElementById('qdot').classList.add('on');
-    document.getElementById('qstxt').textContent='Kompas faol ✓';
-    hideLoading();
-  }
+  if(!firstReading){curHead=h;firstReading=true;}tgtHead=h;
+  if(!sensorOK){sensorOK=true;document.getElementById('qdot').classList.add('on');document.getElementById('qstxt').textContent='Kompas faol ✓';hideLoading();}
 }
-
 function onOrient(e){
-  // iOS: webkitCompassHeading — true north, ishonchli
-  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)&&e.webkitCompassHeading>=0){
-    onHeading(e.webkitCompassHeading); return;
-  }
-  // Android absolute event
-  if(typeof e.alpha==='number'&&e.alpha!==null){
-    onHeading(norm(360-e.alpha));
-  }
+  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)&&e.webkitCompassHeading>=0){onHeading(e.webkitCompassHeading);return;}
+  if(typeof e.alpha==='number'&&e.alpha!==null)onHeading(norm(360-e.alpha));
 }
-
-function addOrientListeners(){
-  // deviceorientationabsolute — Android Chrome, true north
-  window.addEventListener('deviceorientationabsolute',onOrient,true);
-  // deviceorientation — fallback (iOS, other)
-  window.addEventListener('deviceorientation',onOrient,true);
-}
-
+function addOrientListeners(){window.addEventListener('deviceorientationabsolute',onOrient,true);window.addEventListener('deviceorientation',onOrient,true);}
 function tryGenericSensor(){
-  if(typeof AbsoluteOrientationSensor==='undefined') return false;
+  if(typeof AbsoluteOrientationSensor==='undefined')return false;
   try{
-    // Permissions API orqali ruxsat so'rash
-    Promise.all([
-      navigator.permissions.query({name:'accelerometer'}),
-      navigator.permissions.query({name:'magnetometer'}),
-      navigator.permissions.query({name:'gyroscope'})
-    ]).then(results=>{
-      if(results.every(r=>r.state!=='denied')){
-        const s=new AbsoluteOrientationSensor({frequency:30,referenceFrame:'screen'});
-        s.addEventListener('reading',()=>{
-          try{
-            const[x,y,z,w]=s.quaternion;
-            const sinY=2*(w*z+x*y),cosY=1-2*(y*y+z*z);
-            onHeading(norm(Math.atan2(sinY,cosY)*180/Math.PI));
-          }catch(_){}
-        });
-        s.addEventListener('error',()=>addOrientListeners());
-        s.start();
-      } else {
-        addOrientListeners();
-      }
-    }).catch(()=>addOrientListeners());
-    return true;
+    Promise.all([navigator.permissions.query({name:'accelerometer'}),navigator.permissions.query({name:'magnetometer'}),navigator.permissions.query({name:'gyroscope'})])
+      .then(rs=>{if(rs.every(r=>r.state!=='denied')){const s=new AbsoluteOrientationSensor({frequency:30,referenceFrame:'screen'});s.addEventListener('reading',()=>{try{const[x,y,z,w]=s.quaternion;onHeading(norm(Math.atan2(2*(w*z+x*y),1-2*(y*y+z*z))*180/Math.PI));}catch(_){}});s.addEventListener('error',()=>addOrientListeners());s.start();}else addOrientListeners();})
+      .catch(()=>addOrientListeners());return true;
   }catch(e){return false;}
 }
-
-const isIOS=()=>typeof DeviceOrientationEvent!=='undefined'&&
-               typeof DeviceOrientationEvent.requestPermission==='function';
-
+const isIOS=()=>typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function';
 function requestSensor(){
-  if(isIOS()){
-    DeviceOrientationEvent.requestPermission()
-      .then(st=>{
-        if(st==='granted') addOrientListeners();
-        else showBtn('Kompas ruxsati rad etildi','▶ Demo',startDemo);
-      })
-      .catch(e=>showBtn('Xato: '+e.message,'▶ Demo',startDemo));
-  } else {
-    // Android: GenericSensor API yoki deviceorientation
-    if(!tryGenericSensor()) addOrientListeners();
-  }
+  if(isIOS()){DeviceOrientationEvent.requestPermission().then(st=>{if(st==='granted')addOrientListeners();else setLoadMsg('Kompas ruxsati rad etildi.');}).catch(e=>setLoadMsg('Xato: '+e.message));}
+  else{if(!tryGenericSensor())addOrientListeners();}
 }
-
-function onPermBtn(){ if(permBtnAction) permBtnAction(); }
-
-/* ── Loading UI ── */
+function onPermBtn(){if(permBtnAction)permBtnAction();}
 function setLoadMsg(msg){document.getElementById('QLSmsg').innerHTML=msg;}
-function showBtn(msg,label,fn){
-  setLoadMsg(msg);
-  const b=document.getElementById('qpbtn');
-  b.textContent=label;b.style.display='block';
-  permBtnAction=fn;
-}
-function hideLoading(){
-  const el=document.getElementById('QLS');
-  el.classList.add('hide');setTimeout(()=>el.style.display='none',700);
-}
+function showBtn(msg,label,fn){setLoadMsg(msg);const b=document.getElementById('qpbtn');b.textContent=label;b.style.display='block';permBtnAction=fn;}
+function hideLoading(){const el=document.getElementById('QLS');el.classList.add('hide');setTimeout(()=>el.style.display='none',700);}
 
-/* ── Demo rejim ── */
-function startDemo(){
-  if(sensorOK) return;
-  sensorOK=true;firstReading=true;
-  document.getElementById('qdot').classList.add('on');
-  document.getElementById('qstxt').textContent='Demo rejim';
-  let t=curHead;
-  (function tick(){requestAnimationFrame(tick);t=(t+0.5)%360;tgtHead=t;})();
-  hideLoading();
-}
-
-/* ══════════════════════════════════
-   JOYLASHUV — GPS → IP → Toshkent
-══════════════════════════════════ */
-function updateQibla(){
-  qiblaTrue=calcQibla(userLat,userLon);
-  document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';
-}
-function setLocUI(lat,lon,name){
-  document.getElementById('qlname').textContent=name;
-  document.getElementById('qlcoords').textContent=`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
-}
-
-// 1) GPS
+function updateQibla(){qiblaTrue=calcQibla(userLat,userLon);document.getElementById('qqbdg').textContent=Math.round(qiblaTrue)+'°';}
+function setLocUI(lat,lon,name){document.getElementById('qlname').textContent=name;document.getElementById('qlcoords').textContent=`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;}
 function startGPS(){
   if(!navigator.geolocation){startIPGeo();return;}
-  navigator.geolocation.getCurrentPosition(
-    pos=>{
-      userLat=pos.coords.latitude;userLon=pos.coords.longitude;
-      updateQibla();
-      reverseGeo(userLat,userLon);
-    },
-    ()=>startIPGeo(),
-    {enableHighAccuracy:true,timeout:10000,maximumAge:0}
-  );
+  navigator.geolocation.getCurrentPosition(pos=>{userLat=pos.coords.latitude;userLon=pos.coords.longitude;updateQibla();reverseGeo(userLat,userLon);},()=>startIPGeo(),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
 }
-
-// 2) IP Geolocation — ip-api.com (bepul, CORS ochiq, HTTPS)
 function startIPGeo(){
-  setLoadMsg('IP orqali joylashuv aniqlanmoqda...');
-  fetch('https://ip-api.com/json/?fields=status,lat,lon,city,country')
-    .then(r=>r.json())
-    .then(d=>{
-      if(d.status==='success'&&d.lat&&d.lon){
-        userLat=d.lat;userLon=d.lon;updateQibla();
-        setLocUI(userLat,userLon,(d.city||'')+(d.country?', '+d.country:''));
-      } else {
-        // 3) fallback: ipinfo.io
-        return fetch('https://ipinfo.io/json?token=').then(r=>r.json()).then(d2=>{
-          if(d2.loc){
-            const[la,lo]=d2.loc.split(',').map(Number);
-            userLat=la;userLon=lo;updateQibla();
-            setLocUI(userLat,userLon,(d2.city||'')+(d2.country?', '+d2.country:''));
-          } else useTashkent();
-        });
-      }
-    })
-    .catch(()=>useTashkent());
+  fetch('https://ip-api.com/json/?fields=status,lat,lon,city,country').then(r=>r.json()).then(d=>{
+    if(d.status==='success'&&d.lat){userLat=d.lat;userLon=d.lon;updateQibla();setLocUI(userLat,userLon,(d.city||'')+(d.country?', '+d.country:''));}
+    else useTashkent();
+  }).catch(()=>useTashkent());
 }
-
-// 3) Toshkent fallback
-function useTashkent(){
-  userLat=41.2995;userLon=69.2401;updateQibla();
-  setLocUI(userLat,userLon,"Toshkent, O'zbekiston (taxminiy)");
-}
-
-// Reverse geocoding
+function useTashkent(){userLat=41.2995;userLon=69.2401;updateQibla();setLocUI(userLat,userLon,"Toshkent, O'zbekiston");}
 function reverseGeo(lat,lon){
   setLocUI(lat,lon,'Aniqlanmoqda...');
-  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=uz,en`)
-    .then(r=>r.json())
-    .then(d=>{
-      const a=d.address||{};
-      const city=a.city||a.town||a.village||a.county||a.state||'';
-      const country=a.country||'';
-      setLocUI(lat,lon,city&&country?`${city}, ${country}`:city||country||`${lat.toFixed(4)}°N`);
-    })
-    .catch(()=>setLocUI(lat,lon,`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`));
+  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=uz,en`).then(r=>r.json()).then(d=>{const a=d.address||{};const city=a.city||a.town||a.village||a.state||'';const country=a.country||'';setLocUI(lat,lon,city&&country?`${city}, ${country}`:city||`${lat.toFixed(4)}°N`);}).catch(()=>setLocUI(lat,lon,`${lat.toFixed(4)}°N`));
 }
+document.getElementById('qkaaba').addEventListener('click',()=>{kaabaClicks++;if(kaabaClicks>=5){kaabaClicks=0;document.getElementById('qdbg').classList.toggle('show');}});
 
-document.getElementById('qkaaba').addEventListener('click',()=>{
-  kaabaClicks++;if(kaabaClicks>=5){kaabaClicks=0;document.getElementById('qdbg').classList.toggle('show');}
-});
-
-/* ══════════════════════════════════
+/* ══════════════════════════
    QUR'ON AUDIO
-══════════════════════════════════ */
-const EDITIONS=[
-  {name:'Mishary Alafasy',ed:'ar.alafasy'},
-  {name:'Abdurrahman Sudais',ed:'ar.abdurrahmaansudais'},
-  {name:'Husary',ed:'ar.husary'},
-  {name:'Saad Al-Ghamdi',ed:'ar.saoodshuraym'},
-];
+══════════════════════════ */
+const EDITIONS=[{name:'Mishary Alafasy',ed:'ar.alafasy'},{name:'Abdurrahman Sudais',ed:'ar.abdurrahmaansudais'},{name:'Husary',ed:'ar.husary'},{name:'Saad Al-Ghamdi',ed:'ar.saoodshuraym'}];
 const SURAHS=[
   {n:1,ar:'الفاتحة',uz:'Al-Fotiha',a:7,t:'Makka'},{n:2,ar:'البقرة',uz:'Al-Baqara',a:286,t:'Madina'},
   {n:3,ar:'آل عمران',uz:'Ali Imron',a:200,t:'Madina'},{n:4,ar:'النساء',uz:'An-Niso',a:176,t:'Madina'},
@@ -593,66 +500,43 @@ const SURAHS=[
 
 const au=document.getElementById('au');
 let edIdx=0,curIdx=null,ayahUrls=[],ayahIdx=0,playing=false,busy=false;
-let filtered=[...SURAHS];
-const apiCache={};
-
+let filtered=[...SURAHS];const apiCache={};
 function setMsg(t,err=false){const e=document.getElementById('pmsg');e.textContent=t;e.className='pmsg'+(err?' err':'');}
 function setPP(i){document.getElementById('ppbtn').textContent=i;}
 function fmtT(s){if(!isFinite(s)||isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;}
-
-async function fetchSurahAyahs(n,ed){
-  const k=`${n}|${ed}`;if(apiCache[k])return apiCache[k];
-  const r=await fetch(`https://api.alquran.cloud/v1/surah/${n}/${ed}`);
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  const j=await r.json();if(j.code!==200)throw new Error('API: '+j.code);
-  return apiCache[k]=j.data.ayahs.map(a=>a.audio);
-}
+async function fetchSurahAyahs(n,ed){const k=`${n}|${ed}`;if(apiCache[k])return apiCache[k];const r=await fetch(`https://api.alquran.cloud/v1/surah/${n}/${ed}`);if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();if(j.code!==200)throw new Error('API: '+j.code);return apiCache[k]=j.data.ayahs.map(a=>a.audio);}
 async function loadSurah(idx,autoPlay=true){
-  if(busy)return;
-  curIdx=idx;ayahIdx=0;ayahUrls=[];playing=false;busy=true;
+  if(busy)return;curIdx=idx;ayahIdx=0;ayahUrls=[];playing=false;busy=true;
   const s=SURAHS[idx],ed=EDITIONS[edIdx];
   document.getElementById('ptit').textContent=`${s.n}. ${s.ar} — ${s.uz}`;
   document.getElementById('psub').textContent=ed.name;
   document.getElementById('player').classList.add('vis');
-  document.getElementById('pfil').style.width='0%';
-  document.getElementById('tc').textContent='0:00';document.getElementById('td').textContent='--:--';
+  document.getElementById('pfil').style.width='0%';document.getElementById('tc').textContent='0:00';document.getElementById('td').textContent='--:--';
   setPP('⏳');setMsg(`${s.uz} yuklanmoqda...`);renderList(filtered);
-  try{
-    ayahUrls=await fetchSurahAyahs(s.n,ed.ed);
-    busy=false;setMsg(`${ayahUrls.length} oyat | ${ed.name}`);playAyah(0,autoPlay);
-  }catch(e){busy=false;setPP('▶');setMsg('❌ '+e.message,true);renderList(filtered);}
+  try{ayahUrls=await fetchSurahAyahs(s.n,ed.ed);busy=false;setMsg(`${ayahUrls.length} oyat | ${ed.name}`);playAyah(0,autoPlay);}
+  catch(e){busy=false;setPP('▶');setMsg('❌ '+e.message,true);renderList(filtered);}
 }
 function playAyah(idx,auto=true){
   if(idx>=ayahUrls.length){moveSurah(1);return;}
   ayahIdx=idx;au.src=ayahUrls[idx];au.load();setMsg(`${idx+1}/${ayahUrls.length} — oyat`);
-  if(auto){au.play().then(()=>{playing=true;setPP('⏸');renderList(filtered);}).catch(e=>{setPP('▶');setMsg('❌ '+e.message,true);});}
-  else setPP('▶');
+  if(auto){au.play().then(()=>{playing=true;setPP('⏸');renderList(filtered);}).catch(e=>{setPP('▶');setMsg('❌ '+e.message,true);});}else setPP('▶');
 }
 function togglePlay(){
   if(curIdx===null||busy)return;
-  if(playing){au.pause();}else{
-    if(!au.src){playAyah(ayahIdx,true);return;}
-    au.play().then(()=>{playing=true;setPP('⏸');}).catch(e=>setMsg('❌ '+e.message,true));
-  }
+  if(playing){au.pause();}else{if(!au.src){playAyah(ayahIdx,true);return;}au.play().then(()=>{playing=true;setPP('⏸');}).catch(e=>setMsg('❌ '+e.message,true));}
 }
 function moveSurah(d){if(curIdx===null)return;loadSurah((curIdx+d+SURAHS.length)%SURAHS.length,true);}
 function closePlayer(){au.pause();playing=false;curIdx=null;ayahUrls=[];document.getElementById('player').classList.remove('vis');renderList(filtered);}
 function seekAudio(e){if(!au.duration)return;const r=document.getElementById('pbar').getBoundingClientRect();au.currentTime=((e.clientX-r.left)/r.width)*au.duration;}
-
 au.addEventListener('playing',()=>{playing=true;setPP('⏸');renderList(filtered);});
 au.addEventListener('pause',()=>{playing=false;setPP('▶');renderList(filtered);});
 au.addEventListener('ended',()=>playAyah(ayahIdx+1,true));
 au.addEventListener('timeupdate',()=>{if(!au.duration)return;document.getElementById('pfil').style.width=(au.currentTime/au.duration*100)+'%';document.getElementById('tc').textContent=fmtT(au.currentTime);});
 au.addEventListener('durationchange',()=>document.getElementById('td').textContent=fmtT(au.duration));
-au.addEventListener('error',()=>{setMsg(`${ayahIdx+1}-oyat xato, keyingisi...`,true);setTimeout(()=>playAyah(ayahIdx+1,true),600);});
-
+au.addEventListener('error',()=>{setMsg(`${ayahIdx+1}-oyat xato...`,true);setTimeout(()=>playAyah(ayahIdx+1,true),600);});
 function buildRec(){
   const row=document.getElementById('rcrow');
-  EDITIONS.forEach((e,i)=>{
-    const b=document.createElement('button');b.className='rchip'+(i===0?' on':'');b.textContent=e.name;
-    b.onclick=()=>{edIdx=i;document.querySelectorAll('.rchip').forEach((c,j)=>c.classList.toggle('on',j===i));if(curIdx!==null)loadSurah(curIdx,playing);};
-    row.appendChild(b);
-  });
+  EDITIONS.forEach((e,i)=>{const b=document.createElement('button');b.className='rchip'+(i===0?' on':'');b.textContent=e.name;b.onclick=()=>{edIdx=i;document.querySelectorAll('.rchip').forEach((c,j)=>c.classList.toggle('on',j===i));if(curIdx!==null)loadSurah(curIdx,playing);};row.appendChild(b);});
 }
 function renderList(list){
   const el=document.getElementById('slist');
@@ -662,8 +546,7 @@ function renderList(list){
     const idx=s.n-1,isCur=curIdx===idx;
     const d=document.createElement('div');d.className='si2'+(isCur?' pl':'');
     d.innerHTML=`<div class="sno">${s.n}</div><div class="sinf"><div class="sar">${s.ar}</div><div class="suz">${s.uz}</div></div><div class="smeta">${s.a} oyat<br><small>${s.t}</small></div><div class="pbtn">${isCur&&playing?'⏸':'▶'}</div>`;
-    d.onclick=()=>{if(curIdx===idx&&!busy)togglePlay();else loadSurah(idx,true);};
-    el.appendChild(d);
+    d.onclick=()=>{if(curIdx===idx&&!busy)togglePlay();else loadSurah(idx,true);};el.appendChild(d);
   });
 }
 function doFilter(){
@@ -672,48 +555,178 @@ function doFilter(){
   renderList(filtered);
 }
 
+/* ══════════════════════════
+   NAMOZ O'RGATISH DATA
+══════════════════════════ */
+
+// Tahorat qadamlari
+const TAHORAT=[
+  {ico:'🤲',ttl:'Niyat qilish',ar:'نَوَيْتُ أَنْ أَتَوَضَّأَ',uz:'Navaytu an atavazza\'',desc:'Tahorat olishdan oldin yurakda niyat qilish — Alloh uchun tahorat olaman, deb ko\'ngildan o\'tkazish. Niyat qilish — har bir ibodatning asosidir.'},
+  {ico:'🤲',ttl:'Bismillah aytish',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ',uz:'Bismillahir rohmanir rohiym',desc:'Tahoratni Alloh nomi bilan boshlash. Bismillasiz boshlangan tahorat to\'liq hisoblanmaydi degan fikr ham bor.'},
+  {ico:'👐',ttl:'Qo\'llarni yuvish (3 marta)',ar:'',uz:'',desc:'Bilak bo\'g\'imigacha har ikkala qo\'lni uch marta yuvish. Avval o\'ng qo\'l, keyin chap qo\'l. Barmoqlar orasini ham yuvib chiqish.'},
+  {ico:'💧',ttl:'Og\'izni chayish (3 marta)',ar:'',uz:'',desc:'Og\'izga suv olib yaxshilab chayish. Ro\'za bo\'lmasa, og\'izning ichiga ham suv yetkazish. Uch marta takrorlash.'},
+  {ico:'💧',ttl:'Burun yuvish (3 marta)',ar:'',uz:'',desc:'Burunga suv tortib, keyin puflab tashqariga chiqarish. Uch marta takrorlash. Ro\'za bo\'lsa, ehtiyot bo\'lib yuvish.'},
+  {ico:'🫧',ttl:'Yuzni yuvish (3 marta)',ar:'',uz:'',desc:'Peshonadan iyan soqqasigacha va ikki quloq o\'rtasini to\'liq yuvish. Soqol qalin bo\'lsa barmoqlar orasidan suv o\'tkazish.'},
+  {ico:'💪',ttl:'Qo\'llarni tirsakkача yuvish (3 marta)',ar:'',uz:'',desc:'O\'ng qo\'lni tirsak bo\'g\'imigacha uch marta yuvish, keyin chap qo\'lni. Barmoq uchidan boshlanib tirsak bo\'g\'imiga qadar.'},
+  {ico:'🖐️',ttl:'Boshni masх qilish (1 marta)',ar:'',uz:'',desc:'Ho\'l qo\'llar bilan boshni bir marta masх qilish — peshonadan orqaga qarab. Hanafiy mazhabida boshning to\'rtdan birini, boshqalarda to\'liq masх qilish.'},
+  {ico:'👂',ttl:'Quloqlarni masх qilish',ar:'',uz:'',desc:'Bosh barmoq bilan quloq orqasini, ko\'rsatkich barmоq bilan esa quloq ichini masх qilish.'},
+  {ico:'🦶',ttl:'Oyoqlarni yuvish (3 marta)',ar:'',uz:'',desc:'O\'ng oyoqni to\'pig\'igacha uch marta yuvish, keyin chap oyoqni. Barmoqlar orasini ham yuvib chiqish lozim.'},
+  {ico:'🤲',ttl:'Tahorat duosi',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',uz:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluhu',desc:'Tahorat olgandan keyin osmonga qarab bu duoni o\'qish sunnat. Bu duoni o\'qigan kishiga jannatning 8 eshigi ochiladi deyilgan.'},
+];
+
+// 5 vaqt namoz ma'lumotlari
+const PRAYERS=[
+  {
+    ico:'🌅',name:'Bomdod (Fajr)',sub:'Tong otishidan quyosh chiqqunga qadar',rakat:'2+2 rakat',
+    info:'Bomdod namozi 2 rakat sunnat va 2 rakat farzdan iborat. Ular jimgina yoki ovoz chiqarib o\'qilishi mumkin.',
+    steps:[
+      {ttl:'Sunnat niyati',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْفَجْرِ',tr:'Navaytu usalli sunnatal fajr',uz:'Bomdod namozining sunnatini o\'qishga niyat qildim'},
+      {ttl:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Alloh buyuk — qo\'llar quloqqa tekizib aytiladi'},
+      {ttl:'Sano',ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ',tr:'Subhanakallahumma va bihamdik va tabarokasmuk va ta\'ala jadduk va la ilaha gayruk',uz:'Allohim! Men Senga hamd bilan Seni poklayapman. Isming muborak, ulug\'liging baland, Sendan o\'zga iloh yo\'q'},
+      {ttl:'A\'uzu Bismillah + Fotiha',ar:'أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ ۞ بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'A\'uzu billahi minash-shaytanir rajim. Bismillahir rohmanir rohiym',uz:'Shaytoni rajimdan Allohga panoh so\'rayman. Alloh nomidan boshlayman'},
+      {ttl:'Fotiha surasi',ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۞ الرَّحْمٰنِ الرَّحِيمِ ۞ مَالِكِ يَوْمِ الدِّينِ ۞ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۞ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۞ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',tr:'Alhamdu lillahi rabbil aalamin, Ar-Rohmanir rohiym, Maliki yawmid-diyn, Iyyaka na\'budu va iyyaka nasta\'yin, Ihdinas siratal mustaqiym, Sirotol laziyna an\'amta alayhim, gayril magdubi alayhim va lad-doolliyn',uz:'Barcha hamdlar olamlar Rabb\'i bo\'lmish Allohga xosdir. Mehribon va rahmdil Allohga. Hisob kunining Egasiga. Faqat Senga ibodat qilamiz va faqat Sendan yordam so\'raymiz. Bizni to\'g\'ri yo\'lga hidoyat qil. O\'zingga ne\'mat bergan zotlarning yo\'liga — g\'azabga duchor bo\'lganlar va adashganlarning yo\'liga emas'},
+      {ttl:'Qo\'shimcha sura (Ikhlos)',ar:'قُلْ هُوَ اللهُ أَحَدٌ ۞ اللهُ الصَّمَدُ ۞ لَمْ يَلِدْ وَلَمْ يُولَدْ ۞ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',tr:'Qul huwallahu ahad, Allahus-Somad, Lam yalid wa lam yuulad, wa lam yakun lahu kufuwan ahad',uz:'Ayting: U — Alloh, Yakkayu yolg\'izdir. Alloh — barcha muhtoj bo\'lgan zotdir. U tug\'madi va tug\'ilmadi. Va unga hech kim teng bo\'lmadi'},
+      {ttl:'Ruku\' (egilish)',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ ۞ سُبْحَانَ رَبِّيَ الْعَظِيمِ ۞ سُبْحَانَ رَبِّيَ الْعَظِيمِ',tr:'Subhana Rabbiyal-Aziym (3 marta)',uz:'Ulug\' Rabbim pokdir (3 marta takrorlash)'},
+      {ttl:'Qiyom — Ruku\'dan turganda',ar:'سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۞ رَبَّنَا لَكَ الْحَمْدُ',tr:'Sami\'allahu liman hamidah — Rabbana lakal hamd',uz:'Alloh uni madh etuvchini eshitdi — Robbimiz! Hamd Sengadir'},
+      {ttl:'Sajda (1-chi)',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى ۞ سُبْحَانَ رَبِّيَ الأَعْلَى ۞ سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal-A\'la (3 marta)',uz:'Buyuk Rabbim pokdir (3 marta)'},
+      {ttl:'Jalsa (ikki sajda orasida o\'tirish)',ar:'رَبِّ اغْفِرْ لِي',tr:'Rabbig\'firli',uz:'Robbim! Meni kechir'},
+      {ttl:'Sajda (2-chi)',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى ۞ سُبْحَانَ رَبِّيَ الأَعْلَى ۞ سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal-A\'la (3 marta)',uz:'Buyuk Robbim pokdir (3 marta) — ikkinchi rakat uchun yana Fotiha + sura o\'qiladi'},
+      {ttl:'Qa\'da — Attahiyyat',ar:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ۞ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ ۞ السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللهِ الصَّالِحِينَ ۞ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Attahiyyatu lillahi vas-salavatu vat-tayyibat, Assalamu alayka ayyuhan-Nabiyyu va rahmatullahi va barakatuh, Assalamu alayna va ala ibadillahis-salihin, Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',uz:'Barcha ta\'zimlar, ibodatlar va pokliklar Allohga tegishlidir. Ey Nabiy! Sening ustingda Allohning salomi, rahmati va barakasi bo\'lsin. Bizga va Allohning solih bandalariga salom bo\'lsin. Allohdan boshqa iloh yo\'qligiga va Muhammadning Uning bandi va elchisi ekanligiga guvohlik beraman'},
+      {ttl:'Salom berish',ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ',tr:'Assalamu alaykum wa rohmatulloh',uz:'O\'ng tomonga, keyin chap tomonga salom berish. 2 rakat sunnat tamom. Endi 2 rakat farz o\'qiladi — farz niyati bilan.'},
+    ]
+  },
+  {
+    ico:'☀️',name:'Peshin (Zuhr)',sub:'Quyosh tepasidan og\'ishidan Asr vaqtigacha',rakat:'4+4+2+2 rakat',
+    info:'Peshin namozi: 4 rakat sunnat, 4 rakat farz, 2 rakat sunnat, 2 rakat nafl. Eng ko\'p rakatli namoz.',
+    steps:[
+      {ttl:'Niyat — 4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الظُّهْرِ',tr:'Navaytu usalli sunnatal zuhr',uz:'Peshin sunnatini o\'qishga niyat qildim'},
+      {ttl:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Qo\'llar quloqqa tekizib aytiladi. Qo\'llar qorin ustiga qo\'yiladi'},
+      {ttl:'Sano + Fotiha + Sura (1-rakat)',ar:'',tr:'',uz:'Sano o\'qiladi → A\'uzu Bismillah → Fotiha → qo\'shimcha sura (Ikhlos yoki boshqa)'},
+      {ttl:'Ruku\', Sajda, 2-rakat',ar:'',tr:'',uz:'1-rakat kabi. 2-rakatdan keyin Attahiyyat (qa\'da) o\'qiladi'},
+      {ttl:'3-rakat va 4-rakat',ar:'',tr:'',uz:'3 va 4-rakatda faqat Fotiha o\'qiladi (sura qo\'shilmaydi). Oxirida Attahiyyat, Salovat, Du\'o, Salom'},
+      {ttl:'Salovat duosi',ar:'اَللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ',tr:'Allohumma solli ala Muhammadin va ala ali Muhammadin kama sollayta ala Ibrohima va ala ali Ibrohim, innaka hamidun majid',uz:'Allohim! Ibrohim va uning avlodiga salovat yuborganingdek, Muhammadga va uning avlodiga ham salovat yuborgin. Albatta Sen hamdga loyiq va ulug\' zotsan'},
+      {ttl:'4 rakat farz niyati',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الظُّهْرِ',tr:'Navaytu usalli fardal zuhr',uz:'Peshin namozining farzini o\'qishga niyat qildim. Farz ham xuddi sunnat kabi o\'qiladi'},
+    ]
+  },
+  {
+    ico:'🌤️',name:'Asr',sub:'Peshin vaqti tugagandan Quyosh botgunga qadar',rakat:'4+4 rakat',
+    info:'Asr namozi: 4 rakat sunnat va 4 rakat farzdan iborat. Qur\'onda alohida ta\'kidlangan namoz.',
+    steps:[
+      {ttl:'Niyat — 4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْعَصْرِ',tr:'Navaytu usalli sunnatal Asr',uz:'Asr sunnatini o\'qishga niyat qildim'},
+      {ttl:'4 rakat o\'qish',ar:'',tr:'',uz:'Peshin namozidagi 4 rakat kabi o\'qiladi. 1-2 rakatda Fotiha+Sura, 3-4 rakatda faqat Fotiha'},
+      {ttl:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْعَصْرِ',tr:'Navaytu usalli fardal Asr',uz:'Asr farzini o\'qishga niyat qildim'},
+      {ttl:'Qasr namozi (musofir)',ar:'',tr:'',uz:'Safarda (44 km dan ortiq) bo\'lsa, Peshin va Asr namozlarining farzi 2 rakatga qisqaradi'},
+    ]
+  },
+  {
+    ico:'🌆',name:'Shom (Mag\'rib)',sub:'Quyosh botishidan Shafaq yo\'qolgunga qadar',rakat:'3+2+2 rakat',
+    info:'Shom namozi: 3 rakat farz, 2 rakat sunnat, 2 rakat nafl. Qisqa vaqtli, o\'qishni kechiktirmaslik kerak.',
+    steps:[
+      {ttl:'3 rakat farz niyati',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْمَغْرِبِ',tr:'Navaytu usalli fardal Mag\'rib',uz:'Shom namozining farzini o\'qishga niyat qildim'},
+      {ttl:'1-rakat: Fotiha + Sura',ar:'',tr:'',uz:'Takbir → Sano → Fotiha → Sura (Ikhlos) → Ruku → 2 Sajda'},
+      {ttl:'2-rakat: Fotiha + Sura + Qa\'da',ar:'',tr:'',uz:'Fotiha → Sura → Ruku → 2 Sajda → O\'tirib Attahiyyat o\'qiladi'},
+      {ttl:'3-rakat: Fatiha',ar:'',tr:'',uz:'3-rakatda faqat Fotiha o\'qiladi, Sura qo\'shilmaydi → Ruku → 2 Sajda → Attahiyyat → Salovat → Salom'},
+      {ttl:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْمَغْرِبِ',tr:'Navaytu usalli sunnatal Mag\'rib',uz:'Shom sunnatini o\'qishga niyat qildim. 2 rakat o\'qiladi'},
+    ]
+  },
+  {
+    ico:'🌙',name:'Xufton (Isha)',sub:'Shafaq yo\'qolishidan Tong otgunga qadar',rakat:'4+4+2+2+3 rakat',
+    info:'Xufton namozi: 4 rakat sunnat, 4 rakat farz, 2 rakat sunnat, 2 rakat nafl, 3 rakat Vitr. Eng to\'liq namoz.',
+    steps:[
+      {ttl:'4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْعِشَاءِ',tr:'Navaytu usalli sunnatal Isha',uz:'Xufton sunnatini o\'qishga niyat qildim'},
+      {ttl:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْعِشَاءِ',tr:'Navaytu usalli fardal Isha',uz:'Xufton farzini o\'qishga niyat qildim. 4 rakat — peshin kabi'},
+      {ttl:'2 rakat sunnat + 2 nafl',ar:'',tr:'',uz:'Yana 2 rakat sunnat, so\'ngra 2 rakat nafl o\'qilishi mumkin'},
+      {ttl:'3 rakat Vitr',ar:'نَوَيْتُ أُصَلِّي الْوِتْرَ',tr:'Navaytu usallas vitr',uz:'3 rakat vitr niyati. 1-2 rakat o\'qiladi → Attahiyyat → 3-rakatda Fotiha+Sura+Qunut duosi'},
+      {ttl:'Qunut duosi (Vitr)',ar:'اللَّهُمَّ إِنَّا نَسْتَعِينُكَ وَنَسْتَغْفِرُكَ وَنَسْتَهْدِيكَ وَنُؤْمِنُ بِكَ وَنَتَوَكَّلُ عَلَيْكَ وَنُثْنِي عَلَيْكَ الْخَيْرَ',tr:'Allohumma inna nasta\'inuka va nastagfiruka va nastahdiyk va nu\'minu bika va natawakkalu alayk va nusni alaykal-khayr',uz:'Allohim! Senga sig\'inyapmiz, Seningdan mag\'firat so\'raymiz, hidoyat so\'raymiz, Senga imon keltiramiz, Senga tayanamiz, Seni yaxshilik bilan maqtaymiz'},
+    ]
+  }
+];
+
+let activeNTab=0;
+
+function nTab(i){
+  activeNTab=i;
+  [0,1].forEach(j=>document.getElementById('nc'+j).classList.toggle('on',j===i));
+  renderNamoz();
+}
+
+function renderNamoz(){
+  const el=document.getElementById('ncontent');el.innerHTML='';
+  if(activeNTab===0){renderTahorat(el);}else{renderPrayers(el);}
+}
+
+function stepCard(icon,num,title,ar,uz,desc){
+  const d=document.createElement('div');d.className='nstep';
+  d.innerHTML=`<div class="nstep-hd">
+    <div class="nstep-num">${num}</div>
+    <div class="nstep-ico">${icon}</div>
+    <div class="nstep-ttl">${title}</div>
+    <div class="nstep-arr">▼</div>
+  </div>
+  <div class="nstep-body"><div class="nstep-inner">
+    ${ar?`<div class="nstep-ar">${ar}</div>`:''}
+    ${uz?`<div class="nstep-uz">📖 ${uz}</div>`:''}
+    ${desc?`<div class="nstep-desc">ℹ️ ${desc}</div>`:''}
+  </div></div>`;
+  d.querySelector('.nstep-hd').onclick=()=>d.classList.toggle('open');
+  return d;
+}
+
+function renderTahorat(el){
+  const title=document.createElement('div');title.className='nsectitle';title.innerHTML='💧 Tahorat olish tartibi';el.appendChild(title);
+  const info=document.createElement('div');info.className='ninfo';
+  info.innerHTML='<b>Tahorat</b> — namoz o\'qish uchun shart bo\'lgan poklik holati. <b>Tahoratni buzuvchi holatlar:</b> hojatga borish, yel chiqarish, qon oqishi, behush bo\'lish, uxlash.';
+  el.appendChild(info);
+  TAHORAT.forEach((s,i)=>el.appendChild(stepCard(s.ico,i+1,s.ttl,s.ar,s.uz,s.desc)));
+}
+
+function renderPrayers(el){
+  const title=document.createElement('div');title.className='nsectitle';title.innerHTML='🕌 5 Vaqt Namoz';el.appendChild(title);
+  const info=document.createElement('div');info.className='ninfo';
+  info.innerHTML='<b>5 vaqt namoz</b> har bir musulmon uchun farzdир. <b>Niyat</b> qilib, <b>Qibla</b>ga qarab, <b>tahorat</b> bilan o\'qiladi.';
+  el.appendChild(info);
+  PRAYERS.forEach(p=>{
+    const d=document.createElement('div');d.className='nprayer';
+    d.innerHTML=`<div class="nprayer-hd">
+      <div class="nprayer-ico">${p.ico}</div>
+      <div class="nprayer-info">
+        <div class="nprayer-name">${p.name}</div>
+        <div class="nprayer-sub">${p.sub}</div>
+      </div>
+      <div class="nprayer-rakat">${p.rakat}</div>
+      <div class="nprayer-arr">▼</div>
+    </div>
+    <div class="nprayer-body"><div class="nprayer-inner">
+      <div class="ninfo">${p.info}</div>
+      ${p.steps.map((s,i)=>`<div class="nrak">
+        <div class="nrak-num">${i+1}</div>
+        <div class="nrak-cont">
+          <div class="nrak-ttl">${s.ttl}</div>
+          ${s.ar?`<div class="nrak-ar">${s.ar}</div>`:''}
+          ${s.tr?`<div class="nrak-tr">${s.tr}</div>`:''}
+          ${s.uz?`<div class="nrak-uz">${s.uz}</div>`:''}
+        </div>
+      </div>`).join('')}
+    </div></div>`;
+    d.querySelector('.nprayer-hd').onclick=()=>d.classList.toggle('open');
+    el.appendChild(d);
+  });
+}
+
 /* ══ BOOT ══ */
-buildRec();renderList(SURAHS);
+buildRec();renderList(SURAHS);renderNamoz();
 
 window.addEventListener('DOMContentLoaded',()=>{
-  if(window.Telegram?.WebApp){
-    const tg=Telegram.WebApp;tg.ready();tg.expand();
-    tg.setHeaderColor?.('#0a0f1a');tg.setBackgroundColor?.('#0a0f1a');
-  }
-
-  // Boshlang'ich qibla (Toshkent)
+  if(window.Telegram?.WebApp){const tg=Telegram.WebApp;tg.ready();tg.expand();tg.setHeaderColor?.('#0a0f1a');tg.setBackgroundColor?.('#0a0f1a');}
   updateQibla();setLocUI(userLat,userLon,"Toshkent, O'zbekiston");
-
-  // Canvas render loop
   requestAnimationFrame(qLoop);
-
-  // Joylashuvni aniqlash (GPS → IP → default)
   startGPS();
-
-  // Kompas sensorini boshlash
   if(isIOS()){
-    // iOS: foydalanuvchi gesti talab qilinadi
-    showBtn(
-      'Kompasni ishlatish uchun qurilma ruxsatini bering',
-      '📍 Ruxsat berish',
-      ()=>{
-        document.getElementById('qpbtn').style.display='none';
-        setLoadMsg('Ruxsat so\'ralmoqda...');
-        requestSensor();
-      }
-    );
+    showBtn('Kompasni ishlatish uchun qurilma ruxsatini bering','📍 Ruxsat berish',()=>{
+      document.getElementById('qpbtn').style.display='none';setLoadMsg('Ruxsat so\'ralmoqda...');requestSensor();
+    });
   } else {
-    // Android / Desktop
     requestSensor();
-    setTimeout(()=>{
-      if(!sensorOK){
-        showBtn(
-          'Kompas sensori javob bermadi.<br><small style="color:#4a5568">Telegram ilovasidan foydalaning yoki demo sinab ko\'ring</small>',
-          '▶ Demo rejim',
-          startDemo
-        );
-      }
-    },5000);
   }
 });
 </script>
