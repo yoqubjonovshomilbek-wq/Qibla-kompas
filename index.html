@@ -146,18 +146,29 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .ncontent{flex:1;overflow-y:auto;padding:12px 12px 24px;}
 
 /* ─── Namoz vaqtlari ─── */
-.ptimes-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
-.pt-card{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:10px 8px;text-align:center;transition:all .3s;}
-.pt-card.active{background:rgba(34,197,94,.12);border-color:var(--g);box-shadow:0 0 14px rgba(34,197,94,.2);}
-.pt-ico{font-size:20px;margin-bottom:4px;}
-.pt-name{font-size:11px;font-weight:700;color:var(--mt);margin-bottom:2px;}
+.region-select{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:12px;padding:10px 14px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:600;outline:none;cursor:pointer;margin-bottom:12px;appearance:none;-webkit-appearance:none;}
+.region-select:focus{border-color:var(--g);}
+.region-select option{background:#0f2139;color:#e2eef8;}
+.pt-countdown{background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(34,197,94,.06));border:1.5px solid rgba(34,197,94,.4);border-radius:16px;padding:14px 16px;margin-bottom:14px;text-align:center;}
+.pt-cd-label{font-size:11px;color:var(--mt);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pt-cd-prayer{font-family:'Amiri',serif;font-size:20px;color:var(--gold);margin-bottom:6px;}
+.pt-cd-time{font-family:'Nunito',sans-serif;font-size:38px;font-weight:800;color:var(--g);letter-spacing:2px;line-height:1;text-shadow:0 0 20px rgba(34,197,94,.5);}
+.pt-cd-until{font-size:11px;color:var(--mt);margin-top:4px;}
+.ptimes-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.pt-card{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:12px;transition:all .3s;}
+.pt-card.active{background:rgba(34,197,94,.1);border-color:var(--g);box-shadow:0 0 16px rgba(34,197,94,.15);}
+.pt-card.next-p{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.06);}
+.pt-ico{font-size:22px;flex-shrink:0;}
+.pt-info{flex:1;}
+.pt-name{font-size:13px;font-weight:700;color:var(--mt);}
 .pt-card.active .pt-name{color:var(--g);}
-.pt-time{font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--tx);}
+.pt-card.next-p .pt-name{color:var(--gold);}
+.pt-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;vertical-align:middle;}
+.pt-badge.cur{background:rgba(34,197,94,.2);color:var(--g);}
+.pt-badge.nxt{background:rgba(212,168,67,.2);color:var(--gold);}
+.pt-time{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:var(--tx);flex-shrink:0;}
 .pt-card.active .pt-time{color:var(--g);}
-.pt-next{font-size:10px;color:var(--mt);margin-top:2px;}
-.pt-loc{text-align:center;font-size:11px;color:var(--mt);margin-bottom:12px;}
-.pt-loc b{color:var(--tx);}
-
+.pt-card.next-p .pt-time{color:var(--gold);}
 /* Date + clock */
 .pt-header{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:12px;text-align:center;margin-bottom:12px;}
 .pt-clock{font-family:'Nunito',sans-serif;font-size:36px;font-weight:800;color:var(--tx);line-height:1;}
@@ -450,7 +461,6 @@ function setLoc(lat,lon,name){
   document.getElementById('locName').textContent=name;
   document.getElementById('locCoord').textContent=`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
   updateQiblaUI();
-  loadPrayerTimes(lat,lon);
 }
 function startGPS(){
   if(!navigator.geolocation){startIPGeo();return;}
@@ -598,16 +608,40 @@ function doFilter(){const q=document.getElementById('srch').value.toLowerCase().
    TAB 3 — NAMOZ
 ══════════════════════════════════════════ */
 
-/* ─── Namoz vaqtlari (Aladhan API) ─── */
+/* ─── Namoz vaqtlari ─── */
 let prayerData=null;
-const PNAMES=[
-  {key:'Fajr',uz:'Bomdod',ico:'🌅'},
-  {key:'Sunrise',uz:'Quyosh chiqishi',ico:'☀️'},
-  {key:'Dhuhr',uz:'Peshin',ico:'🌤️'},
-  {key:'Asr',uz:'Asr',ico:'🌇'},
-  {key:'Maghrib',uz:'Shom',ico:'🌆'},
-  {key:'Isha',uz:'Xufton',ico:'🌙'},
+let selectedRegionIdx=0;
+let cdTimer=null;
+
+const UZ_REGIONS=[
+  {name:"📍 Joylashuvimdan aniqlash", lat:null, lon:null},
+  {name:"Toshkent shahri",     lat:41.2995, lon:69.2401},
+  {name:"Toshkent viloyati",   lat:41.1123, lon:69.6541},
+  {name:"Samarqand",           lat:39.6547, lon:66.9597},
+  {name:"Buxoro",              lat:39.7747, lon:64.4286},
+  {name:"Namangan",            lat:41.0011, lon:71.6726},
+  {name:"Andijon",             lat:40.7829, lon:72.3442},
+  {name:"Farg'ona",            lat:40.3842, lon:71.7843},
+  {name:"Qashqadaryo",         lat:38.8600, lon:65.7883},
+  {name:"Surxondaryo",         lat:37.9401, lon:67.5700},
+  {name:"Xorazm",              lat:41.5500, lon:60.6300},
+  {name:"Navoiy",              lat:40.0840, lon:65.3792},
+  {name:"Jizzax",              lat:40.1158, lon:67.8422},
+  {name:"Sirdaryo",            lat:40.8393, lon:68.6616},
+  {name:"Qoraqalpog'iston",    lat:43.7677, lon:59.3797},
 ];
+
+const PNAMES=[
+  {key:'Fajr',    uz:'Bomdod',         ico:'🌅'},
+  {key:'Sunrise', uz:'Quyosh chiqishi',ico:'☀️'},
+  {key:'Dhuhr',   uz:'Peshin',         ico:'🌤️'},
+  {key:'Asr',     uz:'Asr',            ico:'🌇'},
+  {key:'Maghrib', uz:'Shom',           ico:'🌆'},
+  {key:'Isha',    uz:'Xufton',         ico:'🌙'},
+];
+const PRAYER_KEYS_ONLY=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+
+function timeToMin(t){const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m;}
 
 function loadPrayerTimes(lat,lon){
   const today=new Date();
@@ -618,27 +652,54 @@ function loadPrayerTimes(lat,lon){
     }).catch(()=>{});
 }
 
-function getCurrentPrayer(){
-  if(!prayerData)return -1;
-  const now=new Date();
-  const nowMin=now.getHours()*60+now.getMinutes();
-  const keys=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
-  let cur=-1;
-  keys.forEach((k,i)=>{
-    const[hh,mm]=prayerData[k].split(':').map(Number);
-    if(nowMin>=hh*60+mm)cur=i;
-  });
-  return cur;
+function onRegionChange(idx){
+  selectedRegionIdx=idx;
+  prayerData=null;
+  if(cdTimer){clearInterval(cdTimer);cdTimer=null;}
+  const reg=UZ_REGIONS[idx];
+  if(reg.lat===null){
+    // GPS orqali aniqlash
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        pos=>loadPrayerTimes(pos.coords.latitude,pos.coords.longitude),
+        ()=>loadPrayerTimes(uLat,uLon),
+        {enableHighAccuracy:true,timeout:8000}
+      );
+    } else loadPrayerTimes(uLat,uLon);
+  } else {
+    loadPrayerTimes(reg.lat,reg.lon);
+  }
+  if(activeNTab===0)renderNTab();
 }
 
-function timeToMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
-function nextPrayer(){
+function getNextPrayer(){
   if(!prayerData)return null;
-  const now=new Date();const nowM=now.getHours()*60+now.getMinutes();
-  const keys=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
-  for(const k of keys){if(timeToMin(prayerData[k])>nowM)return k;}
-  return 'Fajr';
+  const nowM=new Date().getHours()*60+new Date().getMinutes();
+  for(const k of PRAYER_KEYS_ONLY){if(timeToMin(prayerData[k])>nowM)return k;}
+  return 'Fajr'; // ertangi kun
 }
+function getCurrentActivePrayer(){
+  if(!prayerData)return null;
+  const nowM=new Date().getHours()*60+new Date().getMinutes();
+  let cur=null;
+  PRAYER_KEYS_ONLY.forEach(k=>{if(timeToMin(prayerData[k])<=nowM)cur=k;});
+  return cur;
+}
+function getSecsToNext(){
+  if(!prayerData)return 0;
+  const nxt=getNextPrayer();
+  const now=new Date();
+  const[hh,mm]=(prayerData[nxt]||'0:0').split(':').map(Number);
+  let target=new Date();target.setHours(hh,mm,0,0);
+  if(target<=now)target.setDate(target.getDate()+1); // ertangi Fajr
+  return Math.max(0,Math.floor((target-now)/1000));
+}
+function fmtCD(secs){
+  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
+  return(h>0?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function prayerUzName(key){return(PNAMES.find(p=>p.key===key)||{uz:key}).uz;}
+function prayerIco(key){return(PNAMES.find(p=>p.key===key)||{ico:'🕌'}).ico;}
 
 /* ─── Tasbeh ─── */
 let tasbehCount=0,tasbehTarget=33;
@@ -751,32 +812,68 @@ function renderNTab(){
 
 /* ── Namoz vaqtlari ── */
 function renderPrayerTimes(el){
-  // Clock
+  if(cdTimer){clearInterval(cdTimer);cdTimer=null;}
+
+  // Soat
   const now=new Date();
   const hd=document.createElement('div');hd.className='pt-header';
   hd.innerHTML=`<div class="pt-clock" id="liveClock">${now.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</div><div class="pt-date">${now.toLocaleDateString('uz-UZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>`;
   el.appendChild(hd);
   setInterval(()=>{const c=document.getElementById('liveClock');if(c)c.textContent=new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
 
-  const loc=document.createElement('div');loc.className='pt-loc';
-  loc.innerHTML=`📍 <b id="ptLocName">${document.getElementById('locName').textContent}</b>`;el.appendChild(loc);
+  // Viloyat tanlash
+  const selWrap=document.createElement('div');
+  selWrap.innerHTML=`<select class="region-select" id="regionSel" onchange="onRegionChange(this.value*1)">
+    ${UZ_REGIONS.map((r,i)=>`<option value="${i}"${i===selectedRegionIdx?' selected':''}>${r.name}</option>`).join('')}
+  </select>`;
+  el.appendChild(selWrap);
 
+  // Yuklanmoqda
   if(!prayerData){
     const msg=document.createElement('div');msg.className='info-box';
-    msg.innerHTML='⏳ Namoz vaqtlari aniqlanmoqda... (Internet kerak)';el.appendChild(msg);return;
+    msg.innerHTML='⏳ Namoz vaqtlari yuklanmoqda...';el.appendChild(msg);
+    return;
   }
 
-  const grid=document.createElement('div');grid.className='ptimes-grid';
-  const cur=getCurrentPrayer(),nxt=nextPrayer();
-  PNAMES.forEach((p,i)=>{
+  // Keyingi namozga sanash banner
+  const nxt=getNextPrayer();
+  const curAct=getCurrentActivePrayer();
+  const cdBanner=document.createElement('div');cdBanner.className='pt-countdown';
+  cdBanner.innerHTML=`
+    <div class="pt-cd-label">Keyingi namozgacha</div>
+    <div class="pt-cd-prayer">${prayerIco(nxt)} ${prayerUzName(nxt)}</div>
+    <div class="pt-cd-time" id="cdDisplay">${fmtCD(getSecsToNext())}</div>
+    <div class="pt-cd-until">${prayerData[nxt]} da boshlanadi</div>`;
+  el.appendChild(cdBanner);
+
+  // Countdown timer — har soniyada yangilaydi
+  cdTimer=setInterval(()=>{
+    const el2=document.getElementById('cdDisplay');
+    if(!el2){clearInterval(cdTimer);cdTimer=null;return;}
+    const secs=getSecsToNext();
+    el2.textContent=fmtCD(secs);
+    // Vaqt keldi — avtomatik yangilanish
+    if(secs===0){clearInterval(cdTimer);cdTimer=null;setTimeout(()=>{if(activeNTab===0)renderNTab();},1500);}
+  },1000);
+
+  // Barcha namoz vaqtlari ro'yxati
+  const list=document.createElement('div');list.className='ptimes-list';
+  PNAMES.forEach(p=>{
     const t=prayerData[p.key]||'--:--';
-    const isActive=i===cur;
-    const isNext=p.key===nxt;
-    const card=document.createElement('div');card.className='pt-card'+(isActive?' active':'');
-    card.innerHTML=`<div class="pt-ico">${p.ico}</div><div class="pt-name">${p.uz}</div><div class="pt-time">${t}</div>${isNext?'<div class="pt-next">Keyingi ▶</div>':''}`;
-    grid.appendChild(card);
+    const isCur=p.key===curAct;
+    const isNxt=p.key===nxt;
+    const card=document.createElement('div');
+    card.className='pt-card'+(isCur?' active':isNxt?' next-p':'');
+    card.innerHTML=`
+      <div class="pt-ico">${p.ico}</div>
+      <div class="pt-info">
+        <span class="pt-name">${p.uz}</span>
+        ${isCur?'<span class="pt-badge cur">Hozir</span>':isNxt?'<span class="pt-badge nxt">Keyingi</span>':''}
+      </div>
+      <div class="pt-time">${t}</div>`;
+    list.appendChild(card);
   });
-  el.appendChild(grid);
+  el.appendChild(list);
 }
 
 /* ── Tasbeh ── */
@@ -862,6 +959,8 @@ renderNTab();
 if(window.Telegram?.WebApp){const tg=Telegram.WebApp;tg.ready();tg.expand();tg.setHeaderColor?.('#070d17');tg.setBackgroundColor?.('#070d17');}
 
 startGPS();
+// Default: Toshkent shahri (index 1) bilan namoz vaqtlarini boshlash
+onRegionChange(1);
 </script>
 </body>
 </html>
