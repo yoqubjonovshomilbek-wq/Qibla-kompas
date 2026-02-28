@@ -13,11 +13,12 @@
   --bg:#070d17;--s1:#0b1a2e;--s2:#0f2139;--s3:#162b47;
   --bdr:rgba(34,197,94,0.15);--tx:#e2eef8;--mt:#4a6a86;
   --gw:rgba(34,197,94,0.35);
+  --blue:#3b82f6;--pink:#ec4899;
 }
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100dvh;}
 
-/* Stars bg */
+/* Stars */
 .stars{position:fixed;inset:0;z-index:0;pointer-events:none}
 .star{position:absolute;border-radius:50%;background:#fff;opacity:0;animation:twinkle var(--d) ease-in-out infinite var(--dl)}
 @keyframes twinkle{0%,100%{opacity:0}50%{opacity:.5}}
@@ -38,39 +39,49 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .pg::-webkit-scrollbar-thumb{background:var(--s3);}
 
 /* ══════════════════════════════════════
-   TAB 1 — QIBLA
+   TAB 1 — QIBLA (REAL KOMPAS)
 ══════════════════════════════════════ */
 #pg0{display:flex;flex-direction:column;align-items:center;padding:16px 16px 30px;}
-
 .qibla-card{width:100%;max-width:360px;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:20px;margin-bottom:14px;}
 .qibla-title{font-family:'Amiri',serif;font-size:22px;color:var(--gold);text-align:center;margin-bottom:16px;text-shadow:0 0 20px rgba(212,168,67,.3);}
 
-/* Arrow compass display */
-.qibla-compass{position:relative;width:240px;height:240px;margin:0 auto 20px;}
-.qc-ring{width:240px;height:240px;border-radius:50%;border:3px solid var(--bdr);background:radial-gradient(circle,#0f2139 60%,#070d17);position:relative;display:flex;align-items:center;justify-content:center;transition:border-color .4s,box-shadow .4s;}
-.qc-ring.aligned{border-color:var(--g);box-shadow:0 0 40px rgba(34,197,94,.5);}
-/* Cardinal marks */
-.qc-card{position:absolute;font-size:12px;font-weight:800;color:var(--mt);font-family:'Nunito',sans-serif;}
-.qc-n{top:8px;left:50%;transform:translateX(-50%);color:#ef4444;}
-.qc-s{bottom:8px;left:50%;transform:translateX(-50%);}
-.qc-e{right:10px;top:50%;transform:translateY(-50%);}
-.qc-w{left:10px;top:50%;transform:translateY(-50%);}
-/* Degree ticks */
-.qc-ticks{position:absolute;inset:0;border-radius:50%;}
+/* REAL COMPASS */
+.compass-wrap{position:relative;width:260px;height:260px;margin:0 auto 20px;}
+/* Outer ring - rotates with device heading */
+.compass-ring{width:260px;height:260px;border-radius:50%;border:2px solid var(--bdr);background:radial-gradient(circle at 40% 35%,#132340 0%,#070d17 70%);position:absolute;inset:0;transition:transform 0.3s ease;}
+/* Degree markings on ring */
+.compass-ring svg{position:absolute;inset:0;width:100%;height:100%;}
+/* Fixed arrow pointing to qibla direction */
+.qibla-pointer{position:absolute;top:50%;left:50%;z-index:5;pointer-events:none;}
+.qp-inner{transform:translateX(-50%) translateY(-100%);display:flex;flex-direction:column;align-items:center;}
+.qp-head{width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:28px solid var(--gold);filter:drop-shadow(0 0 10px rgba(212,168,67,.9));}
+.qp-body{width:3px;height:100px;background:linear-gradient(var(--gold),rgba(212,168,67,.1));border-radius:0 0 3px 3px;}
 
-/* The arrow that points to qibla */
-.qibla-arrow{position:absolute;top:50%;left:50%;transform-origin:center bottom;width:10px;height:90px;margin-left:-5px;margin-top:-90px;transition:transform 0.6s cubic-bezier(.34,1.56,.64,1);}
-.qa-head{width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:30px solid var(--gold);margin-left:-7px;filter:drop-shadow(0 0 8px rgba(212,168,67,.8));}
-.qa-body{width:4px;height:60px;background:linear-gradient(var(--gold),rgba(212,168,67,.3));margin-left:3px;border-radius:0 0 4px 4px;}
+/* N marker on compass ring */
+.compass-n{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:800;color:#ef4444;font-family:'Nunito',sans-serif;z-index:3;}
+.compass-s{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--mt);font-family:'Nunito',sans-serif;z-index:3;}
+.compass-e{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--mt);font-family:'Nunito',sans-serif;z-index:3;}
+.compass-w{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--mt);font-family:'Nunito',sans-serif;z-index:3;}
 
-/* Kaaba icon center */
-.qc-center{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#42a5f5,#0d47a1);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 0 3px rgba(255,255,255,.1),0 4px 16px rgba(0,0,0,.5);transition:box-shadow .4s;}
-.qc-center.aligned{box-shadow:0 0 0 3px var(--g),0 0 20px rgba(34,197,94,.5);}
+/* Center kaaba */
+.compass-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#1d4ed8,#0d47a1);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 0 3px rgba(255,255,255,.1),0 4px 20px rgba(0,0,0,.5);z-index:6;transition:box-shadow .4s;}
+.compass-center.aligned{box-shadow:0 0 0 3px var(--g),0 0 30px rgba(34,197,94,.6);}
 
-/* Qibla info */
+/* Alignment indicator ring */
+.align-ring{position:absolute;inset:-4px;border-radius:50%;border:3px solid transparent;transition:border-color .4s,box-shadow .4s;}
+.align-ring.aligned{border-color:var(--g);box-shadow:0 0 40px rgba(34,197,94,.4),inset 0 0 20px rgba(34,197,94,.1);}
+
+/* Compass permission UI */
+.compass-perm{text-align:center;padding:16px 0 8px;}
+.perm-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:20px;border:1.5px solid var(--g);background:rgba(34,197,94,.1);color:var(--g);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.perm-btn:active{background:rgba(34,197,94,.2);}
+.compass-status{font-size:11px;color:var(--mt);margin-top:8px;}
+
+/* Degree display */
 .qibla-deg{text-align:center;margin-bottom:12px;}
-.qdeg-val{font-family:'Nunito',sans-serif;font-size:48px;font-weight:800;line-height:1;color:var(--tx);}
-.qdeg-dir{font-size:12px;color:var(--mt);letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-top:4px;}
+.qdeg-val{font-family:'Nunito',sans-serif;font-size:52px;font-weight:800;line-height:1;color:var(--tx);}
+.qdeg-val.aligned{color:var(--g);text-shadow:0 0 30px rgba(34,197,94,.5);}
+.qdeg-dir{font-size:11px;color:var(--mt);letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-top:4px;}
 .qdeg-from{font-size:13px;color:var(--g);margin-top:6px;font-weight:600;}
 
 /* Location */
@@ -78,6 +89,11 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .loc-ico{font-size:20px;flex-shrink:0;}
 .loc-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .loc-coord{font-size:10px;color:var(--mt);margin-top:2px;}
+
+/* Aligned message */
+.aligned-msg{display:none;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:10px 14px;text-align:center;font-size:13px;color:var(--g);margin-top:10px;}
+.aligned-msg.show{display:block;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* How to use */
 .howto{width:100%;max-width:360px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:14px;margin-bottom:14px;}
@@ -145,7 +161,7 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .ntab.on{background:var(--g);color:#fff;box-shadow:0 2px 10px rgba(34,197,94,.4);}
 .ncontent{flex:1;overflow-y:auto;padding:12px 12px 24px;}
 
-/* ─── Namoz vaqtlari ─── */
+/* ─── Prayer times ─── */
 .region-select{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:12px;padding:10px 14px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:600;outline:none;cursor:pointer;margin-bottom:12px;appearance:none;-webkit-appearance:none;}
 .region-select:focus{border-color:var(--g);}
 .region-select option{background:#0f2139;color:#e2eef8;}
@@ -169,27 +185,59 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .pt-time{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:var(--tx);flex-shrink:0;}
 .pt-card.active .pt-time{color:var(--g);}
 .pt-card.next-p .pt-time{color:var(--gold);}
-/* Date + clock */
 .pt-header{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:12px;text-align:center;margin-bottom:12px;}
 .pt-clock{font-family:'Nunito',sans-serif;font-size:36px;font-weight:800;color:var(--tx);line-height:1;}
 .pt-date{font-size:12px;color:var(--mt);margin-top:4px;}
 
-/* ─── Tasbeh ─── */
-.tasbeh-wrap{text-align:center;}
-.tasbeh-display{font-family:'Nunito',sans-serif;font-size:72px;font-weight:800;color:var(--g);line-height:1;margin-bottom:4px;text-shadow:0 0 30px rgba(34,197,94,.4);}
-.tasbeh-label{font-family:'Amiri',serif;font-size:20px;color:var(--gold);margin-bottom:4px;}
-.tasbeh-tr{font-size:12px;color:var(--mt);margin-bottom:20px;}
-.tasbeh-btn{width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--gd));border:none;font-size:36px;cursor:pointer;box-shadow:0 8px 30px rgba(34,197,94,.5),inset 0 2px 0 rgba(255,255,255,.2);transition:transform .1s,box-shadow .1s;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
-.tasbeh-btn:active{transform:scale(.94);box-shadow:0 4px 15px rgba(34,197,94,.4);}
-.tasbeh-targets{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
-.tt-btn{padding:8px 16px;border-radius:20px;border:1.5px solid var(--bdr);background:var(--s2);color:var(--mt);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
-.tt-btn.on{background:rgba(34,197,94,.15);border-color:var(--g);color:var(--g);}
-.tasbeh-zikrs{display:flex;flex-direction:column;gap:6px;}
-.tz-item{background:var(--s1);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .2s;}
-.tz-item.on{border-color:var(--g);background:rgba(34,197,94,.08);}
-.tz-ar{font-family:'Amiri',serif;font-size:17px;direction:rtl;color:var(--tx);margin-bottom:2px;}
-.tz-uz{font-size:11px;color:var(--mt);}
-.tasbeh-reset{margin-top:16px;padding:10px 24px;border-radius:20px;border:1px solid rgba(239,68,68,.3);background:transparent;color:#ef4444;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;}
+/* ══════════════════════════════════════
+   TASBEH — YANGI UI
+══════════════════════════════════════ */
+.tasbeh-page{display:flex;flex-direction:column;gap:14px;}
+
+/* Zikr selector */
+.zikr-selector{display:flex;flex-direction:column;gap:6px;}
+.zikr-card{background:var(--s1);border:1.5px solid var(--bdr);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:12px;}
+.zikr-card.active{background:rgba(34,197,94,.1);border-color:var(--g);}
+.zikr-dot{width:36px;height:36px;border-radius:50%;background:var(--s2);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .25s;}
+.zikr-card.active .zikr-dot{background:var(--g);border-color:var(--g);}
+.zikr-text{flex:1;}
+.zikr-ar{font-family:'Amiri',serif;font-size:16px;direction:rtl;color:var(--tx);}
+.zikr-uz{font-size:11px;color:var(--mt);margin-top:2px;}
+.zikr-target{font-size:11px;color:var(--g);font-weight:700;margin-top:2px;}
+
+/* Counter display */
+.counter-section{background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:20px;text-align:center;}
+.counter-progress{position:relative;width:160px;height:160px;margin:0 auto 16px;}
+.counter-progress svg{width:160px;height:160px;transform:rotate(-90deg);}
+.cp-bg{fill:none;stroke:var(--s3);stroke-width:8;}
+.cp-fill{fill:none;stroke:var(--g);stroke-width:8;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:440;transition:stroke-dashoffset .3s ease;filter:drop-shadow(0 0 6px rgba(34,197,94,.5));}
+.counter-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.cn-val{font-family:'Nunito',sans-serif;font-size:52px;font-weight:800;color:var(--tx);line-height:1;}
+.cn-total{font-size:12px;color:var(--mt);margin-top:2px;}
+
+/* Big tap button */
+.tap-btn{width:100%;padding:18px;border-radius:16px;background:linear-gradient(135deg,var(--g),var(--gd));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:800;color:#fff;box-shadow:0 6px 24px rgba(34,197,94,.4),inset 0 2px 0 rgba(255,255,255,.2);transition:transform .1s,box-shadow .1s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.tap-btn:active{transform:scale(.97);box-shadow:0 3px 12px rgba(34,197,94,.3);}
+.tap-btn-icon{font-size:24px;}
+
+/* Session info */
+.session-row{display:flex;gap:8px;}
+.session-box{flex:1;background:var(--s2);border:1px solid var(--bdr);border-radius:12px;padding:10px;text-align:center;}
+.sb-val{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--g);}
+.sb-label{font-size:10px;color:var(--mt);margin-top:2px;}
+
+/* Reset button */
+.reset-row{display:flex;gap:8px;}
+.reset-btn{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(239,68,68,.3);background:transparent;color:#ef4444;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.reset-btn:active{background:rgba(239,68,68,.1);}
+
+/* Completion banner */
+.done-banner{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(212,168,67,.1));border:1.5px solid var(--g);border-radius:14px;padding:14px;text-align:center;display:none;}
+.done-banner.show{display:block;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.done-icon{font-size:36px;margin-bottom:6px;}
+.done-title{font-family:'Amiri',serif;font-size:18px;color:var(--gold);}
+.done-sub{font-size:12px;color:var(--mt);margin-top:4px;}
 
 /* ─── Du'olar ─── */
 .dua-cats{display:flex;gap:5px;overflow-x:auto;margin-bottom:10px;padding-bottom:3px;}
@@ -202,7 +250,24 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .dua-tr{font-size:11px;color:#3d6080;font-style:italic;margin-bottom:4px;}
 .dua-uz{font-size:12px;color:var(--mt);line-height:1.6;}
 
-/* ─── Namoz o'rgatish ─── */
+/* ══════════════════════════════════════
+   NAMOZ O'RGATISH — ERKAK / AYOL
+══════════════════════════════════════ */
+.gender-toggle{display:flex;background:var(--s2);border-radius:12px;padding:4px;border:1px solid var(--bdr);margin-bottom:14px;gap:4px;}
+.gt-btn{flex:1;padding:10px 8px;border:none;border-radius:9px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--mt);display:flex;align-items:center;justify-content:center;gap:6px;}
+.gt-btn.male.on{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(59,130,246,.4);}
+.gt-btn.female.on{background:var(--pink);color:#fff;box-shadow:0 2px 12px rgba(236,72,153,.4);}
+
+/* Guide section labels */
+.sec-label{font-family:'Amiri',serif;font-size:16px;color:var(--gold);text-align:center;margin:14px 0 8px;}
+.info-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#3d6080;line-height:1.6;}
+.info-box b{color:var(--g);}
+.info-box.female-note{background:rgba(236,72,153,.05);border-color:rgba(236,72,153,.2);color:#c47fa4;}
+.info-box.female-note b{color:var(--pink);}
+.info-box.male-note{background:rgba(59,130,246,.05);border-color:rgba(59,130,246,.2);color:#7aadda;}
+.info-box.male-note b{color:var(--blue);}
+
+/* Tahorat steps */
 .tahorat-step{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;margin-bottom:8px;overflow:hidden;}
 .ts-hd{display:flex;align-items:center;gap:9px;padding:11px 12px;cursor:pointer;}
 .ts-num{width:28px;height:28px;border-radius:50%;background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g);flex-shrink:0;}
@@ -211,12 +276,16 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .ts-arr{color:var(--mt);font-size:12px;transition:transform .2s;}
 .tahorat-step.open .ts-arr{transform:rotate(180deg);}
 .ts-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
-.tahorat-step.open .ts-body{max-height:500px;}
+.tahorat-step.open .ts-body{max-height:600px;}
 .ts-inner{padding:0 12px 12px;}
 .ts-ar{font-family:'Amiri',serif;font-size:20px;direction:rtl;text-align:center;color:#b8d0e8;line-height:1.7;margin-bottom:6px;padding:8px;background:rgba(0,0,0,.15);border-radius:8px;}
 .ts-tr{font-size:11px;color:#3d6080;font-style:italic;margin-bottom:4px;}
 .ts-desc{font-size:12px;color:var(--mt);line-height:1.6;}
+.ts-diff{font-size:11px;padding:6px 8px;border-radius:8px;margin-top:6px;line-height:1.5;}
+.ts-diff.m{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#7aadda;}
+.ts-diff.f{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);color:#c47fa4;}
 
+/* Prayer cards */
 .prayer-card{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;margin-bottom:10px;overflow:hidden;}
 .pc-hd{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;}
 .pc-ico{font-size:26px;}
@@ -226,8 +295,8 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .pc-rakat{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:16px;padding:3px 9px;font-size:10px;color:var(--g);font-weight:700;white-space:nowrap;}
 .pc-arr{color:var(--mt);font-size:12px;transition:transform .2s;}
 .prayer-card.open .pc-arr{transform:rotate(180deg);}
-.pc-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
-.prayer-card.open .pc-body{max-height:3000px;}
+.pc-body{max-height:0;overflow:hidden;transition:max-height .5s ease;}
+.prayer-card.open .pc-body{max-height:5000px;}
 .pc-inner{padding:0 14px 14px;}
 .pc-info-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:12px;color:#3d6080;line-height:1.6;}
 .rakat-step{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
@@ -238,10 +307,12 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 .rs-ar{font-family:'Amiri',serif;font-size:16px;direction:rtl;color:#9ab8d0;line-height:1.6;margin-bottom:2px;}
 .rs-tr{font-size:10px;color:#3d5e78;font-style:italic;margin-bottom:2px;}
 .rs-uz{font-size:11px;color:var(--mt);line-height:1.5;}
+.rs-diff{font-size:10px;padding:4px 8px;border-radius:6px;margin-top:4px;line-height:1.5;}
+.rs-diff.m{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#7aadda;}
+.rs-diff.f{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);color:#c47fa4;}
 
-.sec-label{font-family:'Amiri',serif;font-size:16px;color:var(--gold);text-align:center;margin:14px 0 8px;}
-.info-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#3d6080;line-height:1.6;}
-.info-box b{color:var(--g);}
+/* Tajwid note */
+.tajwid-note{background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:6px 10px;font-size:11px;color:#b89a4a;margin-top:4px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -255,30 +326,55 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 
 <div class="pages">
 
-<!-- ═══════════════════════ TAB 1: QIBLA ═══════════════════════ -->
+<!-- ════════════ TAB 1: QIBLA (REAL KOMPAS) ════════════ -->
 <div class="pg on" id="pg0">
   <div class="qibla-card">
     <div class="qibla-title">🕋 Qibla Yo'nalishi</div>
-    <div class="qibla-compass">
-      <div class="qc-ring" id="qcRing">
-        <span class="qc-card qc-n">N</span>
-        <span class="qc-card qc-s">S</span>
-        <span class="qc-card qc-e">E</span>
-        <span class="qc-card qc-w">W</span>
-        <!-- Arrow pointing to qibla -->
-        <div class="qibla-arrow" id="qiblaArrow">
-          <div class="qa-head"></div>
-          <div class="qa-body"></div>
-        </div>
-        <div class="qc-center" id="qcCenter">🕋</div>
+
+    <!-- Real Compass -->
+    <div class="compass-wrap" id="compassWrap">
+      <!-- Rotating compass ring -->
+      <div class="compass-ring" id="compassRing">
+        <span class="compass-n">N</span>
+        <span class="compass-s">S</span>
+        <span class="compass-e">E</span>
+        <span class="compass-w">W</span>
+        <!-- SVG degree ticks -->
+        <svg viewBox="0 0 260 260">
+          <g id="ticksG"></g>
+        </svg>
       </div>
+      <!-- Alignment ring (fixed) -->
+      <div class="align-ring" id="alignRing"></div>
+      <!-- Fixed qibla pointer arrow -->
+      <div class="qibla-pointer" id="qiblaPointer" style="display:none;">
+        <div class="qp-inner">
+          <div class="qp-head"></div>
+          <div class="qp-body"></div>
+        </div>
+      </div>
+      <!-- Center -->
+      <div class="compass-center" id="compassCenter">🕋</div>
     </div>
+
+    <!-- Degree info -->
     <div class="qibla-deg">
       <div class="qdeg-val" id="qdegVal">--°</div>
-      <div class="qdeg-dir" id="qdegDir">Aniqlanmoqda</div>
+      <div class="qdeg-dir" id="qdegDir">Aniqlanmoqda...</div>
       <div class="qdeg-from" id="qdegFrom"></div>
     </div>
-    <div class="loc-row">
+
+    <!-- Compass permission button -->
+    <div class="compass-perm" id="compassPerm">
+      <button class="perm-btn" onclick="requestCompass()">🧭 Kompasni yoqish</button>
+      <div class="compass-status" id="compassStatus">Qibla yo'nalishini ko'rish uchun bosing</div>
+    </div>
+
+    <!-- Aligned message -->
+    <div class="aligned-msg" id="alignedMsg">✅ Siz Qiblaga qaratilgansiz! Namoz o'qishingiz mumkin 🤲</div>
+
+    <!-- Location row -->
+    <div class="loc-row" style="margin-top:12px;">
       <div class="loc-ico">📍</div>
       <div style="flex:1;min-width:0;">
         <div class="loc-name" id="locName">Joylashuv aniqlanmoqda...</div>
@@ -289,20 +385,15 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 
   <div class="howto" style="width:100%;max-width:360px;">
     <h3>📱 Qiblani qanday topish:</h3>
-    <div class="howto-step"><div class="hwnum">1</div><span>Qurilmangizda <b>kompas ilovasi</b>ni oching</span></div>
-    <div class="howto-step"><div class="hwnum">2</div><span>Qibla <b id="howDeg">--°</b> yo'nalishida — bu <b id="howDir">--</b> tomonga</span></div>
-    <div class="howto-step"><div class="hwnum">3</div><span>Kompas <b id="howCard">--</b> harfiga qarating, so'ng <b id="howOff">--</b> burilasiz</span></div>
-    <div class="howto-step"><div class="hwnum">4</div><span>Yoki pastdagi xaritada Makkaga qarab namoz o'qing</span></div>
-  </div>
-
-  <!-- Static visual map hint -->
-  <div style="width:100%;max-width:360px;background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px;text-align:center;">
-    <div style="font-size:12px;color:var(--mt);margin-bottom:8px;">📐 Shahringizdan Makka tomoni</div>
-    <canvas id="dirCanvas" width="320" height="120" style="width:100%;border-radius:8px;"></canvas>
+    <div class="howto-step"><div class="hwnum">1</div><span><b>Kompasni yoqish</b> tugmasini bosing va ruxsat bering</span></div>
+    <div class="howto-step"><div class="hwnum">2</div><span>Sariq o'q <b id="howDeg">--°</b> ko'rsatadi — Qibla shu tomonda</span></div>
+    <div class="howto-step"><div class="hwnum">3</div><span>Telefoni yuzini yuqoriga qaratib, <b>o'q ko'rsatgan</b> tomonga buring</span></div>
+    <div class="howto-step"><div class="hwnum">4</div><span>Kompas halqasi aylanganda — <b>sariq o'q Makkani ko'rsatadi</b></span></div>
+    <div class="howto-step"><div class="hwnum">5</div><span>Yashil rangi chiqsa — siz <b>to'g'ri Qiblaga</b> qaratilgansiz ✅</span></div>
   </div>
 </div>
 
-<!-- ═══════════════════════ TAB 2: QUR'ON ═══════════════════════ -->
+<!-- ════════════ TAB 2: QUR'ON ════════════ -->
 <div class="pg" id="pg1">
   <div class="qhdr">
     <div class="qhdr-title">📖 Qur'oni Karim</div>
@@ -314,7 +405,7 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
   <div class="sura-list" id="suraList"></div>
 </div>
 
-<!-- ═══════════════════════ TAB 3: NAMOZ ═══════════════════════ -->
+<!-- ════════════ TAB 3: NAMOZ ════════════ -->
 <div class="pg" id="pg2">
   <div class="nhdr">
     <div class="nhdr-title">🤲 Namoz</div>
@@ -356,14 +447,47 @@ nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-sh
 /* ── Stars ── */
 (()=>{const c=document.getElementById('stars');for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';const z=Math.random()<.2?3:Math.random()<.5?2:1;s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:-${Math.random()*8}s`;c.appendChild(s);}})();
 
+/* Draw compass ticks */
+(()=>{
+  const g=document.getElementById('ticksG');
+  const cx=130,cy=130,r=118;
+  for(let i=0;i<360;i+=5){
+    const rad=i*Math.PI/180;
+    const isMajor=i%30===0,isMinor=i%10===0;
+    const len=isMajor?14:isMinor?9:5;
+    const x1=cx+Math.cos(rad-Math.PI/2)*(r-len);
+    const y1=cy+Math.sin(rad-Math.PI/2)*(r-len);
+    const x2=cx+Math.cos(rad-Math.PI/2)*r;
+    const y2=cy+Math.sin(rad-Math.PI/2)*r;
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1);line.setAttribute('y1',y1);line.setAttribute('x2',x2);line.setAttribute('y2',y2);
+    line.setAttribute('stroke',isMajor?'rgba(212,168,67,.6)':'rgba(74,106,134,.4)');
+    line.setAttribute('stroke-width',isMajor?1.5:0.8);
+    g.appendChild(line);
+    if(isMajor){
+      const tx=cx+Math.cos(rad-Math.PI/2)*(r-22);
+      const ty=cy+Math.sin(rad-Math.PI/2)*(r-22);
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',tx);t.setAttribute('y',ty);
+      t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');
+      t.setAttribute('font-size','9');t.setAttribute('font-family','Nunito,sans-serif');
+      t.setAttribute('font-weight','700');t.setAttribute('fill','rgba(74,106,134,.7)');
+      t.textContent=i===0?'':i;
+      g.appendChild(t);
+    }
+  }
+})();
+
 /* ── Tab navigation ── */
 function goTab(i){[0,1,2].forEach(j=>{document.getElementById('nb'+j).classList.toggle('on',j===i);document.getElementById('pg'+j).classList.toggle('on',j===i);});}
 
 /* ══════════════════════════════════════════
-   TAB 1 — QIBLA (kompas sensorsiz)
+   QIBLA — REAL KOMPAS
 ══════════════════════════════════════════ */
 const KA_LAT=21.4225,KA_LON=39.8262;
 let uLat=41.2995,uLon=69.2401,qiblaAngle=0;
+let compassActive=false,deviceHeading=0;
+let lastHeading=0,smoothHeading=0;
 
 function calcQibla(lat,lon){
   const toR=d=>d*Math.PI/180,fromR=r=>r*180/Math.PI;
@@ -376,98 +500,107 @@ function norm(a){return((a%360)+360)%360;}
 function cardName(deg){return['Shimol (N)','Shim-Sharq (NE)','Sharq (E)','Jan-Sharq (SE)','Janub (S)','Jan-G\'arb (SW)','G\'arb (W)','Shim-G\'arb (NW)'][Math.round(norm(deg)/45)%8];}
 function cardShort(deg){return['N','NE','E','SE','S','SW','W','NW'][Math.round(norm(deg)/45)%8];}
 
-function updateQiblaUI(){
+function updateStaticQiblaUI(){
   qiblaAngle=calcQibla(uLat,uLon);
   const deg=Math.round(qiblaAngle);
-
-  // Rotate arrow — arrow points UP by default (North), rotate to face qibla
-  document.getElementById('qiblaArrow').style.transform=`rotate(${qiblaAngle}deg)`;
   document.getElementById('qdegVal').textContent=deg+'°';
   document.getElementById('qdegDir').textContent=cardName(qiblaAngle);
   document.getElementById('qdegFrom').textContent=`Shimol (N) dan ${deg}° o'ngga`;
-
-  // How-to text
   document.getElementById('howDeg').textContent=deg+'°';
-  document.getElementById('howDir').textContent=cardName(qiblaAngle);
-  document.getElementById('howCard').textContent=cardShort(qiblaAngle);
-
-  // Off angle instruction
-  const base=Math.floor(qiblaAngle/45)*45;
-  const baseCard=cardShort(base);
-  const diff=Math.round(qiblaAngle-base);
-  document.getElementById('howOff').textContent=diff>0?`${baseCard} dan ${diff}° o'ngga`:baseCard+' tomon';
-
-  drawDirectionMap();
 }
 
-function drawDirectionMap(){
-  const cv=document.getElementById('dirCanvas');
-  const ctx=cv.getContext('2d');
-  const W=cv.width,H=cv.height;
-  ctx.clearRect(0,0,W,H);
-
-  // Background
-  const grad=ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#0b1a2e');grad.addColorStop(1,'#070d17');
-  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-
-  // Grid lines
-  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;
-  for(let i=0;i<W;i+=32){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();}
-  for(let i=0;i<H;i+=32){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke();}
-
-  const cx=80,cy=H/2;
-  // Your location dot
-  ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);
-  ctx.fillStyle='#22c55e';ctx.fill();
-  ctx.shadowColor='#22c55e';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='bold 10px Nunito,sans-serif';ctx.textAlign='center';
-  ctx.fillText('Siz',cx,cy-14);
-
-  // Direction line to Mecca
-  const ang=qiblaAngle*Math.PI/180;
-  const len=200;
-  const ex=cx+Math.sin(ang)*len,ey=cy-Math.cos(ang)*len;
-
-  // Gradient line
-  const lg=ctx.createLinearGradient(cx,cy,ex,ey);
-  lg.addColorStop(0,'rgba(212,168,67,.9)');lg.addColorStop(1,'rgba(212,168,67,.1)');
-  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);
-  ctx.strokeStyle=lg;ctx.lineWidth=2.5;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
-
-  // Mecca icon at end (clipped to canvas)
-  const mx=Math.max(10,Math.min(W-10,ex)),my=Math.max(10,Math.min(H-10,ey));
-  ctx.font='22px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('🕋',mx,my);
-
-  // Degree label
-  ctx.fillStyle='rgba(212,168,67,.85)';ctx.font='bold 11px Nunito,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';
-  ctx.fillText(`Makka — ${Math.round(qiblaAngle)}° (${cardShort(qiblaAngle)})`,cx+12,4);
-
-  // Compass rose (small)
-  const rx=W-36,ry=H-36,rr=22;
-  ctx.fillStyle='rgba(11,26,46,.8)';ctx.beginPath();ctx.arc(rx,ry,rr,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='rgba(34,197,94,.3)';ctx.lineWidth=1;ctx.stroke();
-  [['N',0,'#ef4444'],['E',90,'#6b7685'],['S',180,'#6b7685'],['W',270,'#6b7685']].forEach(([l,a,c])=>{
-    const r=a*Math.PI/180;
-    ctx.fillStyle=c;ctx.font='bold 9px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(l,rx+Math.sin(r)*(rr-7),ry-Math.cos(r)*(rr-7));
-  });
+/* Smooth angle interpolation */
+function smoothAngle(current,target){
+  let diff=target-current;
+  while(diff>180)diff-=360;
+  while(diff<-180)diff+=360;
+  return current+diff*0.15;
 }
 
-/* ── Location: GPS → IP → Toshkent ── */
+function updateCompassDisplay(heading){
+  smoothHeading=smoothAngle(smoothHeading,heading);
+  const ringRotation=-smoothHeading; // compass ring rotates opposite to heading
+  document.getElementById('compassRing').style.transform=`rotate(${ringRotation}deg)`;
+
+  // Check alignment: diff between qibla and heading
+  const diff=Math.abs(norm(qiblaAngle-heading));
+  const aligned=diff<5||diff>355;
+
+  const center=document.getElementById('compassCenter');
+  const ring=document.getElementById('alignRing');
+  const deg=document.getElementById('qdegVal');
+  const msg=document.getElementById('alignedMsg');
+
+  center.classList.toggle('aligned',aligned);
+  ring.classList.toggle('aligned',aligned);
+  deg.classList.toggle('aligned',aligned);
+  msg.classList.toggle('show',aligned);
+
+  // How many degrees to rotate to reach qibla (relative to current)
+  const toQibla=norm(qiblaAngle-heading);
+  if(!aligned){
+    const side=toQibla>180?`${Math.round(360-toQibla)}° soldan`:`${Math.round(toQibla)}° o'ngdan`;
+    document.getElementById('qdegFrom').textContent=`Qiblaga: ${side} buring`;
+  } else {
+    document.getElementById('qdegFrom').textContent='✅ To\'g\'ri yo\'nalishsiz!';
+  }
+}
+
+function onDeviceOrientation(e){
+  if(!compassActive)return;
+  let h=0;
+  if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){
+    h=e.webkitCompassHeading; // iOS
+  } else if(e.alpha!==null){
+    h=360-e.alpha; // Android
+  }
+  updateCompassDisplay(h);
+}
+
+function requestCompass(){
+  const statusEl=document.getElementById('compassStatus');
+
+  // iOS 13+ requires requestPermission
+  if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission().then(state=>{
+      if(state==='granted'){
+        compassActive=true;
+        window.addEventListener('deviceorientation',onDeviceOrientation,true);
+        document.getElementById('qiblaPointer').style.display='block';
+        document.getElementById('compassPerm').innerHTML='<div style="font-size:12px;color:var(--g);font-weight:700;">🧭 Kompas faol — telefonni aylantiring</div>';
+        statusEl.textContent='';
+      } else {
+        statusEl.textContent='❌ Ruxsat berilmadi. Sozlamalardan yoqing.';
+      }
+    }).catch(()=>{statusEl.textContent='❌ Xato. Brauzer kompasni qo\'llab-quvvatlamaydi.';});
+  } else if(typeof DeviceOrientationEvent!=='undefined'){
+    // Android / other
+    compassActive=true;
+    window.addEventListener('deviceorientation',onDeviceOrientation,true);
+    document.getElementById('qiblaPointer').style.display='block';
+    document.getElementById('compassPerm').innerHTML='<div style="font-size:12px;color:var(--g);font-weight:700;">🧭 Kompas faol</div>';
+
+    // Test if we get data
+    setTimeout(()=>{
+      if(smoothHeading===0){
+        document.getElementById('compassPerm').innerHTML='<div style="font-size:11px;color:var(--mt);">⚠️ Qurilmangiz kompasni qo\'llab-quvvatlamasligi mumkin. Yo\'nalish: '+Math.round(qiblaAngle)+'° N</div>';
+      }
+    },3000);
+  } else {
+    statusEl.textContent='❌ Bu qurilma kompasni qo\'llab-quvvatlamaydi.';
+  }
+}
+
+/* Location */
 function setLoc(lat,lon,name){
   uLat=lat;uLon=lon;
   document.getElementById('locName').textContent=name;
   document.getElementById('locCoord').textContent=`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
-  updateQiblaUI();
+  updateStaticQiblaUI();
 }
 function startGPS(){
   if(!navigator.geolocation){startIPGeo();return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const {latitude:la,longitude:lo}=pos.coords;
-    reverseGeo(la,lo);
-  },()=>startIPGeo(),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  navigator.geolocation.getCurrentPosition(pos=>reverseGeo(pos.coords.latitude,pos.coords.longitude),()=>startIPGeo(),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
 }
 function startIPGeo(){
   fetch('https://ip-api.com/json/?fields=status,lat,lon,city,country')
@@ -607,201 +740,197 @@ function doFilter(){const q=document.getElementById('srch').value.toLowerCase().
 /* ══════════════════════════════════════════
    TAB 3 — NAMOZ
 ══════════════════════════════════════════ */
-
-/* ─── Namoz vaqtlari ─── */
-let prayerData=null;
-let selectedRegionIdx=0;
-let cdTimer=null;
+let prayerData=null,selectedRegionIdx=1,cdTimer=null,activeNTab=0;
 
 const UZ_REGIONS=[
-  {name:"📍 Joylashuvimdan aniqlash", lat:null, lon:null},
-  {name:"Toshkent shahri",     lat:41.2995, lon:69.2401},
-  {name:"Toshkent viloyati",   lat:41.1123, lon:69.6541},
-  {name:"Samarqand",           lat:39.6547, lon:66.9597},
-  {name:"Buxoro",              lat:39.7747, lon:64.4286},
-  {name:"Namangan",            lat:41.0011, lon:71.6726},
-  {name:"Andijon",             lat:40.7829, lon:72.3442},
-  {name:"Farg'ona",            lat:40.3842, lon:71.7843},
-  {name:"Qashqadaryo",         lat:38.8600, lon:65.7883},
-  {name:"Surxondaryo",         lat:37.9401, lon:67.5700},
-  {name:"Xorazm",              lat:41.5500, lon:60.6300},
-  {name:"Navoiy",              lat:40.0840, lon:65.3792},
-  {name:"Jizzax",              lat:40.1158, lon:67.8422},
-  {name:"Sirdaryo",            lat:40.8393, lon:68.6616},
-  {name:"Qoraqalpog'iston",    lat:43.7677, lon:59.3797},
+  {name:"📍 Joylashuvimdan aniqlash",lat:null,lon:null},
+  {name:"Toshkent shahri",lat:41.2995,lon:69.2401},
+  {name:"Toshkent viloyati",lat:41.1123,lon:69.6541},
+  {name:"Samarqand",lat:39.6547,lon:66.9597},
+  {name:"Buxoro",lat:39.7747,lon:64.4286},
+  {name:"Namangan",lat:41.0011,lon:71.6726},
+  {name:"Andijon",lat:40.7829,lon:72.3442},
+  {name:"Farg'ona",lat:40.3842,lon:71.7843},
+  {name:"Qashqadaryo",lat:38.8600,lon:65.7883},
+  {name:"Surxondaryo",lat:37.9401,lon:67.5700},
+  {name:"Xorazm",lat:41.5500,lon:60.6300},
+  {name:"Navoiy",lat:40.0840,lon:65.3792},
+  {name:"Jizzax",lat:40.1158,lon:67.8422},
+  {name:"Sirdaryo",lat:40.8393,lon:68.6616},
+  {name:"Qoraqalpog'iston",lat:43.7677,lon:59.3797},
 ];
-
 const PNAMES=[
-  {key:'Fajr',    uz:'Bomdod',         ico:'🌅'},
-  {key:'Sunrise', uz:'Quyosh chiqishi',ico:'☀️'},
-  {key:'Dhuhr',   uz:'Peshin',         ico:'🌤️'},
-  {key:'Asr',     uz:'Asr',            ico:'🌇'},
-  {key:'Maghrib', uz:'Shom',           ico:'🌆'},
-  {key:'Isha',    uz:'Xufton',         ico:'🌙'},
+  {key:'Fajr',uz:'Bomdod',ico:'🌅'},
+  {key:'Sunrise',uz:'Quyosh chiqishi',ico:'☀️'},
+  {key:'Dhuhr',uz:'Peshin',ico:'🌤️'},
+  {key:'Asr',uz:'Asr',ico:'🌇'},
+  {key:'Maghrib',uz:'Shom',ico:'🌆'},
+  {key:'Isha',uz:'Xufton',ico:'🌙'},
 ];
 const PRAYER_KEYS_ONLY=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
-
 function timeToMin(t){const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m;}
-
 function loadPrayerTimes(lat,lon){
-  const today=new Date();
-  const d=today.getDate(),m=today.getMonth()+1,y=today.getFullYear();
+  const today=new Date();const d=today.getDate(),m=today.getMonth()+1,y=today.getFullYear();
   fetch(`https://api.aladhan.com/v1/timings/${d}-${m}-${y}?latitude=${lat}&longitude=${lon}&method=2`)
-    .then(r=>r.json()).then(data=>{
-      if(data.code===200){prayerData=data.data.timings;if(activeNTab===0)renderNTab();}
-    }).catch(()=>{});
+    .then(r=>r.json()).then(data=>{if(data.code===200){prayerData=data.data.timings;if(activeNTab===0)renderNTab();}}).catch(()=>{});
 }
-
 function onRegionChange(idx){
-  selectedRegionIdx=idx;
-  prayerData=null;
+  selectedRegionIdx=idx;prayerData=null;
   if(cdTimer){clearInterval(cdTimer);cdTimer=null;}
   const reg=UZ_REGIONS[idx];
   if(reg.lat===null){
-    // GPS orqali aniqlash
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
-        pos=>loadPrayerTimes(pos.coords.latitude,pos.coords.longitude),
-        ()=>loadPrayerTimes(uLat,uLon),
-        {enableHighAccuracy:true,timeout:8000}
-      );
-    } else loadPrayerTimes(uLat,uLon);
-  } else {
-    loadPrayerTimes(reg.lat,reg.lon);
-  }
+    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>loadPrayerTimes(pos.coords.latitude,pos.coords.longitude),()=>loadPrayerTimes(uLat,uLon),{enableHighAccuracy:true,timeout:8000});}
+    else loadPrayerTimes(uLat,uLon);
+  } else loadPrayerTimes(reg.lat,reg.lon);
   if(activeNTab===0)renderNTab();
 }
-
 function getNextPrayer(){
-  if(!prayerData)return null;
-  const nowM=new Date().getHours()*60+new Date().getMinutes();
-  for(const k of PRAYER_KEYS_ONLY){if(timeToMin(prayerData[k])>nowM)return k;}
-  return 'Fajr'; // ertangi kun
+  if(!prayerData)return null;const nowM=new Date().getHours()*60+new Date().getMinutes();
+  for(const k of PRAYER_KEYS_ONLY){if(timeToMin(prayerData[k])>nowM)return k;}return'Fajr';
 }
 function getCurrentActivePrayer(){
-  if(!prayerData)return null;
-  const nowM=new Date().getHours()*60+new Date().getMinutes();
-  let cur=null;
-  PRAYER_KEYS_ONLY.forEach(k=>{if(timeToMin(prayerData[k])<=nowM)cur=k;});
-  return cur;
+  if(!prayerData)return null;const nowM=new Date().getHours()*60+new Date().getMinutes();
+  let cur=null;PRAYER_KEYS_ONLY.forEach(k=>{if(timeToMin(prayerData[k])<=nowM)cur=k;});return cur;
 }
 function getSecsToNext(){
-  if(!prayerData)return 0;
-  const nxt=getNextPrayer();
-  const now=new Date();
+  if(!prayerData)return 0;const nxt=getNextPrayer();const now=new Date();
   const[hh,mm]=(prayerData[nxt]||'0:0').split(':').map(Number);
   let target=new Date();target.setHours(hh,mm,0,0);
-  if(target<=now)target.setDate(target.getDate()+1); // ertangi Fajr
+  if(target<=now)target.setDate(target.getDate()+1);
   return Math.max(0,Math.floor((target-now)/1000));
 }
-function fmtCD(secs){
-  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
-  return(h>0?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-}
+function fmtCD(secs){const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;return(h>0?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
 function prayerUzName(key){return(PNAMES.find(p=>p.key===key)||{uz:key}).uz;}
 function prayerIco(key){return(PNAMES.find(p=>p.key===key)||{ico:'🕌'}).ico;}
 
-/* ─── Tasbeh ─── */
-let tasbehCount=0,tasbehTarget=33;
+/* ══════════════════════════════════════════
+   TASBEH — YANGI UI
+══════════════════════════════════════════ */
+let tasbehCount=0,tasbehTarget=33,activeZikr=0,totalSession=0;
 const ZIKRS=[
-  {ar:'سُبْحَانَ اللهِ',uz:'Alloh pokdir — Subhanalloh',n:33},
-  {ar:'الْحَمْدُ لِلَّهِ',uz:'Allohga hamd — Alhamdulillah',n:33},
-  {ar:'اللهُ أَكْبَرُ',uz:'Alloh buyuk — Allahu Akbar',n:33},
-  {ar:'لَا إِلَهَ إِلَّا اللهُ',uz:'Allohdan boshqa iloh yo\'q — La ilaha illalloh',n:100},
-  {ar:'أَسْتَغْفِرُ اللهَ',uz:'Allohdan kechim so\'rayman — Astagfirulloh',n:100},
+  {emoji:'✨',ar:'سُبْحَانَ اللهِ',uz:'Subhanalloh — Alloh pokdir',n:33},
+  {emoji:'🙏',ar:'الْحَمْدُ لِلَّهِ',uz:'Alhamdulilloh — Allohga shukur',n:33},
+  {emoji:'🌟',ar:'اللهُ أَكْبَرُ',uz:'Allahu Akbar — Alloh buyuk',n:33},
+  {emoji:'💚',ar:'لَا إِلَهَ إِلَّا اللهُ',uz:'La ilaha illalloh — Allohdan boshqa iloh yo\'q',n:100},
+  {emoji:'🤲',ar:'أَسْتَغْفِرُ اللهَ',uz:'Astagfirulloh — Allohdan kechim so\'rayman',n:100},
 ];
-let activeZikr=0;
 
 /* ─── Du'olar ─── */
 const DUA_CATS=['Kundalik','Namozdan keyin','Uxlash','Ovqat','Safar','Tahorat'];
 const DUAS={
   'Kundalik':[
-    {title:'Ertalab uyg\'onishda',ar:'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',tr:'Alhamdulillahil laziy ahyana ba\'da ma amatana va ilayhinnushur',uz:'Bizni o\'ldirganidan keyin tiriltirgani uchun hamd bo\'lsin Allohga. Qayta tirilish Unga qaytishdir.'},
-    {title:'Uydan chiqishda',ar:'بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ',tr:'Bismillahi tavakkaltu alallahi va la hawla va la quvvata illa billah',uz:'Alloh nomi bilan. Allohga tavakkal qildim. Kuch va quvvat faqat Allohda.'},
+    {title:'Ertalab uyg\'onishda',ar:'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا',tr:'Alhamdulillahil laziy ahyana ba\'da ma amatana',uz:'Bizni o\'ldirganidan keyin tiriltirgani uchun hamd bo\'lsin Allohga.'},
+    {title:'Uydan chiqishda',ar:'بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ',tr:'Bismillahi tavakkaltu alallah',uz:'Alloh nomi bilan. Allohga tavakkal qildim. Kuch va quvvat faqat Allohda.'},
     {title:'Uyga kirishda',ar:'اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلِجِ وَخَيْرَ الْمَخْرَجِ',tr:'Allohumma inni as\'aluka khayral mawliji va khayral makhraj',uz:'Allohim! Uyga kirishda va chiqishda yaxshilik ato qilishingni so\'rayman.'},
     {title:'Kechqurun',ar:'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ',tr:'Amsayna va amsal mulku lillahi valhamdulillah',uz:'Kechqururimiz ham, barcha mulk ham Allohga tegishli. Allohga hamd bo\'lsin.'},
   ],
   'Namozdan keyin':[
-    {title:'Namoz salomsidan keyin',ar:'أَسْتَغْفِرُ اللهَ ۞ أَسْتَغْفِرُ اللهَ ۞ أَسْتَغْفِرُ اللهَ ۞ اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالإِكْرَامِ',tr:'Astagfirulloh (3 marta). Allohumma antas-salam va minkas-salam, tabarakta ya zal jalali val ikrom',uz:'Allohdan kechim so\'rayman (3 marta). Allohim! Sen Salomsan, Senda salom bor. Ey jalol va ikrom sohibi, Sen mubaraksan.'},
-    {title:'Oyat ul-Kursi',ar:'اللهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ',tr:'Allahu la ilaha illa huwal-hayyul-qayyum, la ta\'khuzuhu sinatun va la nawm',uz:'Alloh — Undan boshqa iloh yo\'q. U Tirik va Abadiydir. Uni na mudroq, na uyqu tutmaydi.'},
-    {title:'Subhanalloh, Alhamdulillah, Allahu Akbar',ar:'سُبْحَانَ اللهِ ٣٣ ۞ الْحَمْدُ لِلَّهِ ٣٣ ۞ اللهُ أَكْبَرُ ٣٣',tr:'33 marta Subhanalloh, 33 marta Alhamdulillah, 33 marta Allahu Akbar',uz:'Har namozdan keyin ushbu tasbihotlarni 33 martadan aytish sunnatidir.'},
+    {title:'Namoz salomsidan keyin',ar:'أَسْتَغْفِرُ اللهَ (٣) اللَّهُمَّ أَنْتَ السَّلَامُ',tr:'Astagfirulloh (3 marta). Allohumma antas-salam...',uz:'Allohdan kechim so\'rayman (3 marta). Allohim! Sen Salomsan.'},
+    {title:'Oyat ul-Kursi',ar:'اللهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',tr:'Allahu la ilaha illa huwal-hayyul-qayyum',uz:'Alloh — Undan boshqa iloh yo\'q. U Tirik va Abadiydir.'},
   ],
   'Uxlash':[
     {title:'Uxlashdan oldin',ar:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',tr:'Bismika Allohumma amutu va ahya',uz:'Allohim! Sening isming bilan o\'laman va yashaman.'},
-    {title:'Uyquda qo\'rqqanda',ar:'أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ',tr:'A\'uzu bikalimmatillahit-tammati min ghadabihi va iqabihi va sharri ibadihi',uz:'Allohning to\'liq kalimalaridan — Uning g\'azabi, azobivabandalalarining yomonligidan panoh so\'rayman.'},
+    {title:'Uyquda qo\'rqqanda',ar:'أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ',tr:'A\'uzu bikalimmatillahit-tammati...',uz:'Allohning to\'liq kalimalaridan panoh so\'rayman.'},
   ],
   'Ovqat':[
     {title:'Ovqat oldidan',ar:'بِسْمِ اللهِ وَعَلَى بَرَكَةِ اللهِ',tr:'Bismillahi va ala barakatillah',uz:'Alloh nomi bilan va Allohning barakasi bilan.'},
-    {title:'Ovqatdan keyin',ar:'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مِنَ الْمُسْلِمِينَ',tr:'Alhamdulillahil laziy at\'amana va saqana va ja\'alana minal muslimin',uz:'Bizni yedirgan, ichirgan va musulmon qilgan Allohga hamd bo\'lsin.'},
+    {title:'Ovqatdan keyin',ar:'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا',tr:'Alhamdulillahil laziy at\'amana va saqana',uz:'Bizni yedirgan va ichirgan Allohga hamd bo\'lsin.'},
   ],
   'Safar':[
-    {title:'Safar uchun',ar:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ',tr:'Subhanalladzi sakhkhara lana haza va ma kunna lahu muqrinin, va inna ila rabbina lamunqalibun',uz:'Buni bizga bo\'ysundirgan Alloh pokladir, biz unga qodir emasedik. Biz Robbimizga qaytuvchilarmiz.'},
+    {title:'Safar uchun',ar:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا',tr:'Subhanalladzi sakhkhara lana haza...',uz:'Buni bizga bo\'ysundirgan Alloh pokladir.'},
   ],
   'Tahorat':[
-    {title:'Tahoratdan keyin',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',uz:'Allohdan boshqa iloh yo\'qligiga va Muhammadning Uning bandi va elchisi ekanligiga guvohlik beraman.'},
+    {title:'Tahoratdan keyin',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',uz:'Allohdan boshqa iloh yo\'qligiga va Muhammadning Uning bandi va elchisi ekanligiga guvohlik beraman.'},
   ],
 };
 let activeDuaCat=0;
 
-/* ─── Namoz o'rgatish data ─── */
+/* ══════════════════════════════════════════
+   NAMOZ O'RGATISH — ERKAK / AYOL
+══════════════════════════════════════════ */
+let activeGender='male'; // 'male' | 'female'
+
 const TAHORAT_STEPS=[
-  {ico:'🤲',ttl:'Niyat',ar:'نَوَيْتُ أَنْ أَتَوَضَّأَ',tr:'Navaytu an atavazza\'',desc:'Yurakda niyat qilish — Alloh uchun tahorat olaman. Niyat tildan ham aytilishi mumkin.'},
-  {ico:'🤲',ttl:'Bismillah',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'Bismillahir rohmanir rohiym',desc:'Tahoratni Alloh nomi bilan boshlash sunnatidir.'},
-  {ico:'👐',ttl:'Qo\'llarni yuvish (3x)',ar:'',tr:'',desc:'Bilak bo\'g\'imigacha ikkala qo\'lni 3 marta yuvish. Avval o\'ng qo\'l, keyin chap.'},
-  {ico:'💧',ttl:'Og\'izni chayish (3x)',ar:'',tr:'',desc:'Og\'izga suv olib yaxshilab chayqash — 3 marta.'},
-  {ico:'💧',ttl:'Burun yuvish (3x)',ar:'',tr:'',desc:'Burunga suv tortib, keyin puflab tashqariga chiqarish — 3 marta.'},
-  {ico:'🫧',ttl:'Yuzni yuvish (3x)',ar:'',tr:'',desc:'Peshonadan iyak ostiga, ikki quloq o\'rtasini to\'liq — 3 marta.'},
-  {ico:'💪',ttl:'Qo\'llar (tirsak bilan, 3x)',ar:'',tr:'',desc:'O\'ng qo\'lni tirsak bo\'g\'imigacha 3 marta yuvish, keyin chap qo\'lni.'},
-  {ico:'🖐️',ttl:'Boshni masх qilish (1x)',ar:'',tr:'',desc:'Ho\'l qo\'l bilan boshni peshonadan orqaga bir marta masх qilish.'},
-  {ico:'👂',ttl:'Quloqlarni masх qilish',ar:'',tr:'',desc:'Bosh barmoq — quloq orqasi, ko\'rsatkich barmoq — quloq ichi.'},
-  {ico:'🦶',ttl:'Oyoqlarni yuvish (3x)',ar:'',tr:'',desc:'O\'ng oyoqni to\'pig\'igacha 3 marta, keyin chap oyoqni. Barmoqlar orasi yuvilib chiqiladi.'},
-  {ico:'🤲',ttl:'Tahorat duosi',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',desc:'Tahorat tugagach osmonga qarab bu duoni o\'qish sunnat.'},
+  {ico:'🤲',ttl:'Niyat',ar:'نَوَيْتُ أَنْ أَتَوَضَّأَ',tr:'Navaytu an atavazza\'',desc:'Yurakda niyat qilish — Alloh uchun tahorat olaman.',mDiff:'',fDiff:''},
+  {ico:'🤲',ttl:'Bismillah aytish',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'Bismillahir rohmanir rohiym',desc:'Tahoratni Alloh nomi bilan boshlash sunnatidir.',mDiff:'',fDiff:''},
+  {ico:'👐',ttl:'Qo\'llarni yuvish (3x)',ar:'',tr:'',desc:'Bilak bo\'g\'imigacha ikkala qo\'lni 3 marta yuvish. Avval o\'ng, keyin chap.',mDiff:'',fDiff:''},
+  {ico:'💧',ttl:'Og\'izni chayish (3x)',ar:'',tr:'',desc:'Og\'izga suv olib yaxshilab chayqash — 3 marta.',mDiff:'',fDiff:''},
+  {ico:'💧',ttl:'Burun yuvish (3x)',ar:'',tr:'',desc:'Burunga suv tortib, keyin puflab chiqarish — 3 marta.',mDiff:'',fDiff:''},
+  {ico:'🫧',ttl:'Yuzni yuvish (3x)',ar:'',tr:'',desc:'Peshonadan iyak ostiga, ikki quloq o\'rtasini to\'liq — 3 marta.',mDiff:'Erkaklar soqolni barmoq bilan xilol qiladi',fDiff:''},
+  {ico:'💪',ttl:'Qo\'llar (tirsak bilan, 3x)',ar:'',tr:'',desc:'O\'ng qo\'lni tirsak bo\'g\'imigacha 3 marta, keyin chap qo\'lni.',mDiff:'',fDiff:''},
+  {ico:'🖐️',ttl:'Boshni masх qilish',ar:'',tr:'',desc:'Ho\'l qo\'l bilan boshni peshonadan orqaga bir marta masх qilish.',mDiff:'Erkaklar to\'liq boshini masх qiladi',fDiff:'Ayollar sochini masх qilmaydi, faqat bosh terisini'},
+  {ico:'👂',ttl:'Quloqlarni masх qilish',ar:'',tr:'',desc:'Bosh barmoq — quloq orqasi, ko\'rsatkich — quloq ichi.',mDiff:'',fDiff:''},
+  {ico:'🦶',ttl:'Oyoqlarni yuvish (3x)',ar:'',tr:'',desc:'O\'ng oyoqni to\'pig\'igacha 3 marta, keyin chap oyoqni. Barmoqlar orasi yuvilib chiqiladi.',mDiff:'',fDiff:''},
+  {ico:'🤲',ttl:'Tahorat duosi',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',desc:'Tahorat tugagach osmonga qarab bu duoni aytish sunnat.',mDiff:'',fDiff:''},
 ];
 
-const PRAYER_GUIDE=[
-  {ico:'🌅',name:'Bomdod (Fajr)',rakat:'2 sunnat + 2 farz',time:'Tong otishidan quyosh chiqqunga qadar',
-   steps:[
-    {t:'Niyat (sunnat)',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْفَجْرِ',tr:'Navaytu usalli sunnatal fajr',uz:'Bomdod sunnatini o\'qishga niyat qildim'},
-    {t:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Qo\'llar quloqqa tekizib aytiladi, keyin ko\'krak ustiga qo\'yiladi'},
-    {t:'Sano',ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ',tr:'Subhanakallahumma va bihamdika va tabarokasmuka va ta\'ala jadduka va la ilaha gayruk',uz:'Allohim! Seni hamd bilan poklayapman. Isming muborak, ulug\'liging yuksak, Sendan boshqa iloh yo\'q'},
-    {t:'Fotiha + Sura',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ ۞ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...',tr:'Bismillah → Fotiha → qo\'shimcha sura (masalan Al-Ikhlos)',uz:'1-rakatda Fotiha + qo\'shimcha sura o\'qiladi'},
-    {t:'Ruku\'',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',tr:'Subhana Rabbiyal Aziym (3x)',uz:'Egilib, qo\'llar tizzaga — 3 marta aytiladi'},
-    {t:'Qiyom (ruku\'dan turgach)',ar:'سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۞ رَبَّنَا لَكَ الْحَمْدُ',tr:'Sami\'allahu liman hamidah — Rabbana lakal hamd',uz:'Tiklanib aytiladi'},
-    {t:'1-sajda',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'Peshona, burun, ikki kaft, tizza, barmoqlar yerga tegishi kerak'},
-    {t:'Jalsa (o\'tirish)',ar:'رَبِّ اغْفِرْ لِي',tr:'Rabbigfirli',uz:'Ikki sajda orasida o\'tirib aytiladi'},
-    {t:'2-sajda',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'2-rakat uchun qaytib turiladi — Fotiha + Sura'},
-    {t:'Qa\'da — Attahiyyat',ar:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ۞ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ ۞ السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللهِ الصَّالِحِينَ ۞ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Attahiyyatu lillahi... (to\'liq Attahiyyat)',uz:'2-rakatdan keyin o\'tirib o\'qiladi'},
-    {t:'Salom',ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ',tr:'Assalamu alaykum wa rohmatulloh',uz:'O\'ng, so\'ng chap tomonga salom — 2 rakat sunnat tamom. Endi 2 rakat farz — farz niyati bilan'},
+// Namoz o'rgatish ma'lumotlari — Erkak va Ayol uchun alohida
+const PRAYER_GUIDE_MALE=[
+  {ico:'🌅',name:'Bomdod (Fajr)',rakat:'2 sunnat + 2 farz',time:'Tong otishidan quyosh chiqqunga qadar',note:'',steps:[
+    {t:'Niyat (sunnat)',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْفَجْرِ',tr:'Navaytu usalli sunnatal fajr',uz:'Bomdod sunnatini o\'qishga niyat qildim — qibla tomonga turish. Erkaklar qo\'llarini quloq yoniga ko\'tarib takbir aytadi'},
+    {t:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Qo\'llar quloqqa tekiziladi, keyin ko\'krakka qo\'yiladi. O\'ng qo\'l chap ustiga',mNote:'Erkaklar qo\'lni kindik ustiga emas, ko\'krak ustiga qo\'yadi'},
+    {t:'Sano (yashirin o\'qiladi)',ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ',tr:'Subhanakallahumma va bihamdika va tabarokasmuka va ta\'ala jadduka va la ilaha gayruk',uz:'Allohim! Seni hamd bilan poklayapman'},
+    {t:'Ta\'avvuz va Basmala',ar:'أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ ۞ بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'A\'uzu billahi minash shaytanir rojim. Bismillahir rohmanir rohiym.',uz:''},
+    {t:'Fotiha + Sura (1-rakat)',ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...',tr:'Fotiha surasi to\'liq, keyin qo\'shimcha sura (Al-Ikhlos va b.)',uz:'Erkaklar yuzini Qiblaga qaratib, oyoqlarini yelka kengligida ochiq tutadi'},
+    {t:'Ruku\' (ta\'zim)',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',tr:'Subhana Rabbiyal Aziym (3x)',uz:'Erkaklar beliga qadar egiladi, qo\'llar tizzada, orqa tekis, bosh ters ketmaydi',mNote:'Erkaklar tizzaga qo\'yib, tirsaklarni yoyadi'},
+    {t:'Qiyom — ruku\'dan turgach',ar:'سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۞ رَبَّنَا لَكَ الْحَمْدُ',tr:'Sami\'allahu liman hamidah — Rabbana lakal hamd',uz:'Tiklanib, qo\'llar yoniga tushiriladi'},
+    {t:'Sajda (1-chi)',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'7 a\'zo yerni tutadi: peshona+burun, ikki kaft, ikki tizza, ikki oyoq barmoqlari. Erkaklar tirsak ko\'tarilgan, qorin sondan ko\'tarilgan'},
+    {t:'Jalsa (ikki sajda orasida)',ar:'رَبِّ اغْفِرْ لِي',tr:'Rabbigfirli',uz:'Erkaklar chap oyoq yozib, o\'ng oyoq barmoqlarini qiblaga qaratadi. Qo\'llar tizzada'},
+    {t:'Sajda (2-chi)',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'2-chi sajda ham xuddi birinchisi kabi'},
+    {t:'2-rakat — yana Fotiha+Sura',ar:'',tr:'',uz:'2-rakatda ham 1-rakat kabi o\'qiladi'},
+    {t:'Qa\'da — Attahiyyat',ar:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ۞ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ...',tr:'Attahiyyatu lillahi vas-salavatu vat-tayyibatu...',uz:'O\'tirib o\'qiladi. "Ash-hadu" deyilganda shahoda barmog\'i ko\'tariladi',mNote:'Erkaklar chap oyoq yozib, o\'ng oyoq tiklanadi. Qo\'llar tizzada'},
+    {t:'Salom',ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ',tr:'Assalamu alaykum wa rohmatulloh',uz:'O\'ng, so\'ng chap tomonga bosh burilib. Sunnat tamom. Endi 2 rakat farz'},
   ]},
-  {ico:'☀️',name:'Peshin (Zuhr)',rakat:'4 sunnat + 4 farz + 2 sunnat',time:'Quyosh tepadan og\'ishidan Asr vaqtigacha',
-   steps:[
-    {t:'4 rakat sunnat niyati',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الظُّهْرِ',tr:'Navaytu usalli sunnatal zuhr',uz:'1-2 rakatda Fotiha+Sura, 3-4 rakatda faqat Fotiha. 2-rakatdan keyin Attahiyyat, oxirida Attahiyyat + Salovat + Salom'},
-    {t:'4 rakat farz niyati',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الظُّهْرِ',tr:'Navaytu usalli fardal zuhr',uz:'Farz ham xuddi sunnat kabi — 4 rakat'},
-    {t:'Salovat (oxirgi qa\'dada)',ar:'اَللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',tr:'Allohumma solli ala Muhammad va ala ali Muhammad...',uz:'Attahiyyatdan keyin Salovat, keyin Robbana duosi, keyin Salom'},
-   ]},
-  {ico:'🌇',name:'Asr',rakat:'4 sunnat + 4 farz',time:'Peshin tugagandan Quyosh botgunga qadar',
-   steps:[
-    {t:'4 rakat sunnat niyati',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْعَصْرِ',tr:'Navaytu usalli sunnatal Asr',uz:'Peshin kabi 4 rakat o\'qiladi'},
-    {t:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْعَصْرِ',tr:'Navaytu usalli fardal Asr',uz:'Safarda (44+ km) Peshin va Asr 2 rakатga qisqaradi'},
-   ]},
-  {ico:'🌆',name:'Shom (Mag\'rib)',rakat:'3 farz + 2 sunnat',time:'Quyosh botishidan shafaq yo\'qolgunga qadar',
-   steps:[
-    {t:'3 rakat farz niyati',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْمَغْرِبِ',tr:'Navaytu usalli fardal Magrib',uz:'1-2 rakat: Fotiha+Sura. 3-rakat: faqat Fotiha. 2-rakatdan keyin Attahiyyat, 3-rakatdan keyin Attahiyyat+Salovat+Salom'},
-    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْمَغْرِبِ',tr:'Navaytu usalli sunnatal Magrib',uz:'2 rakat — Bomdod sunnatiga o\'xshash'},
-   ]},
-  {ico:'🌙',name:'Xufton (Isha)',rakat:'4 sunnat + 4 farz + 2 sunnat + 3 vitr',time:'Shafaq yo\'qolishidan tong otgunga qadar',
-   steps:[
-    {t:'4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّي سُنَّةَ الْعِشَاءِ',tr:'Navaytu usalli sunnatal Isha',uz:'Peshin sunnatiga o\'xshash'},
-    {t:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْعِشَاءِ',tr:'Navaytu usalli fardal Isha',uz:'Peshin farziga o\'xshash'},
-    {t:'3 rakat Vitr',ar:'نَوَيْتُ أُصَلِّي الْوِتْرَ',tr:'Navaytu usallas vitr',uz:'1-2 rakat: Fotiha+Sura → Attahiyyat. 3-rakat: Fotiha+Sura → Ruku\'dan oldin Qunut duosi'},
-    {t:'Qunut duosi',ar:'اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ وَعَافِنَا فِيمَنْ عَافَيْتَ وَتَوَلَّنَا فِيمَنْ تَوَلَّيْتَ',tr:'Allohumma hdina fiman hadayt...',uz:'Allohim! Hidoyat berganlaringga qo\'shib bizni ham hidoyat qil, afv berganlaringga qo\'shib bizni ham afv qil...'},
-   ]},
+  {ico:'🌤️',name:'Peshin (Zuhr)',rakat:'4 sunnat + 4 farz + 2 sunnat',time:'Quyosh tepadan og\'ishidan Asr vaqtigacha',steps:[
+    {t:'4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الظُّهْرِ',tr:'Navaytu usalli sunnatal zuhr',uz:'1-2: Fotiha+Sura. 3-4: faqat Fotiha. 2-rakatdan keyin Attahiyyat, oxirida Attahiyyat + Salovat + Salom'},
+    {t:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الظُّهْرِ',tr:'Navaytu usalli fardal zuhr',uz:'Farz niyati bilan — 4 rakat. Farzda 3-4 rakatda Fotiha yashirin o\'qiladi'},
+    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الظُّهْرِ الأَخِيرَةِ',tr:'Navaytu usalli sunnatal zuhril akhira',uz:'Oxirgi 2 rakat sunnat — Bomdod sunnatiga o\'xshash'},
+  ]},
+  {ico:'🌇',name:'Asr',rakat:'4 sunnat + 4 farz',time:'Peshin tugagandan Quyosh botgunga qadar',steps:[
+    {t:'4 rakat sunnat va farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعَصْرِ',tr:'Navaytu usalli fardal Asr',uz:'Peshin kabi 4 rakat o\'qiladi. Safarda (44+ km) 2 rakatga qisqaradi'},
+  ]},
+  {ico:'🌆',name:'Shom (Mag\'rib)',rakat:'3 farz + 2 sunnat',time:'Quyosh botishidan shafaq yo\'qolgunga qadar',steps:[
+    {t:'3 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْمَغْرِبِ',tr:'Navaytu usalli fardal Magrib',uz:'1-2: Fotiha+Sura. 3: faqat Fotiha. 2-rakatdan keyin Attahiyyat. 3-rakatdan keyin Attahiyyat+Salovat+Salom'},
+    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْمَغْرِبِ',tr:'Navaytu usalli sunnatal Magrib',uz:'2 rakat — Bomdod sunnatiga o\'xshash'},
+  ]},
+  {ico:'🌙',name:'Xufton (Isha)',rakat:'4 sunnat + 4 farz + 2 sunnat + 3 vitr',time:'Shafaq yo\'qolishidan tong otgunga qadar',steps:[
+    {t:'4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْعِشَاءِ',tr:'Navaytu usalli sunnatal Isha',uz:'Peshin sunnatiga o\'xshash'},
+    {t:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعِشَاءِ',tr:'Navaytu usalli fardal Isha',uz:'Peshin farziga o\'xshash'},
+    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْعِشَاءِ الأَخِيرَةِ',tr:'Navaytu usalli sunnatal ishal akhira',uz:'2 rakat'},
+    {t:'3 rakat Vitr (vojib)',ar:'نَوَيْتُ أُصَلِّيَ الْوِتْرَ',tr:'Navaytu usallas vitr',uz:'1-2 rakat + Attahiyyat. 3-rakat: Fotiha+Sura → ruku\'dan oldin Qunut duosi o\'qiladi'},
+    {t:'Qunut duosi (Vitrda)',ar:'اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ',tr:'Allohumma hdina fiman hadayt...',uz:'Allohim! Hidoyat berganlaringga qo\'shib bizni ham hidoyat qil'},
+  ]},
 ];
 
-/* ─── Active namoz tab ─── */
-let activeNTab=0;
-function nTab(i){activeNTab=i;[0,1,2,3].forEach(j=>document.getElementById('nt'+j).classList.toggle('on',j===i));renderNTab();}
+const PRAYER_GUIDE_FEMALE=[
+  {ico:'🌅',name:'Bomdod (Fajr)',rakat:'2 sunnat + 2 farz',time:'Tong otishidan quyosh chiqqunga qadar',note:'',steps:[
+    {t:'Niyat va turish',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْفَجْرِ',tr:'Navaytu usalli sunnatal fajr',uz:'Niyat qilinadi. Ayollar oyoqlarini yopiq tutadi, ikkalasi birlashtirilgan holda turadi',fNote:'Ayollar oyoqlarini birga qo\'yib turadi (erkaklar kabi keng emas)'},
+    {t:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Qo\'llar yelka yoniga ko\'tariladi. Ayollar qo\'llarini ko\'krakdan ko\'tarmaydi',fNote:'Ayollar qo\'llarini ko\'krak bo\'g\'imgacha ko\'taradi, quloqqa emas'},
+    {t:'Sano',ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ',tr:'Subhanakallahumma va bihamdika...',uz:'Ayollar ikkala qo\'lini ko\'krak ustiga qo\'yadi. O\'ng qo\'l chap ustiga',fNote:'Ayollar qo\'lni ko\'krak ustiga, nafis tarzda tutadi'},
+    {t:'Ta\'avvuz, Basmala, Fotiha + Sura',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'Bismillahir rohmanir rohiym → Fotiha → qo\'shimcha sura',uz:''},
+    {t:'Ruku\' (ta\'zim)',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',tr:'Subhana Rabbiyal Aziym (3x)',uz:'Ayollar egilib, qo\'llarini tizzaga qo\'yadi',fNote:'Ayollar oz egiladi — erkaklar kabi to\'la emas. Tizzalar oz bukiqligi ham mumkin. Tirsaklar yoniga yopilib turadi'},
+    {t:'Qiyom',ar:'سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۞ رَبَّنَا لَكَ الْحَمْدُ',tr:'Sami\'allahu liman hamidah — Rabbana lakal hamd',uz:'Tiklanib, qo\'llar yoniga tushiriladi'},
+    {t:'Sajda',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'7 a\'zo yerni tutadi',fNote:'Ayollar tirsagini yerga qo\'yadi (yoyinqirab emas). Qorin sonlarga tekib turadi. Barmoqlar qo\'shilgan holda'},
+    {t:'Jalsa (o\'tirish)',ar:'رَبِّ اغْفِرْ لِي',tr:'Rabbigfirli',uz:'',fNote:'Ayollar chap soniga o\'tirib, oyoqlarini o\'ng tomonga chiqaradi (tarabbu\' o\'tirish). Qo\'llar tizzada'},
+    {t:'Attahiyyat va Salom',ar:'التَّحِيَّاتُ لِلَّهِ...',tr:'Attahiyyatu...',uz:'O\'tirib o\'qiladi',fNote:'Ayollar ham chap soniga o\'tirib, oyoqlarini o\'ng tomonga chiqaradi'},
+  ]},
+  {ico:'🌤️',name:'Peshin (Zuhr)',rakat:'4 sunnat + 4 farz + 2 sunnat',time:'Quyosh tepadan og\'ishidan Asr vaqtigacha',steps:[
+    {t:'Peshin namozi',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الظُّهْرِ',tr:'Navaytu usalli fardal zuhr',uz:'Erkaklar kabi, lekin ayollar o\'tirish, ruku\', sajda uslublari yuqoridagi kabi',fNote:'Barcha namozlarda ayollar uslubi bir xil — sajda va o\'tirishda yuqoridagi farqlar saqlanadi'},
+  ]},
+  {ico:'🌇',name:'Asr',rakat:'4 sunnat + 4 farz',time:'',steps:[
+    {t:'Asr namozi',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعَصْرِ',tr:'Navaytu usalli fardal Asr',uz:'Peshin kabi'},
+  ]},
+  {ico:'🌆',name:'Shom (Mag\'rib)',rakat:'3 farz + 2 sunnat',time:'Quyosh botishidan shafaq yo\'qolgunga qadar',steps:[
+    {t:'3 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْمَغْرِبِ',tr:'Navaytu usalli fardal Magrib',uz:'Erkaklar kabi, ayollar o\'tirish uslubi bilan'},
+  ]},
+  {ico:'🌙',name:'Xufton (Isha)',rakat:'4 sunnat + 4 farz + 2 sunnat + 3 vitr',time:'',steps:[
+    {t:'Xufton namozi',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعِشَاءِ',tr:'Navaytu usalli fardal Isha',uz:'Erkaklar kabi, lekin ayollar o\'tirish va sajdada o\'z uslubini saqlaydi'},
+    {t:'3 rakat Vitr',ar:'نَوَيْتُ أُصَلِّيَ الْوِتْرَ',tr:'Navaytu usallas vitr',uz:'Vojib namoz. Qunut duosi bilan'},
+  ]},
+];
 
+/* ══ RENDER FUNCTIONS ══ */
+function nTab(i){activeNTab=i;[0,1,2,3].forEach(j=>document.getElementById('nt'+j).classList.toggle('on',j===i));renderNTab();}
 function renderNTab(){
   const el=document.getElementById('ncontent');el.innerHTML='';
   if(activeNTab===0)renderPrayerTimes(el);
@@ -810,106 +939,115 @@ function renderNTab(){
   else renderGuide(el);
 }
 
-/* ── Namoz vaqtlari ── */
+/* ── Prayer times ── */
 function renderPrayerTimes(el){
   if(cdTimer){clearInterval(cdTimer);cdTimer=null;}
-
-  // Soat
   const now=new Date();
   const hd=document.createElement('div');hd.className='pt-header';
   hd.innerHTML=`<div class="pt-clock" id="liveClock">${now.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</div><div class="pt-date">${now.toLocaleDateString('uz-UZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>`;
   el.appendChild(hd);
   setInterval(()=>{const c=document.getElementById('liveClock');if(c)c.textContent=new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
-
-  // Viloyat tanlash
   const selWrap=document.createElement('div');
-  selWrap.innerHTML=`<select class="region-select" id="regionSel" onchange="onRegionChange(this.value*1)">
-    ${UZ_REGIONS.map((r,i)=>`<option value="${i}"${i===selectedRegionIdx?' selected':''}>${r.name}</option>`).join('')}
-  </select>`;
+  selWrap.innerHTML=`<select class="region-select" id="regionSel" onchange="onRegionChange(this.value*1)">${UZ_REGIONS.map((r,i)=>`<option value="${i}"${i===selectedRegionIdx?' selected':''}>${r.name}</option>`).join('')}</select>`;
   el.appendChild(selWrap);
-
-  // Yuklanmoqda
-  if(!prayerData){
-    const msg=document.createElement('div');msg.className='info-box';
-    msg.innerHTML='⏳ Namoz vaqtlari yuklanmoqda...';el.appendChild(msg);
-    return;
-  }
-
-  // Keyingi namozga sanash banner
-  const nxt=getNextPrayer();
-  const curAct=getCurrentActivePrayer();
+  if(!prayerData){const msg=document.createElement('div');msg.className='info-box';msg.innerHTML='⏳ Namoz vaqtlari yuklanmoqda...';el.appendChild(msg);return;}
+  const nxt=getNextPrayer(),curAct=getCurrentActivePrayer();
   const cdBanner=document.createElement('div');cdBanner.className='pt-countdown';
-  cdBanner.innerHTML=`
-    <div class="pt-cd-label">Keyingi namozgacha</div>
-    <div class="pt-cd-prayer">${prayerIco(nxt)} ${prayerUzName(nxt)}</div>
-    <div class="pt-cd-time" id="cdDisplay">${fmtCD(getSecsToNext())}</div>
-    <div class="pt-cd-until">${prayerData[nxt]} da boshlanadi</div>`;
+  cdBanner.innerHTML=`<div class="pt-cd-label">Keyingi namozgacha</div><div class="pt-cd-prayer">${prayerIco(nxt)} ${prayerUzName(nxt)}</div><div class="pt-cd-time" id="cdDisplay">${fmtCD(getSecsToNext())}</div><div class="pt-cd-until">${prayerData[nxt]} da boshlanadi</div>`;
   el.appendChild(cdBanner);
-
-  // Countdown timer — har soniyada yangilaydi
-  cdTimer=setInterval(()=>{
-    const el2=document.getElementById('cdDisplay');
-    if(!el2){clearInterval(cdTimer);cdTimer=null;return;}
-    const secs=getSecsToNext();
-    el2.textContent=fmtCD(secs);
-    // Vaqt keldi — avtomatik yangilanish
-    if(secs===0){clearInterval(cdTimer);cdTimer=null;setTimeout(()=>{if(activeNTab===0)renderNTab();},1500);}
-  },1000);
-
-  // Barcha namoz vaqtlari ro'yxati
+  cdTimer=setInterval(()=>{const el2=document.getElementById('cdDisplay');if(!el2){clearInterval(cdTimer);cdTimer=null;return;}const secs=getSecsToNext();el2.textContent=fmtCD(secs);if(secs===0){clearInterval(cdTimer);cdTimer=null;setTimeout(()=>{if(activeNTab===0)renderNTab();},1500);}},1000);
   const list=document.createElement('div');list.className='ptimes-list';
   PNAMES.forEach(p=>{
-    const t=prayerData[p.key]||'--:--';
-    const isCur=p.key===curAct;
-    const isNxt=p.key===nxt;
-    const card=document.createElement('div');
-    card.className='pt-card'+(isCur?' active':isNxt?' next-p':'');
-    card.innerHTML=`
-      <div class="pt-ico">${p.ico}</div>
-      <div class="pt-info">
-        <span class="pt-name">${p.uz}</span>
-        ${isCur?'<span class="pt-badge cur">Hozir</span>':isNxt?'<span class="pt-badge nxt">Keyingi</span>':''}
-      </div>
-      <div class="pt-time">${t}</div>`;
+    const t=prayerData[p.key]||'--:--',isCur=p.key===curAct,isNxt=p.key===nxt;
+    const card=document.createElement('div');card.className='pt-card'+(isCur?' active':isNxt?' next-p':'');
+    card.innerHTML=`<div class="pt-ico">${p.ico}</div><div class="pt-info"><span class="pt-name">${p.uz}</span>${isCur?'<span class="pt-badge cur">Hozir</span>':isNxt?'<span class="pt-badge nxt">Keyingi</span>':''}</div><div class="pt-time">${t}</div>`;
     list.appendChild(card);
   });
   el.appendChild(list);
 }
 
-/* ── Tasbeh ── */
+/* ── TASBEH — YANGI UI ── */
 function renderTasbeh(el){
   const z=ZIKRS[activeZikr];
-  const wrap=document.createElement('div');wrap.className='tasbeh-wrap';
+  const pct=Math.min(tasbehCount/tasbehTarget,1);
+  const circumference=440;
+  const offset=circumference-(pct*circumference);
+  const wrap=document.createElement('div');wrap.className='tasbeh-page';
   wrap.innerHTML=`
-    <div class="tasbeh-display" id="tasbehNum">${tasbehCount}</div>
-    <div style="font-size:11px;color:var(--mt);margin-bottom:8px;">/ ${tasbehTarget}</div>
-    <div class="tasbeh-label">${z.ar}</div>
-    <div class="tasbeh-tr">${z.uz}</div>
-    <button class="tasbeh-btn" id="tasbehBtn">🤲</button>
-    <div class="tasbeh-targets">
-      ${[33,99,100].map(n=>`<button class="tt-btn${n===tasbehTarget?' on':''}" onclick="setTarget(${n})">${n}</button>`).join('')}
-    </div>
-    <div style="font-size:12px;color:var(--mt);margin-bottom:10px;text-align:center;">Zikrni tanlang:</div>
-    <div class="tasbeh-zikrs">
-      ${ZIKRS.map((z,i)=>`<div class="tz-item${i===activeZikr?' on':''}" onclick="setZikr(${i})">
-        <div class="tz-ar">${z.ar}</div>
-        <div class="tz-uz">${z.uz}</div>
+    <!-- Zikr selector -->
+    <div class="zikr-selector">${ZIKRS.map((zk,i)=>`
+      <div class="zikr-card${i===activeZikr?' active':''}" onclick="setZikr(${i})">
+        <div class="zikr-dot">${zk.emoji}</div>
+        <div class="zikr-text">
+          <div class="zikr-ar">${zk.ar}</div>
+          <div class="zikr-uz">${zk.uz}</div>
+          <div class="zikr-target">${zk.n} marta</div>
+        </div>
       </div>`).join('')}
     </div>
-    <button class="tasbeh-reset" onclick="resetTasbeh()">🔄 Qayta boshlash</button>`;
+
+    <!-- Counter -->
+    <div class="counter-section">
+      <div class="counter-progress">
+        <svg viewBox="0 0 160 160">
+          <circle class="cp-bg" cx="80" cy="80" r="70"/>
+          <circle class="cp-fill" cx="80" cy="80" r="70" id="cpFill" style="stroke-dashoffset:${offset}"/>
+        </svg>
+        <div class="counter-num">
+          <div class="cn-val" id="tasbehNum">${tasbehCount}</div>
+          <div class="cn-total">/ ${tasbehTarget}</div>
+        </div>
+      </div>
+
+      <!-- Completion banner -->
+      <div class="done-banner${tasbehCount>=tasbehTarget?' show':''}" id="doneBanner">
+        <div class="done-icon">🎉</div>
+        <div class="done-title">${z.n} marta bajardingiz!</div>
+        <div class="done-sub">${z.ar} — ${z.uz}</div>
+      </div>
+
+      <!-- Tap button -->
+      <button class="tap-btn" id="tapBtn">
+        <span class="tap-btn-icon">${z.emoji}</span>
+        <span>Bosing — ${z.ar.split(' ')[0]}</span>
+      </button>
+
+      <!-- Session info -->
+      <div class="session-row">
+        <div class="session-box">
+          <div class="sb-val" id="sessionTotal">${totalSession}</div>
+          <div class="sb-label">Jami zikr</div>
+        </div>
+        <div class="session-box">
+          <div class="sb-val">${Math.floor(tasbehCount/tasbehTarget)>0?Math.floor(tasbehCount/tasbehTarget):tasbehCount>=tasbehTarget?1:0}</div>
+          <div class="sb-label">Davr</div>
+        </div>
+      </div>
+
+      <!-- Reset -->
+      <div class="reset-row">
+        <button class="reset-btn" onclick="resetTasbeh()">🔄 Qayta boshlash</button>
+      </div>
+    </div>
+  `;
   el.appendChild(wrap);
-  document.getElementById('tasbehBtn').onclick=()=>{
-    tasbehCount++;
-    if(tasbehCount>=tasbehTarget){
-      if(navigator.vibrate)navigator.vibrate([100,50,100,50,200]);
-      tasbehCount=0;
-    } else {
-      if(navigator.vibrate)navigator.vibrate(30);
-    }
-    document.getElementById('tasbehNum').textContent=tasbehCount;
-  };
+
+  // Tap logic
+  document.getElementById('tapBtn').addEventListener('click',()=>{
+    if(tasbehCount>=tasbehTarget){tasbehCount=0;}
+    tasbehCount++;totalSession++;
+    if(navigator.vibrate)navigator.vibrate(tasbehCount>=tasbehTarget?[80,40,80,40,150]:25);
+    // Update counter
+    const numEl=document.getElementById('tasbehNum');if(numEl)numEl.textContent=tasbehCount;
+    const totalEl=document.getElementById('sessionTotal');if(totalEl)totalEl.textContent=totalSession;
+    // Update circle
+    const fillEl=document.getElementById('cpFill');
+    if(fillEl){const p=Math.min(tasbehCount/tasbehTarget,1);fillEl.style.strokeDashoffset=circumference-(p*circumference);}
+    // Done banner
+    if(tasbehCount>=tasbehTarget){const banner=document.getElementById('doneBanner');if(banner)banner.classList.add('show');}
+    else{const banner=document.getElementById('doneBanner');if(banner)banner.classList.remove('show');}
+  });
 }
-function setTarget(n){tasbehTarget=n;tasbehCount=0;renderNTab();}
 function setZikr(i){activeZikr=i;tasbehCount=0;tasbehTarget=ZIKRS[i].n;renderNTab();}
 function resetTasbeh(){tasbehCount=0;renderNTab();}
 
@@ -928,38 +1066,75 @@ function renderDuas(el){
 
 /* ── Namoz o'rgatish ── */
 function renderGuide(el){
+  // Gender toggle
+  const gt=document.createElement('div');gt.className='gender-toggle';
+  gt.innerHTML=`
+    <button class="gt-btn male${activeGender==='male'?' on':''}" onclick="setGender('male')">👨 Erkaklar uchun</button>
+    <button class="gt-btn female${activeGender==='female'?' on':''}" onclick="setGender('female')">👩 Ayollar uchun</button>`;
+  el.appendChild(gt);
+
+  // Gender-specific info
+  if(activeGender==='male'){
+    const infoM=document.createElement('div');infoM.className='info-box male-note';
+    infoM.innerHTML='<b>👨 Erkak namozi:</b> Qo\'llar ko\'krakka, oyoqlar yelka kengligida, ruku\'da orqa tekis, sadjada tirsak ko\'tarilgan holda.';
+    el.appendChild(infoM);
+  } else {
+    const infoF=document.createElement('div');infoF.className='info-box female-note';
+    infoF.innerHTML='<b>👩 Ayol namozi:</b> Oyoqlar birlashtirilgan, ruku\'da kamroq egilish, sadjada tirsak yonida, o\'tirishda oyoqlar o\'ng tomonga. Bu Hanafiy mazhabiga ko\'ra.';
+    el.appendChild(infoF);
+  }
+
   // Tahorat
   const t1=document.createElement('div');t1.className='sec-label';t1.innerHTML='💧 Tahorat olish tartibi';el.appendChild(t1);
   const ib=document.createElement('div');ib.className='info-box';
   ib.innerHTML='<b>Tahoratni buzuvchi narsalar:</b> hojatga borish, yel chiqarish, qon oqishi, uxlab qolish, behush bo\'lish.';el.appendChild(ib);
+
   TAHORAT_STEPS.forEach((s,i)=>{
     const d=document.createElement('div');d.className='tahorat-step';
+    const diffNote=activeGender==='male'?s.mDiff:s.fDiff;
     d.innerHTML=`<div class="ts-hd"><div class="ts-num">${i+1}</div><div class="ts-ico">${s.ico}</div><div class="ts-ttl">${s.ttl}</div><div class="ts-arr">▼</div></div>
-    <div class="ts-body"><div class="ts-inner">${s.ar?`<div class="ts-ar">${s.ar}</div>`:''}${s.tr?`<div class="ts-tr">${s.tr}</div>`:''}${s.desc?`<div class="ts-desc">${s.desc}</div>`:''}</div></div>`;
+    <div class="ts-body"><div class="ts-inner">
+      ${s.ar?`<div class="ts-ar">${s.ar}</div>`:''}
+      ${s.tr?`<div class="ts-tr">${s.tr}</div>`:''}
+      ${s.desc?`<div class="ts-desc">${s.desc}</div>`:''}
+      ${diffNote?`<div class="ts-diff ${activeGender==='male'?'m':'f'}">${activeGender==='male'?'👨':'👩'} ${diffNote}</div>`:''}
+    </div></div>`;
     d.querySelector('.ts-hd').onclick=()=>d.classList.toggle('open');el.appendChild(d);
   });
-  // 5 vaqt
+
+  // Prayer guide
   const t2=document.createElement('div');t2.className='sec-label';t2.style.marginTop='20px';t2.innerHTML='🕌 5 Vaqt Namoz';el.appendChild(t2);
-  PRAYER_GUIDE.forEach(p=>{
+
+  const guide=activeGender==='male'?PRAYER_GUIDE_MALE:PRAYER_GUIDE_FEMALE;
+  guide.forEach(p=>{
     const d=document.createElement('div');d.className='prayer-card';
     d.innerHTML=`<div class="pc-hd"><div class="pc-ico">${p.ico}</div><div class="pc-info"><div class="pc-name">${p.name}</div><div class="pc-sub">${p.time}</div></div><div class="pc-rakat">${p.rakat}</div><div class="pc-arr">▼</div></div>
-    <div class="pc-body"><div class="pc-inner"><div class="pc-info-box">${p.rakat}</div>
-    ${p.steps.map((s,i)=>`<div class="rakat-step"><div class="rs-num">${i+1}</div><div class="rs-cont"><div class="rs-ttl">${s.t}</div>${s.ar?`<div class="rs-ar">${s.ar}</div>`:''}${s.tr?`<div class="rs-tr">${s.tr}</div>`:''}${s.uz?`<div class="rs-uz">${s.uz}</div>`:''}</div></div>`).join('')}
+    <div class="pc-body"><div class="pc-inner"><div class="pc-info-box">${p.rakat}${p.note?'<br>'+p.note:''}</div>
+    ${p.steps.map((s,i)=>`<div class="rakat-step"><div class="rs-num">${i+1}</div><div class="rs-cont">
+      <div class="rs-ttl">${s.t}</div>
+      ${s.ar?`<div class="rs-ar">${s.ar}</div>`:''}
+      ${s.tr?`<div class="rs-tr">${s.tr}</div>`:''}
+      ${s.uz?`<div class="rs-uz">${s.uz}</div>`:''}
+      ${s.mNote&&activeGender==='male'?`<div class="rs-diff m">👨 ${s.mNote}</div>`:''}
+      ${s.fNote&&activeGender==='female'?`<div class="rs-diff f">👩 ${s.fNote}</div>`:''}
+    </div></div>`).join('')}
     </div></div>`;
     d.querySelector('.pc-hd').onclick=()=>d.classList.toggle('open');el.appendChild(d);
   });
 }
 
+function setGender(g){
+  activeGender=g;
+  renderNTab();
+}
+
 /* ══ BOOT ══ */
 buildEditions();renderSuras(SURAHS);
-updateQiblaUI();
+updateStaticQiblaUI();
 setLoc(41.2995,69.2401,"Toshkent, O'zbekiston");
 renderNTab();
-
 if(window.Telegram?.WebApp){const tg=Telegram.WebApp;tg.ready();tg.expand();tg.setHeaderColor?.('#070d17');tg.setBackgroundColor?.('#070d17');}
-
 startGPS();
-// Default: Toshkent shahri (index 1) bilan namoz vaqtlarini boshlash
 onRegionChange(1);
 </script>
 </body>
