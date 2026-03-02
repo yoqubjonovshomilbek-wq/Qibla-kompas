@@ -1,74 +1,1113 @@
+<!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<title>Kalkulyator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Islomiy Ilova</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;700;800&family=Tajawal:wght@400;500;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-body {
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
-background: #f0f0f0;
-font-family: Arial, sans-serif;
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --g:#22c55e;--gd:#15803d;--gold:#d4a843;
+  --bg:#070d17;--s1:#0b1a2e;--s2:#0f2139;--s3:#162b47;
+  --bdr:rgba(34,197,94,0.15);--tx:#e2eef8;--mt:#4a6a86;
+  --gw:rgba(34,197,94,0.35);
+  --blue:#3b82f6;--pink:#ec4899;
 }
-.calculator {
-background: #fff;
-padding: 20px;
-border-radius: 10px;
-box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-input {
-width: 100%;
-height: 40px;
-font-size: 18px;
-margin-bottom: 10px;
-text-align: right;
-}
-button {
-width: 60px;
-height: 40px;
-font-size: 18px;
-margin: 5px;
-cursor: pointer;
-}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100dvh;}
+
+/* Stars */
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:0;animation:twinkle var(--d) ease-in-out infinite var(--dl)}
+@keyframes twinkle{0%,100%{opacity:0}50%{opacity:.5}}
+
+/* NAV */
+nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bdr);flex-shrink:0;z-index:50;position:relative;}
+.nb{flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:10.5px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;transition:color .2s;}
+.nb .ni{font-size:19px;}
+.nb.on{color:var(--g);}
+.nb::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;border-radius:2px 2px 0 0;background:var(--g);transform:scaleX(0);transition:transform .25s;}
+.nb.on::after{transform:scaleX(1);}
+
+/* PAGES */
+.pages{flex:1;position:relative;overflow:hidden;}
+.pg{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;transition:opacity .2s;}
+.pg.on{opacity:1;pointer-events:all;}
+.pg::-webkit-scrollbar{width:2px;}
+.pg::-webkit-scrollbar-thumb{background:var(--s3);}
+
+/* ══════════════════════════════════════
+   TAB 1 — QIBLA (REAL KOMPAS)
+══════════════════════════════════════ */
+#pg0{display:flex;flex-direction:column;align-items:center;padding:16px 16px 30px;}
+.qibla-card{width:100%;max-width:360px;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:20px;margin-bottom:14px;}
+.qibla-title{font-family:'Amiri',serif;font-size:22px;color:var(--gold);text-align:center;margin-bottom:16px;text-shadow:0 0 20px rgba(212,168,67,.3);}
+
+/* REAL COMPASS */
+.compass-wrap{position:relative;width:260px;height:260px;margin:0 auto 20px;}
+.compass-ring{width:260px;height:260px;border-radius:50%;border:2px solid var(--bdr);background:radial-gradient(circle at 40% 35%,#132340 0%,#070d17 70%);position:absolute;inset:0;transition:transform 0.3s ease;}
+.compass-ring svg{position:absolute;inset:0;width:100%;height:100%;}
+.qibla-pointer{position:absolute;top:50%;left:50%;z-index:5;pointer-events:none;}
+.qp-inner{transform:translateX(-50%) translateY(-100%);display:flex;flex-direction:column;align-items:center;}
+.qp-head{width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:28px solid var(--gold);filter:drop-shadow(0 0 10px rgba(212,168,67,.9));}
+.qp-body{width:3px;height:100px;background:linear-gradient(var(--gold),rgba(212,168,67,.1));border-radius:0 0 3px 3px;}
+.compass-n{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:800;color:#ef4444;font-family:'Nunito',sans-serif;z-index:3;}
+.compass-s{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--mt);font-family:'Nunito',sans-serif;z-index:3;}
+.compass-e{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--mt);font-family:'Nunito',sans-serif;z-index:3;}
+.compass-w{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--mt);font-family:'Nunito',sans-serif;z-index:3;}
+.align-ring{position:absolute;inset:-4px;border-radius:50%;border:3px solid transparent;transition:border-color .4s,box-shadow .4s;}
+.align-ring.aligned{border-color:var(--g);box-shadow:0 0 40px rgba(34,197,94,.4),inset 0 0 20px rgba(34,197,94,.1);}
+.compass-perm{text-align:center;padding:16px 0 8px;}
+.perm-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:20px;border:1.5px solid var(--g);background:rgba(34,197,94,.1);color:var(--g);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.perm-btn:active{background:rgba(34,197,94,.2);}
+.compass-status{font-size:11px;color:var(--mt);margin-top:8px;}
+.qibla-deg{text-align:center;margin-bottom:12px;}
+.qdeg-val{font-family:'Nunito',sans-serif;font-size:52px;font-weight:800;line-height:1;color:var(--tx);}
+.qdeg-val.aligned{color:var(--g);text-shadow:0 0 30px rgba(34,197,94,.5);}
+.qdeg-dir{font-size:11px;color:var(--mt);letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-top:4px;}
+.qdeg-from{font-size:13px;color:var(--g);margin-top:6px;font-weight:600;}
+.compass-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#1d4ed8,#0d47a1);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 0 3px rgba(255,255,255,.1),0 4px 20px rgba(0,0,0,.5);z-index:6;transition:box-shadow .4s;}
+.compass-center.aligned{box-shadow:0 0 0 3px var(--g),0 0 30px rgba(34,197,94,.6);}
+.loc-row{display:flex;align-items:center;gap:10px;background:var(--s2);border-radius:12px;padding:10px 12px;}
+.loc-ico{font-size:20px;flex-shrink:0;}
+.loc-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.loc-coord{font-size:10px;color:var(--mt);margin-top:2px;}
+.aligned-msg{display:none;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:10px 14px;text-align:center;font-size:13px;color:var(--g);margin-top:10px;}
+.aligned-msg.show{display:block;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.howto{width:100%;max-width:360px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:14px;margin-bottom:14px;}
+.howto h3{font-size:13px;font-weight:700;color:var(--g);margin-bottom:8px;}
+.howto-step{display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:var(--mt);line-height:1.5;}
+.howto-step:last-child{margin-bottom:0;}
+.hwnum{width:20px;height:20px;border-radius:50%;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--g);flex-shrink:0;}
+
+/* ══════════════════════════════════════
+   TAB 2 — QUR'ON
+══════════════════════════════════════ */
+#pg1{display:flex;flex-direction:column;}
+.qhdr{padding:12px 12px 8px;background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.qhdr-title{font-family:'Amiri',serif;font-size:20px;color:var(--gold);text-align:center;text-shadow:0 0 12px rgba(212,168,67,.3);margin-bottom:8px;}
+.srch-box{position:relative;}
+.srch-box input{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:10px;padding:8px 12px 8px 34px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;}
+.srch-box input:focus{border-color:var(--g);}
+.srch-box input::placeholder{color:var(--mt);}
+.srch-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
+.edi-row{display:flex;gap:5px;margin-top:7px;overflow-x:auto;padding-bottom:2px;}
+.edi-row::-webkit-scrollbar{display:none;}
+.echip{flex-shrink:0;padding:4px 10px;border-radius:16px;border:1.5px solid var(--bdr);background:var(--s2);color:var(--mt);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Tajawal',sans-serif;white-space:nowrap;}
+.echip.on{background:rgba(34,197,94,.15);border-color:var(--g);color:var(--g);}
+.sura-list{padding:7px 10px 150px;}
+.sura-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;background:var(--s1);border:1px solid var(--bdr);margin-bottom:4px;cursor:pointer;transition:background .15s;position:relative;overflow:hidden;}
+.sura-item.pl{background:rgba(34,197,94,.1);border-color:var(--g);}
+.sura-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g);transform:scaleY(0);transition:transform .2s;border-radius:0 2px 2px 0;}
+.sura-item.pl::before{transform:scaleY(1);}
+.sno{width:30px;height:30px;background:var(--s2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g);flex-shrink:0;border:1px solid var(--bdr);}
+.sura-item.pl .sno{background:var(--g);color:#fff;border-color:var(--g);}
+.sinf{flex:1;min-width:0;}
+.sar{font-family:'Amiri',serif;font-size:15px;}
+.suz{font-size:10px;color:var(--mt);margin-top:1px;}
+.smeta{font-size:10px;color:var(--mt);text-align:right;flex-shrink:0;line-height:1.5;}
+.spbtn{width:30px;height:30px;border-radius:50%;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.sura-item.pl .spbtn{background:var(--g);border-color:var(--g);}
+.nores{text-align:center;padding:40px 20px;color:var(--mt);font-size:13px;}
+
+/* Player */
+.player{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,#060c15,rgba(10,22,42,.98));border-top:1px solid var(--bdr);padding:10px 14px 18px;z-index:200;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 -6px 30px rgba(0,0,0,.6);}
+.player.vis{transform:translateY(0);}
+.p-info{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.p-title{font-family:'Amiri',serif;font-size:14px;color:var(--gold);}
+.p-sub{font-size:10px;color:var(--mt);margin-top:2px;}
+.p-cls{background:none;border:none;color:var(--mt);font-size:18px;cursor:pointer;padding:2px 6px;}
+.p-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.p-tm{font-size:11px;color:var(--mt);min-width:30px;font-variant-numeric:tabular-nums;}
+.p-bar{flex:1;height:4px;background:var(--s3);border-radius:4px;cursor:pointer;}
+.p-fill{height:100%;background:var(--g);border-radius:4px;width:0%;transition:width .25s linear;pointer-events:none;}
+.p-ctrls{display:flex;align-items:center;justify-content:center;gap:18px;}
+.p-cbtn{background:none;border:none;color:var(--mt);font-size:20px;cursor:pointer;padding:4px;}
+.p-pbtn{width:46px;height:46px;border-radius:50%;background:var(--g);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 14px var(--gw);transition:transform .1s;}
+.p-pbtn:active{transform:scale(.92);}
+.p-msg{font-size:10px;color:var(--mt);text-align:center;margin-top:5px;min-height:15px;}
+.p-msg.err{color:#e74c3c;}
+
+/* ══════════════════════════════════════
+   TAB 3 — NAMOZ
+══════════════════════════════════════ */
+#pg2{display:flex;flex-direction:column;}
+.nhdr{padding:12px 12px 8px;background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10;flex-shrink:0;}
+.nhdr-title{font-family:'Amiri',serif;font-size:20px;color:var(--gold);text-align:center;text-shadow:0 0 12px rgba(212,168,67,.3);margin-bottom:8px;}
+.ntabs{display:flex;gap:0;background:var(--s2);border-radius:10px;padding:3px;border:1px solid var(--bdr);}
+.ntab{flex:1;padding:7px 4px;border:none;background:transparent;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:11px;font-weight:600;cursor:pointer;border-radius:7px;transition:all .2s;text-align:center;white-space:nowrap;}
+.ntab.on{background:var(--g);color:#fff;box-shadow:0 2px 10px rgba(34,197,94,.4);}
+.ncontent{flex:1;overflow-y:auto;padding:12px 12px 24px;}
+
+/* ─── Prayer times ─── */
+.region-select{width:100%;background:var(--s2);border:1.5px solid var(--bdr);border-radius:12px;padding:10px 14px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:600;outline:none;cursor:pointer;margin-bottom:12px;appearance:none;-webkit-appearance:none;}
+.region-select:focus{border-color:var(--g);}
+.region-select option{background:#0f2139;color:#e2eef8;}
+.pt-countdown{background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(34,197,94,.06));border:1.5px solid rgba(34,197,94,.4);border-radius:16px;padding:14px 16px;margin-bottom:14px;text-align:center;}
+.pt-cd-label{font-size:11px;color:var(--mt);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pt-cd-prayer{font-family:'Amiri',serif;font-size:20px;color:var(--gold);margin-bottom:6px;}
+.pt-cd-time{font-family:'Nunito',sans-serif;font-size:38px;font-weight:800;color:var(--g);letter-spacing:2px;line-height:1;text-shadow:0 0 20px rgba(34,197,94,.5);}
+.pt-cd-until{font-size:11px;color:var(--mt);margin-top:4px;}
+.ptimes-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.pt-card{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:12px;transition:all .3s;}
+.pt-card.active{background:rgba(34,197,94,.1);border-color:var(--g);box-shadow:0 0 16px rgba(34,197,94,.15);}
+.pt-card.next-p{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.06);}
+.pt-ico{font-size:22px;flex-shrink:0;}
+.pt-info{flex:1;}
+.pt-name{font-size:13px;font-weight:700;color:var(--mt);}
+.pt-card.active .pt-name{color:var(--g);}
+.pt-card.next-p .pt-name{color:var(--gold);}
+.pt-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;vertical-align:middle;}
+.pt-badge.cur{background:rgba(34,197,94,.2);color:var(--g);}
+.pt-badge.nxt{background:rgba(212,168,67,.2);color:var(--gold);}
+.pt-time{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:var(--tx);flex-shrink:0;}
+.pt-card.active .pt-time{color:var(--g);}
+.pt-card.next-p .pt-time{color:var(--gold);}
+.pt-header{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:12px;text-align:center;margin-bottom:12px;}
+.pt-clock{font-family:'Nunito',sans-serif;font-size:36px;font-weight:800;color:var(--tx);line-height:1;}
+.pt-date{font-size:12px;color:var(--mt);margin-top:4px;}
+
+/* ══════════════════════════════════════
+   TASBEH — YANGI UI
+══════════════════════════════════════ */
+.tasbeh-page{display:flex;flex-direction:column;gap:12px;}
+
+/* Zikr tabs */
+.tsb-tabs{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;}
+.tsb-tabs::-webkit-scrollbar{display:none;}
+.tsb-tab{flex-shrink:0;padding:7px 12px;border-radius:20px;border:1.5px solid var(--bdr);background:var(--s2);color:var(--mt);font-family:'Tajawal',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:1px;}
+.tsb-tab.on{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4);color:var(--g);}
+.tsb-tab .tt-ar{font-family:'Amiri',serif;font-size:12px;}
+
+/* Custom panel */
+.tsb-custom{background:var(--s1);border:1.5px solid var(--bdr);border-radius:14px;padding:12px;display:none;flex-direction:column;gap:9px;}
+.tsb-custom.show{display:flex;}
+.tc-label{font-size:11px;color:var(--mt);font-weight:600;}
+.tc-input{background:var(--s2);border:1.5px solid var(--bdr);border-radius:10px;padding:9px 12px;color:var(--tx);font-family:'Amiri',serif;font-size:17px;direction:rtl;text-align:center;outline:none;width:100%;}
+.tc-input:focus{border-color:var(--g);}
+.tc-input::placeholder{color:var(--mt);font-family:'Tajawal',sans-serif;font-size:12px;direction:ltr;}
+.tc-row{display:flex;gap:7px;align-items:center;}
+.tc-lbl{font-size:11px;color:var(--mt);font-weight:600;flex-shrink:0;}
+.tc-num{background:var(--s2);border:1.5px solid var(--bdr);border-radius:9px;padding:8px 10px;color:var(--tx);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;outline:none;width:80px;text-align:center;}
+.tc-num:focus{border-color:var(--g);}
+.tc-inf{padding:8px 12px;border-radius:9px;border:1.5px solid rgba(34,197,94,.25);background:transparent;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.tc-inf.on{background:rgba(34,197,94,.1);border-color:var(--g);color:var(--g);}
+
+/* Mode strip */
+.tsb-modes{display:flex;background:var(--s1);border:1.5px solid var(--bdr);border-radius:12px;padding:3px;gap:3px;}
+.tsb-mode{flex:1;padding:8px 4px;border:none;border-radius:9px;font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--mt);text-align:center;}
+.tsb-mode.on{background:var(--s2);color:var(--tx);border:1px solid var(--bdr);}
+.tsb-mode.on.inf-mode{color:var(--blue);border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.08);}
+.tsb-mode.on.lap-mode{color:var(--gold);border-color:rgba(212,168,67,.3);background:rgba(212,168,67,.06);}
+
+/* Counter block */
+.tsb-counter{background:var(--s1);border:1.5px solid var(--bdr);border-radius:22px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.tsb-counter::before{content:'';position:absolute;inset:0;border-radius:22px;background:linear-gradient(135deg,rgba(34,197,94,.05),transparent 60%,rgba(212,168,67,.03));pointer-events:none;}
+
+.tsb-ring{position:relative;width:190px;height:190px;}
+.tsb-ring-svg{width:190px;height:190px;transform:rotate(-90deg);}
+.tr-track{fill:none;stroke:var(--s3);stroke-width:10;}
+.tr-fill{fill:none;stroke:url(#tsbGrad);stroke-width:10;stroke-linecap:round;stroke-dasharray:534.07;stroke-dashoffset:534.07;transition:stroke-dashoffset .3s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 7px rgba(34,197,94,.45));}
+.tr-fill.inf-stroke{stroke:url(#tsbInfGrad);}
+.tsb-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tsb-num{font-family:'Nunito',sans-serif;font-size:58px;font-weight:800;color:var(--tx);line-height:1;transition:color .25s;}
+.tsb-num.bounce{animation:tsbBounce .18s cubic-bezier(.2,1.6,.4,1);}
+.tsb-num.done{color:var(--g);text-shadow:0 0 25px rgba(34,197,94,.5);}
+.tsb-num.inf-num{color:var(--blue);}
+.tsb-of{font-size:11px;color:var(--mt);font-weight:600;margin-top:3px;}
+.tsb-of.inf-of{color:rgba(59,130,246,.6);}
+@keyframes tsbBounce{0%{transform:scale(1)}50%{transform:scale(1.14)}100%{transform:scale(1)}}
+
+.tsb-zikr-info{text-align:center;}
+.tzi-ar{font-family:'Amiri',serif;font-size:21px;color:#b8d0e8;direction:rtl;line-height:1.5;}
+.tzi-uz{font-size:11px;color:var(--mt);margin-top:3px;line-height:1.4;}
+
+/* Tap button */
+.tsb-tap{width:100%;padding:19px;border-radius:16px;background:linear-gradient(145deg,var(--g),var(--gd));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:11px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:800;color:#fff;box-shadow:0 7px 28px rgba(34,197,94,.35),inset 0 2px 0 rgba(255,255,255,.18),inset 0 -3px 0 rgba(0,0,0,.25);transition:transform .08s,box-shadow .08s;-webkit-tap-highlight-color:transparent;}
+.tsb-tap:active{transform:scale(.97) translateY(2px);box-shadow:0 3px 12px rgba(34,197,94,.25);}
+.tsb-tap.inf-tap{background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 7px 28px rgba(59,130,246,.35),inset 0 2px 0 rgba(255,255,255,.18),inset 0 -3px 0 rgba(0,0,0,.25);}
+.tsb-tap.inf-tap:active{box-shadow:0 3px 12px rgba(59,130,246,.25);}
+.tsb-tap-ico{font-size:22px;}
+
+/* Done banner */
+.tsb-done{background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(212,168,67,.07));border:1.5px solid rgba(34,197,94,.3);border-radius:14px;padding:14px;text-align:center;display:none;}
+.tsb-done.show{display:block;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.td-ico{font-size:36px;margin-bottom:5px;}
+.td-title{font-family:'Amiri',serif;font-size:18px;color:var(--gold);}
+.td-sub{font-size:11px;color:var(--mt);margin-top:4px;line-height:1.5;}
+.td-cont{display:inline-block;margin-top:9px;padding:7px 18px;border-radius:18px;background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3);color:var(--g);font-size:12px;font-weight:700;cursor:pointer;}
+
+/* Stats */
+.tsb-stats{display:flex;gap:7px;}
+.tsb-stat{flex:1;background:var(--s1);border:1.5px solid var(--bdr);border-radius:12px;padding:11px 8px;text-align:center;}
+.tsb-sv{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:var(--g);}
+.tsb-sv.blue{color:var(--blue);}
+.tsb-sv.gold{color:var(--gold);}
+.tsb-sl{font-size:10px;color:var(--mt);font-weight:600;margin-top:2px;}
+
+/* Reset */
+.tsb-reset{width:100%;padding:10px;border-radius:11px;border:1.5px solid rgba(239,68,68,.25);background:transparent;color:#ef4444;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.tsb-reset:active{background:rgba(239,68,68,.08);}
+
+/* Toast */
+.tsb-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--s2);border:1px solid var(--bdr);border-radius:18px;padding:9px 18px;font-size:12px;color:var(--tx);font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+.tsb-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* Ripple */
+.tsb-ripple{position:fixed;border-radius:50%;pointer-events:none;transform:scale(0);animation:tsbRipple .5s ease-out forwards;z-index:999;}
+@keyframes tsbRipple{to{transform:scale(5);opacity:0;}}
+
+/* ─── Du'olar ─── */
+.dua-cats{display:flex;gap:5px;overflow-x:auto;margin-bottom:10px;padding-bottom:3px;}
+.dua-cats::-webkit-scrollbar{display:none;}
+.dcat{flex-shrink:0;padding:5px 12px;border-radius:16px;border:1.5px solid var(--bdr);background:var(--s2);color:var(--mt);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Tajawal',sans-serif;white-space:nowrap;}
+.dcat.on{background:rgba(34,197,94,.15);border-color:var(--g);color:var(--g);}
+.dua-card{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.dua-title{font-size:12px;font-weight:700;color:var(--g);margin-bottom:6px;}
+.dua-ar{font-family:'Amiri',serif;font-size:19px;direction:rtl;text-align:center;color:#b8d0e8;line-height:1.7;margin-bottom:6px;padding:8px;background:rgba(0,0,0,.15);border-radius:8px;}
+.dua-tr{font-size:11px;color:#3d6080;font-style:italic;margin-bottom:4px;}
+.dua-uz{font-size:12px;color:var(--mt);line-height:1.6;}
+
+/* ══════════════════════════════════════
+   NAMOZ O'RGATISH — ERKAK / AYOL
+══════════════════════════════════════ */
+.gender-toggle{display:flex;background:var(--s2);border-radius:12px;padding:4px;border:1px solid var(--bdr);margin-bottom:14px;gap:4px;}
+.gt-btn{flex:1;padding:10px 8px;border:none;border-radius:9px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--mt);display:flex;align-items:center;justify-content:center;gap:6px;}
+.gt-btn.male.on{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(59,130,246,.4);}
+.gt-btn.female.on{background:var(--pink);color:#fff;box-shadow:0 2px 12px rgba(236,72,153,.4);}
+.sec-label{font-family:'Amiri',serif;font-size:16px;color:var(--gold);text-align:center;margin:14px 0 8px;}
+.info-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#3d6080;line-height:1.6;}
+.info-box b{color:var(--g);}
+.info-box.female-note{background:rgba(236,72,153,.05);border-color:rgba(236,72,153,.2);color:#c47fa4;}
+.info-box.female-note b{color:var(--pink);}
+.info-box.male-note{background:rgba(59,130,246,.05);border-color:rgba(59,130,246,.2);color:#7aadda;}
+.info-box.male-note b{color:var(--blue);}
+.tahorat-step{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.ts-hd{display:flex;align-items:center;gap:9px;padding:11px 12px;cursor:pointer;}
+.ts-num{width:28px;height:28px;border-radius:50%;background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g);flex-shrink:0;}
+.ts-ico{font-size:20px;}
+.ts-ttl{flex:1;font-size:13px;font-weight:700;}
+.ts-arr{color:var(--mt);font-size:12px;transition:transform .2s;}
+.tahorat-step.open .ts-arr{transform:rotate(180deg);}
+.ts-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.tahorat-step.open .ts-body{max-height:600px;}
+.ts-inner{padding:0 12px 12px;}
+.ts-ar{font-family:'Amiri',serif;font-size:20px;direction:rtl;text-align:center;color:#b8d0e8;line-height:1.7;margin-bottom:6px;padding:8px;background:rgba(0,0,0,.15);border-radius:8px;}
+.ts-tr{font-size:11px;color:#3d6080;font-style:italic;margin-bottom:4px;}
+.ts-desc{font-size:12px;color:var(--mt);line-height:1.6;}
+.ts-diff{font-size:11px;padding:6px 8px;border-radius:8px;margin-top:6px;line-height:1.5;}
+.ts-diff.m{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#7aadda;}
+.ts-diff.f{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);color:#c47fa4;}
+.prayer-card{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;margin-bottom:10px;overflow:hidden;}
+.pc-hd{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;}
+.pc-ico{font-size:26px;}
+.pc-info{flex:1;}
+.pc-name{font-family:'Amiri',serif;font-size:17px;color:var(--gold);}
+.pc-sub{font-size:10px;color:var(--mt);margin-top:1px;}
+.pc-rakat{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:16px;padding:3px 9px;font-size:10px;color:var(--g);font-weight:700;white-space:nowrap;}
+.pc-arr{color:var(--mt);font-size:12px;transition:transform .2s;}
+.prayer-card.open .pc-arr{transform:rotate(180deg);}
+.pc-body{max-height:0;overflow:hidden;transition:max-height .5s ease;}
+.prayer-card.open .pc-body{max-height:5000px;}
+.pc-inner{padding:0 14px 14px;}
+.pc-info-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:12px;color:#3d6080;line-height:1.6;}
+.rakat-step{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.rakat-step:last-child{border-bottom:none;}
+.rs-num{width:24px;height:24px;border-radius:50%;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--g);flex-shrink:0;margin-top:1px;}
+.rs-cont{flex:1;}
+.rs-ttl{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.rs-ar{font-family:'Amiri',serif;font-size:16px;direction:rtl;color:#9ab8d0;line-height:1.6;margin-bottom:2px;}
+.rs-tr{font-size:10px;color:#3d5e78;font-style:italic;margin-bottom:2px;}
+.rs-uz{font-size:11px;color:var(--mt);line-height:1.5;}
+.rs-diff{font-size:10px;padding:4px 8px;border-radius:6px;margin-top:4px;line-height:1.5;}
+.rs-diff.m{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#7aadda;}
+.rs-diff.f{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);color:#c47fa4;}
+.tajwid-note{background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.2);border-radius:8px;padding:6px 10px;font-size:11px;color:#b89a4a;margin-top:4px;line-height:1.5;}
 </style>
 </head>
 <body>
-<div class="calculator">
-<input type="text" id="result" disabled>
-<br>
-<button onclick="clearResult()">C</button>
-<button onclick="appendValue('/')">/</button>
-<button onclick="appendValue('*')">*</button>
-<button onclick="appendValue('-')">-</button>
-<br>
-<button onclick="appendValue('7')">7</button>
-<button onclick="appendValue('8')">8</button>
-<button onclick="appendValue('9')">9</button>
-<button onclick="appendValue('+')">+</button>
-<br>
-<button onclick="appendValue('4')">4</button>
-<button onclick="appendValue('5')">5</button>
-<button onclick="appendValue('6')">6</button>
-<br>
-<button onclick="appendValue('1')">1</button>
-<button onclick="appendValue('2')">2</button>
-<button onclick="appendValue('3')">3</button>
-<br>
-<button onclick="appendValue('0')">0</button>
-<button onclick="calculate()">=</button>
+<div class="stars" id="stars"></div>
+
+<nav>
+  <button class="nb on" id="nb0" onclick="goTab(0)"><span class="ni">🧭</span><span>Qibla</span></button>
+  <button class="nb" id="nb1" onclick="goTab(1)"><span class="ni">📖</span><span>Qur'on</span></button>
+  <button class="nb" id="nb2" onclick="goTab(2)"><span class="ni">🤲</span><span>Namoz</span></button>
+</nav>
+
+<div class="pages">
+
+<!-- ════════════ TAB 1: QIBLA (REAL KOMPAS) ════════════ -->
+<div class="pg on" id="pg0">
+  <div class="qibla-card">
+    <div class="qibla-title">🕋 Qibla Yo'nalishi</div>
+    <div class="compass-wrap" id="compassWrap">
+      <div class="compass-ring" id="compassRing">
+        <span class="compass-n">N</span>
+        <span class="compass-s">S</span>
+        <span class="compass-e">E</span>
+        <span class="compass-w">W</span>
+        <svg viewBox="0 0 260 260"><g id="ticksG"></g></svg>
+      </div>
+      <div class="align-ring" id="alignRing"></div>
+      <div class="qibla-pointer" id="qiblaPointer" style="display:none;">
+        <div class="qp-inner"><div class="qp-head"></div><div class="qp-body"></div></div>
+      </div>
+      <div class="compass-center" id="compassCenter">🕋</div>
+    </div>
+    <div class="qibla-deg">
+      <div class="qdeg-val" id="qdegVal">--°</div>
+      <div class="qdeg-dir" id="qdegDir">Aniqlanmoqda...</div>
+      <div class="qdeg-from" id="qdegFrom"></div>
+    </div>
+    <div class="compass-perm" id="compassPerm">
+      <button class="perm-btn" onclick="requestCompass()">🧭 Kompasni yoqish</button>
+      <div class="compass-status" id="compassStatus">Qibla yo'nalishini ko'rish uchun bosing</div>
+    </div>
+    <div class="aligned-msg" id="alignedMsg">✅ Siz Qiblaga qaratilgansiz! Namoz o'qishingiz mumkin 🤲</div>
+    <div class="loc-row" style="margin-top:12px;">
+      <div class="loc-ico">📍</div>
+      <div style="flex:1;min-width:0;">
+        <div class="loc-name" id="locName">Joylashuv aniqlanmoqda...</div>
+        <div class="loc-coord" id="locCoord"></div>
+      </div>
+    </div>
+  </div>
+  <div class="howto" style="width:100%;max-width:360px;">
+    <h3>📱 Qiblani qanday topish:</h3>
+    <div class="howto-step"><div class="hwnum">1</div><span><b>Kompasni yoqish</b> tugmasini bosing va ruxsat bering</span></div>
+    <div class="howto-step"><div class="hwnum">2</div><span>Sariq o'q <b id="howDeg">--°</b> ko'rsatadi — Qibla shu tomonda</span></div>
+    <div class="howto-step"><div class="hwnum">3</div><span>Telefoni yuzini yuqoriga qaratib, <b>o'q ko'rsatgan</b> tomonga buring</span></div>
+    <div class="howto-step"><div class="hwnum">4</div><span>Kompas halqasi aylanganda — <b>sariq o'q Makkani ko'rsatadi</b></span></div>
+    <div class="howto-step"><div class="hwnum">5</div><span>Yashil rangi chiqsa — siz <b>to'g'ri Qiblaga</b> qaratilgansiz ✅</span></div>
+  </div>
 </div>
+
+<!-- ════════════ TAB 2: QUR'ON ════════════ -->
+<div class="pg" id="pg1">
+  <div class="qhdr">
+    <div class="qhdr-title">📖 Qur'oni Karim</div>
+    <div class="srch-box"><span class="srch-ico">🔍</span>
+      <input id="srch" type="text" placeholder="Sura nomi yoki raqami..." oninput="doFilter()">
+    </div>
+    <div class="edi-row" id="ediRow"></div>
+  </div>
+  <div class="sura-list" id="suraList"></div>
+</div>
+
+<!-- ════════════ TAB 3: NAMOZ ════════════ -->
+<div class="pg" id="pg2">
+  <div class="nhdr">
+    <div class="nhdr-title">🤲 Namoz</div>
+    <div class="ntabs">
+      <button class="ntab on" id="nt0" onclick="nTab(0)">⏰ Vaqtlar</button>
+      <button class="ntab" id="nt1" onclick="nTab(1)">📿 Tasbeh</button>
+      <button class="ntab" id="nt2" onclick="nTab(2)">🤲 Du'olar</button>
+      <button class="ntab" id="nt3" onclick="nTab(3)">🕌 O'rgatish</button>
+    </div>
+  </div>
+  <div class="ncontent" id="ncontent"></div>
+</div>
+
+</div><!-- /pages -->
+
+<!-- Audio Player -->
+<div class="player" id="player">
+  <div class="p-info">
+    <div><div class="p-title" id="ptit">—</div><div class="p-sub" id="psub">—</div></div>
+    <button class="p-cls" onclick="closePlayer()">✕</button>
+  </div>
+  <div class="p-row">
+    <span class="p-tm" id="ptc">0:00</span>
+    <div class="p-bar" id="pbar" onclick="seekA(event)"><div class="p-fill" id="pfil"></div></div>
+    <span class="p-tm" id="ptd">--:--</span>
+  </div>
+  <div class="p-ctrls">
+    <button class="p-cbtn" onclick="moveSurah(-1)">⏮</button>
+    <button class="p-pbtn" id="ppbtn" onclick="togglePlay()">▶</button>
+    <button class="p-cbtn" onclick="moveSurah(1)">⏭</button>
+  </div>
+  <div class="p-msg" id="pmsg"></div>
+</div>
+<audio id="au" preload="none"></audio>
+
+<!-- Tasbeh toast -->
+<div class="tsb-toast" id="tsbToast"></div>
+
 <script>
-function appendValue(value) {
-document.getElementById("result").value += value;
+'use strict';
+
+/* ── Stars ── */
+(()=>{const c=document.getElementById('stars');for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';const z=Math.random()<.2?3:Math.random()<.5?2:1;s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:-${Math.random()*8}s`;c.appendChild(s);}})();
+
+/* Draw compass ticks */
+(()=>{
+  const g=document.getElementById('ticksG');
+  const cx=130,cy=130,r=118;
+  for(let i=0;i<360;i+=5){
+    const rad=i*Math.PI/180;
+    const isMajor=i%30===0,isMinor=i%10===0;
+    const len=isMajor?14:isMinor?9:5;
+    const x1=cx+Math.cos(rad-Math.PI/2)*(r-len);
+    const y1=cy+Math.sin(rad-Math.PI/2)*(r-len);
+    const x2=cx+Math.cos(rad-Math.PI/2)*r;
+    const y2=cy+Math.sin(rad-Math.PI/2)*r;
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1);line.setAttribute('y1',y1);line.setAttribute('x2',x2);line.setAttribute('y2',y2);
+    line.setAttribute('stroke',isMajor?'rgba(212,168,67,.6)':'rgba(74,106,134,.4)');
+    line.setAttribute('stroke-width',isMajor?1.5:0.8);
+    g.appendChild(line);
+    if(isMajor){
+      const tx=cx+Math.cos(rad-Math.PI/2)*(r-22);
+      const ty=cy+Math.sin(rad-Math.PI/2)*(r-22);
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',tx);t.setAttribute('y',ty);
+      t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');
+      t.setAttribute('font-size','9');t.setAttribute('font-family','Nunito,sans-serif');
+      t.setAttribute('font-weight','700');t.setAttribute('fill','rgba(74,106,134,.7)');
+      t.textContent=i===0?'':i;
+      g.appendChild(t);
+    }
+  }
+})();
+
+/* ── Tab navigation ── */
+function goTab(i){[0,1,2].forEach(j=>{document.getElementById('nb'+j).classList.toggle('on',j===i);document.getElementById('pg'+j).classList.toggle('on',j===i);});}
+
+/* ══════════════════════════════════════════
+   QIBLA — REAL KOMPAS
+══════════════════════════════════════════ */
+const KA_LAT=21.4225,KA_LON=39.8262;
+let uLat=41.2995,uLon=69.2401,qiblaAngle=0;
+let compassActive=false;
+let smoothHeading=0;
+
+function calcQibla(lat,lon){
+  const toR=d=>d*Math.PI/180,fromR=r=>r*180/Math.PI;
+  const φ1=toR(lat),φ2=toR(KA_LAT),Δλ=toR(KA_LON-lon);
+  const y=Math.sin(Δλ)*Math.cos(φ2);
+  const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+  return norm(fromR(Math.atan2(y,x)));
 }
-function clearResult() {
-document.getElementById("result").value = "";
+function norm(a){return((a%360)+360)%360;}
+function cardName(deg){return['Shimol (N)','Shim-Sharq (NE)','Sharq (E)','Jan-Sharq (SE)','Janub (S)','Jan-G\'arb (SW)','G\'arb (W)','Shim-G\'arb (NW)'][Math.round(norm(deg)/45)%8];}
+
+function updateStaticQiblaUI(){
+  qiblaAngle=calcQibla(uLat,uLon);
+  const deg=Math.round(qiblaAngle);
+  document.getElementById('qdegVal').textContent=deg+'°';
+  document.getElementById('qdegDir').textContent=cardName(qiblaAngle);
+  document.getElementById('qdegFrom').textContent=`Shimol (N) dan ${deg}° o'ngga`;
+  document.getElementById('howDeg').textContent=deg+'°';
 }
-function calculate() {
-let res = document.getElementById("result").value;
-document.getElementById("result").value = eval(res);
+
+function smoothAngle(current,target){
+  let diff=target-current;
+  while(diff>180)diff-=360;
+  while(diff<-180)diff+=360;
+  return current+diff*0.15;
 }
+
+function updateCompassDisplay(heading){
+  smoothHeading=smoothAngle(smoothHeading,heading);
+  document.getElementById('compassRing').style.transform=`rotate(${-smoothHeading}deg)`;
+  const diff=Math.abs(norm(qiblaAngle-heading));
+  const aligned=diff<5||diff>355;
+  document.getElementById('compassCenter').classList.toggle('aligned',aligned);
+  document.getElementById('alignRing').classList.toggle('aligned',aligned);
+  document.getElementById('qdegVal').classList.toggle('aligned',aligned);
+  document.getElementById('alignedMsg').classList.toggle('show',aligned);
+  const toQibla=norm(qiblaAngle-heading);
+  if(!aligned){const side=toQibla>180?`${Math.round(360-toQibla)}° soldan`:`${Math.round(toQibla)}° o'ngdan`;document.getElementById('qdegFrom').textContent=`Qiblaga: ${side} buring`;}
+  else{document.getElementById('qdegFrom').textContent='✅ To\'g\'ri yo\'nalishsiz!';}
+}
+
+function onDeviceOrientation(e){
+  if(!compassActive)return;
+  let h=0;
+  if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){h=e.webkitCompassHeading;}
+  else if(e.alpha!==null){h=360-e.alpha;}
+  updateCompassDisplay(h);
+}
+
+function requestCompass(){
+  const statusEl=document.getElementById('compassStatus');
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission().then(state=>{
+      if(state==='granted'){compassActive=true;window.addEventListener('deviceorientation',onDeviceOrientation,true);document.getElementById('qiblaPointer').style.display='block';document.getElementById('compassPerm').innerHTML='<div style="font-size:12px;color:var(--g);font-weight:700;">🧭 Kompas faol — telefonni aylantiring</div>';statusEl.textContent='';}
+      else{statusEl.textContent='❌ Ruxsat berilmadi. Sozlamalardan yoqing.';}
+    }).catch(()=>{statusEl.textContent='❌ Xato. Brauzer kompasni qo\'llab-quvvatlamaydi.';});
+  }else if(typeof DeviceOrientationEvent!=='undefined'){
+    compassActive=true;window.addEventListener('deviceorientation',onDeviceOrientation,true);document.getElementById('qiblaPointer').style.display='block';document.getElementById('compassPerm').innerHTML='<div style="font-size:12px;color:var(--g);font-weight:700;">🧭 Kompas faol</div>';
+    setTimeout(()=>{if(smoothHeading===0){document.getElementById('compassPerm').innerHTML='<div style="font-size:11px;color:var(--mt);">⚠️ Qurilmangiz kompasni qo\'llab-quvvatlamasligi mumkin. Yo\'nalish: '+Math.round(qiblaAngle)+'° N</div>';}},3000);
+  }else{statusEl.textContent='❌ Bu qurilma kompasni qo\'llab-quvvatlamaydi.';}
+}
+
+function setLoc(lat,lon,name){
+  uLat=lat;uLon=lon;
+  document.getElementById('locName').textContent=name;
+  document.getElementById('locCoord').textContent=`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
+  updateStaticQiblaUI();
+}
+function startGPS(){
+  if(!navigator.geolocation){startIPGeo();return;}
+  navigator.geolocation.getCurrentPosition(pos=>reverseGeo(pos.coords.latitude,pos.coords.longitude),()=>startIPGeo(),{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+}
+function startIPGeo(){
+  fetch('https://ip-api.com/json/?fields=status,lat,lon,city,country').then(r=>r.json()).then(d=>{if(d.status==='success')setLoc(d.lat,d.lon,(d.city||'')+(d.country?', '+d.country:''));else setLoc(41.2995,69.2401,"Toshkent, O'zbekiston");}).catch(()=>setLoc(41.2995,69.2401,"Toshkent, O'zbekiston"));
+}
+function reverseGeo(lat,lon){
+  document.getElementById('locName').textContent='Aniqlanmoqda...';
+  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=uz,en`).then(r=>r.json()).then(d=>{const a=d.address||{};const city=a.city||a.town||a.village||a.state||'';const country=a.country||'';setLoc(lat,lon,city&&country?`${city}, ${country}`:city||`${lat.toFixed(3)}°N`);}).catch(()=>setLoc(lat,lon,`${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`));
+}
+
+/* ══════════════════════════════════════════
+   TAB 2 — QUR'ON AUDIO
+══════════════════════════════════════════ */
+const EDITIONS=[{name:'Mishary Alafasy',ed:'ar.alafasy'},{name:'Sudais',ed:'ar.abdurrahmaansudais'},{name:'Husary',ed:'ar.husary'},{name:'Saad Ghamdi',ed:'ar.saoodshuraym'}];
+const SURAHS=[
+  {n:1,ar:'الفاتحة',uz:'Al-Fotiha',a:7,t:'Makka'},{n:2,ar:'البقرة',uz:'Al-Baqara',a:286,t:'Madina'},
+  {n:3,ar:'آل عمران',uz:'Ali Imron',a:200,t:'Madina'},{n:4,ar:'النساء',uz:'An-Niso',a:176,t:'Madina'},
+  {n:5,ar:'المائدة',uz:'Al-Moida',a:120,t:'Madina'},{n:6,ar:'الأنعام',uz:"Al-An'om",a:165,t:'Makka'},
+  {n:7,ar:'الأعراف',uz:"Al-A'rof",a:206,t:'Makka'},{n:8,ar:'الأنفال',uz:'Al-Anfol',a:75,t:'Madina'},
+  {n:9,ar:'التوبة',uz:'At-Tavba',a:129,t:'Madina'},{n:10,ar:'يونس',uz:'Yunus',a:109,t:'Makka'},
+  {n:11,ar:'هود',uz:'Hud',a:123,t:'Makka'},{n:12,ar:'يوسف',uz:'Yusuf',a:111,t:'Makka'},
+  {n:13,ar:'الرعد',uz:"Ar-Ra'd",a:43,t:'Madina'},{n:14,ar:'إبراهيم',uz:'Ibrohim',a:52,t:'Makka'},
+  {n:15,ar:'الحجر',uz:'Al-Hijr',a:99,t:'Makka'},{n:16,ar:'النحل',uz:'An-Nahl',a:128,t:'Makka'},
+  {n:17,ar:'الإسراء',uz:'Al-Isro',a:111,t:'Makka'},{n:18,ar:'الكهف',uz:'Al-Kahf',a:110,t:'Makka'},
+  {n:19,ar:'مريم',uz:'Maryam',a:98,t:'Makka'},{n:20,ar:'طه',uz:'To Ha',a:135,t:'Makka'},
+  {n:21,ar:'الأنبياء',uz:'Al-Anbiyo',a:112,t:'Makka'},{n:22,ar:'الحج',uz:'Al-Haj',a:78,t:'Madina'},
+  {n:23,ar:'المؤمنون',uz:"Al-Mo'minun",a:118,t:'Makka'},{n:24,ar:'النور',uz:'An-Nur',a:64,t:'Madina'},
+  {n:25,ar:'الفرقان',uz:'Al-Furqon',a:77,t:'Makka'},{n:26,ar:'الشعراء',uz:"Ash-Shu'aro",a:227,t:'Makka'},
+  {n:27,ar:'النمل',uz:'An-Naml',a:93,t:'Makka'},{n:28,ar:'القصص',uz:'Al-Qasas',a:88,t:'Makka'},
+  {n:29,ar:'العنكبوت',uz:'Al-Ankabut',a:69,t:'Makka'},{n:30,ar:'الروم',uz:'Ar-Rum',a:60,t:'Makka'},
+  {n:31,ar:'لقمان',uz:'Luqmon',a:34,t:'Makka'},{n:32,ar:'السجدة',uz:'As-Sajda',a:30,t:'Makka'},
+  {n:33,ar:'الأحزاب',uz:'Al-Ahzob',a:73,t:'Madina'},{n:34,ar:'سبأ',uz:'Saba',a:54,t:'Makka'},
+  {n:35,ar:'فاطر',uz:'Fotir',a:45,t:'Makka'},{n:36,ar:'يس',uz:'Yo Sin',a:83,t:'Makka'},
+  {n:37,ar:'الصافات',uz:'As-Soffot',a:182,t:'Makka'},{n:38,ar:'ص',uz:'Sod',a:88,t:'Makka'},
+  {n:39,ar:'الزمر',uz:'Az-Zumar',a:75,t:'Makka'},{n:40,ar:'غافر',uz:"G'ofir",a:85,t:'Makka'},
+  {n:41,ar:'فصلت',uz:'Fussilat',a:54,t:'Makka'},{n:42,ar:'الشورى',uz:'Ash-Shura',a:53,t:'Makka'},
+  {n:43,ar:'الزخرف',uz:'Az-Zukhruf',a:89,t:'Makka'},{n:44,ar:'الدخان',uz:'Ad-Dukhan',a:59,t:'Makka'},
+  {n:45,ar:'الجاثية',uz:'Al-Josiya',a:37,t:'Makka'},{n:46,ar:'الأحقاف',uz:'Al-Ahqof',a:35,t:'Makka'},
+  {n:47,ar:'محمد',uz:'Muhammad',a:38,t:'Madina'},{n:48,ar:'الفتح',uz:'Al-Fath',a:29,t:'Madina'},
+  {n:49,ar:'الحجرات',uz:'Al-Hujurot',a:18,t:'Madina'},{n:50,ar:'ق',uz:'Qof',a:45,t:'Makka'},
+  {n:51,ar:'الذاريات',uz:'Az-Zoriyot',a:60,t:'Makka'},{n:52,ar:'الطور',uz:'At-Tur',a:49,t:'Makka'},
+  {n:53,ar:'النجم',uz:'An-Najm',a:62,t:'Makka'},{n:54,ar:'القمر',uz:'Al-Qamar',a:55,t:'Makka'},
+  {n:55,ar:'الرحمن',uz:'Ar-Rohman',a:78,t:'Madina'},{n:56,ar:'الواقعة',uz:'Al-Voqia',a:96,t:'Makka'},
+  {n:57,ar:'الحديد',uz:'Al-Hadid',a:29,t:'Madina'},{n:58,ar:'المجادلة',uz:'Al-Mujodala',a:22,t:'Madina'},
+  {n:59,ar:'الحشر',uz:'Al-Hashr',a:24,t:'Madina'},{n:60,ar:'الممتحنة',uz:'Al-Mumtahana',a:13,t:'Madina'},
+  {n:61,ar:'الصف',uz:'As-Saff',a:14,t:'Madina'},{n:62,ar:'الجمعة',uz:"Al-Jum'a",a:11,t:'Madina'},
+  {n:63,ar:'المنافقون',uz:'Al-Munofiqun',a:11,t:'Madina'},{n:64,ar:'التغابن',uz:'At-Taghabun',a:18,t:'Madina'},
+  {n:65,ar:'الطلاق',uz:'At-Talaq',a:12,t:'Madina'},{n:66,ar:'التحريم',uz:'At-Tahrim',a:12,t:'Madina'},
+  {n:67,ar:'الملك',uz:'Al-Mulk',a:30,t:'Makka'},{n:68,ar:'القلم',uz:'Al-Qalam',a:52,t:'Makka'},
+  {n:69,ar:'الحاقة',uz:'Al-Haqqa',a:52,t:'Makka'},{n:70,ar:'المعارج',uz:"Al-Ma'orij",a:44,t:'Makka'},
+  {n:71,ar:'نوح',uz:'Nuh',a:28,t:'Makka'},{n:72,ar:'الجن',uz:'Al-Jin',a:28,t:'Makka'},
+  {n:73,ar:'المزمل',uz:'Al-Muzzammil',a:20,t:'Makka'},{n:74,ar:'المدثر',uz:'Al-Muddaththir',a:56,t:'Makka'},
+  {n:75,ar:'القيامة',uz:'Al-Qiyoma',a:40,t:'Makka'},{n:76,ar:'الإنسان',uz:'Al-Inson',a:31,t:'Madina'},
+  {n:77,ar:'المرسلات',uz:'Al-Mursalot',a:50,t:'Makka'},{n:78,ar:'النبأ',uz:'An-Naba',a:40,t:'Makka'},
+  {n:79,ar:'النازعات',uz:"An-Nozi'ot",a:46,t:'Makka'},{n:80,ar:'عبس',uz:'Abasa',a:42,t:'Makka'},
+  {n:81,ar:'التكوير',uz:'At-Takwir',a:29,t:'Makka'},{n:82,ar:'الانفطار',uz:'Al-Infitor',a:19,t:'Makka'},
+  {n:83,ar:'المطففين',uz:'Al-Mutaffifin',a:36,t:'Makka'},{n:84,ar:'الانشقاق',uz:'Al-Inshiqoq',a:25,t:'Makka'},
+  {n:85,ar:'البروج',uz:'Al-Buruj',a:22,t:'Makka'},{n:86,ar:'الطارق',uz:'At-Toriq',a:17,t:'Makka'},
+  {n:87,ar:'الأعلى',uz:"Al-A'lo",a:19,t:'Makka'},{n:88,ar:'الغاشية',uz:"Al-G'oshiya",a:26,t:'Makka'},
+  {n:89,ar:'الفجر',uz:'Al-Fajr',a:30,t:'Makka'},{n:90,ar:'البلد',uz:'Al-Balad',a:20,t:'Makka'},
+  {n:91,ar:'الشمس',uz:'Ash-Shams',a:15,t:'Makka'},{n:92,ar:'الليل',uz:'Al-Layl',a:21,t:'Makka'},
+  {n:93,ar:'الضحى',uz:'Ad-Duho',a:11,t:'Makka'},{n:94,ar:'الشرح',uz:'Ash-Sharh',a:8,t:'Makka'},
+  {n:95,ar:'التين',uz:'At-Tin',a:8,t:'Makka'},{n:96,ar:'العلق',uz:'Al-Alaq',a:19,t:'Makka'},
+  {n:97,ar:'القدر',uz:'Al-Qadr',a:5,t:'Makka'},{n:98,ar:'البينة',uz:'Al-Bayyina',a:8,t:'Madina'},
+  {n:99,ar:'الزلزلة',uz:'Az-Zalzala',a:8,t:'Madina'},{n:100,ar:'العاديات',uz:'Al-Odiyot',a:11,t:'Makka'},
+  {n:101,ar:'القارعة',uz:"Al-Qori'a",a:11,t:'Makka'},{n:102,ar:'التكاثر',uz:'At-Takosur',a:8,t:'Makka'},
+  {n:103,ar:'العصر',uz:'Al-Asr',a:3,t:'Makka'},{n:104,ar:'الهمزة',uz:'Al-Humaza',a:9,t:'Makka'},
+  {n:105,ar:'الفيل',uz:'Al-Fil',a:5,t:'Makka'},{n:106,ar:'قريش',uz:'Quraysh',a:4,t:'Makka'},
+  {n:107,ar:'الماعون',uz:"Al-Mo'un",a:7,t:'Makka'},{n:108,ar:'الكوثر',uz:'Al-Kavshar',a:3,t:'Makka'},
+  {n:109,ar:'الكافرون',uz:'Al-Kofirun',a:6,t:'Makka'},{n:110,ar:'النصر',uz:'An-Nasr',a:3,t:'Madina'},
+  {n:111,ar:'المسد',uz:'Al-Masad',a:5,t:'Makka'},{n:112,ar:'الإخلاص',uz:'Al-Ikhlos',a:4,t:'Makka'},
+  {n:113,ar:'الفلق',uz:'Al-Falaq',a:5,t:'Makka'},{n:114,ar:'الناس',uz:'An-Nos',a:6,t:'Makka'},
+];
+
+const au=document.getElementById('au');
+let edIdx=0,curIdx=null,ayahUrls=[],ayahIdx=0,playing=false,busy=false,filtered=[...SURAHS];
+const aCache={};
+
+function fmtT(s){if(!isFinite(s)||isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;}
+function setMsg(t,e=false){const el=document.getElementById('pmsg');el.textContent=t;el.className='p-msg'+(e?' err':'');}
+function setPP(i){document.getElementById('ppbtn').textContent=i;}
+
+async function loadSurah(idx,auto=true){
+  if(busy)return;curIdx=idx;ayahIdx=0;ayahUrls=[];playing=false;busy=true;
+  const s=SURAHS[idx],ed=EDITIONS[edIdx];
+  document.getElementById('ptit').textContent=`${s.n}. ${s.ar} — ${s.uz}`;
+  document.getElementById('psub').textContent=ed.name;
+  document.getElementById('player').classList.add('vis');
+  document.getElementById('pfil').style.width='0%';document.getElementById('ptc').textContent='0:00';document.getElementById('ptd').textContent='--:--';
+  setPP('⏳');setMsg(`${s.uz} yuklanmoqda...`);renderSuras(filtered);
+  try{
+    const k=`${s.n}|${ed.ed}`;
+    if(!aCache[k]){const r=await fetch(`https://api.alquran.cloud/v1/surah/${s.n}/${ed.ed}`);const j=await r.json();if(j.code!==200)throw new Error('API xato');aCache[k]=j.data.ayahs.map(a=>a.audio);}
+    ayahUrls=aCache[`${s.n}|${ed.ed}`];busy=false;setMsg(`${ayahUrls.length} oyat | ${ed.name}`);playAyah(0,auto);
+  }catch(e){busy=false;setPP('▶');setMsg('❌ '+e.message,true);renderSuras(filtered);}
+}
+function playAyah(idx,auto=true){if(idx>=ayahUrls.length){moveSurah(1);return;}ayahIdx=idx;au.src=ayahUrls[idx];au.load();setMsg(`${idx+1}/${ayahUrls.length} — oyat`);if(auto){au.play().then(()=>{playing=true;setPP('⏸');renderSuras(filtered);}).catch(e=>{setPP('▶');setMsg('❌ '+e.message,true);});}else setPP('▶');}
+function togglePlay(){if(curIdx===null||busy)return;if(playing){au.pause();}else{if(!au.src){playAyah(ayahIdx,true);return;}au.play().then(()=>{playing=true;setPP('⏸');}).catch(e=>setMsg('❌ '+e.message,true));}}
+function moveSurah(d){if(curIdx===null)return;loadSurah((curIdx+d+SURAHS.length)%SURAHS.length,true);}
+function closePlayer(){au.pause();playing=false;curIdx=null;ayahUrls=[];document.getElementById('player').classList.remove('vis');renderSuras(filtered);}
+function seekA(e){if(!au.duration)return;const r=document.getElementById('pbar').getBoundingClientRect();au.currentTime=((e.clientX-r.left)/r.width)*au.duration;}
+au.addEventListener('playing',()=>{playing=true;setPP('⏸');renderSuras(filtered);});
+au.addEventListener('pause',()=>{playing=false;setPP('▶');renderSuras(filtered);});
+au.addEventListener('ended',()=>playAyah(ayahIdx+1,true));
+au.addEventListener('timeupdate',()=>{if(!au.duration)return;document.getElementById('pfil').style.width=(au.currentTime/au.duration*100)+'%';document.getElementById('ptc').textContent=fmtT(au.currentTime);});
+au.addEventListener('durationchange',()=>document.getElementById('ptd').textContent=fmtT(au.duration));
+au.addEventListener('error',()=>{setMsg(`Oyat xato, keyingisi...`,true);setTimeout(()=>playAyah(ayahIdx+1,true),600);});
+
+function buildEditions(){
+  const row=document.getElementById('ediRow');
+  EDITIONS.forEach((e,i)=>{const b=document.createElement('button');b.className='echip'+(i===0?' on':'');b.textContent=e.name;b.onclick=()=>{edIdx=i;document.querySelectorAll('.echip').forEach((c,j)=>c.classList.toggle('on',j===i));if(curIdx!==null)loadSurah(curIdx,playing);};row.appendChild(b);});
+}
+function renderSuras(list){
+  const el=document.getElementById('suraList');
+  if(!list.length){el.innerHTML='<div class="nores">🔍 Hech narsa topilmadi</div>';return;}
+  el.innerHTML='';
+  list.forEach(s=>{
+    const idx=s.n-1,isCur=curIdx===idx;
+    const d=document.createElement('div');d.className='sura-item'+(isCur?' pl':'');
+    d.innerHTML=`<div class="sno">${s.n}</div><div class="sinf"><div class="sar">${s.ar}</div><div class="suz">${s.uz}</div></div><div class="smeta">${s.a} oyat<br><small>${s.t}</small></div><div class="spbtn">${isCur&&playing?'⏸':'▶'}</div>`;
+    d.onclick=()=>{if(curIdx===idx&&!busy)togglePlay();else loadSurah(idx,true);};el.appendChild(d);
+  });
+}
+function doFilter(){const q=document.getElementById('srch').value.toLowerCase().trim();filtered=q?SURAHS.filter(s=>s.uz.toLowerCase().includes(q)||s.ar.includes(q)||String(s.n).includes(q)):[...SURAHS];renderSuras(filtered);}
+
+/* ══════════════════════════════════════════
+   TAB 3 — NAMOZ
+══════════════════════════════════════════ */
+let prayerData=null,selectedRegionIdx=1,cdTimer=null,activeNTab=0;
+
+const UZ_REGIONS=[
+  {name:"📍 Joylashuvimdan aniqlash",lat:null,lon:null},
+  {name:"Toshkent shahri",lat:41.2995,lon:69.2401},
+  {name:"Toshkent viloyati",lat:41.1123,lon:69.6541},
+  {name:"Samarqand",lat:39.6547,lon:66.9597},
+  {name:"Buxoro",lat:39.7747,lon:64.4286},
+  {name:"Namangan",lat:41.0011,lon:71.6726},
+  {name:"Andijon",lat:40.7829,lon:72.3442},
+  {name:"Farg'ona",lat:40.3842,lon:71.7843},
+  {name:"Qashqadaryo",lat:38.8600,lon:65.7883},
+  {name:"Surxondaryo",lat:37.9401,lon:67.5700},
+  {name:"Xorazm",lat:41.5500,lon:60.6300},
+  {name:"Navoiy",lat:40.0840,lon:65.3792},
+  {name:"Jizzax",lat:40.1158,lon:67.8422},
+  {name:"Sirdaryo",lat:40.8393,lon:68.6616},
+  {name:"Qoraqalpog'iston",lat:43.7677,lon:59.3797},
+];
+const PNAMES=[
+  {key:'Fajr',uz:'Bomdod',ico:'🌅'},
+  {key:'Sunrise',uz:'Quyosh chiqishi',ico:'☀️'},
+  {key:'Dhuhr',uz:'Peshin',ico:'🌤️'},
+  {key:'Asr',uz:'Asr',ico:'🌇'},
+  {key:'Maghrib',uz:'Shom',ico:'🌆'},
+  {key:'Isha',uz:'Xufton',ico:'🌙'},
+];
+const PRAYER_KEYS_ONLY=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+function timeToMin(t){const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m;}
+function loadPrayerTimes(lat,lon){
+  const today=new Date();const d=today.getDate(),m=today.getMonth()+1,y=today.getFullYear();
+  fetch(`https://api.aladhan.com/v1/timings/${d}-${m}-${y}?latitude=${lat}&longitude=${lon}&method=2`).then(r=>r.json()).then(data=>{if(data.code===200){prayerData=data.data.timings;if(activeNTab===0)renderNTab();}}).catch(()=>{});
+}
+function onRegionChange(idx){
+  selectedRegionIdx=idx;prayerData=null;
+  if(cdTimer){clearInterval(cdTimer);cdTimer=null;}
+  const reg=UZ_REGIONS[idx];
+  if(reg.lat===null){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>loadPrayerTimes(pos.coords.latitude,pos.coords.longitude),()=>loadPrayerTimes(uLat,uLon),{enableHighAccuracy:true,timeout:8000});}else loadPrayerTimes(uLat,uLon);}
+  else loadPrayerTimes(reg.lat,reg.lon);
+  if(activeNTab===0)renderNTab();
+}
+function getNextPrayer(){if(!prayerData)return null;const nowM=new Date().getHours()*60+new Date().getMinutes();for(const k of PRAYER_KEYS_ONLY){if(timeToMin(prayerData[k])>nowM)return k;}return'Fajr';}
+function getCurrentActivePrayer(){if(!prayerData)return null;const nowM=new Date().getHours()*60+new Date().getMinutes();let cur=null;PRAYER_KEYS_ONLY.forEach(k=>{if(timeToMin(prayerData[k])<=nowM)cur=k;});return cur;}
+function getSecsToNext(){if(!prayerData)return 0;const nxt=getNextPrayer();const now=new Date();const[hh,mm]=(prayerData[nxt]||'0:0').split(':').map(Number);let target=new Date();target.setHours(hh,mm,0,0);if(target<=now)target.setDate(target.getDate()+1);return Math.max(0,Math.floor((target-now)/1000));}
+function fmtCD(secs){const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;return(h>0?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+function prayerUzName(key){return(PNAMES.find(p=>p.key===key)||{uz:key}).uz;}
+function prayerIco(key){return(PNAMES.find(p=>p.key===key)||{ico:'🕌'}).ico;}
+
+/* ══════════════════════════════════════════
+   TASBEH — YANGI UI
+══════════════════════════════════════════ */
+const TSB_ZIKRS=[
+  {emoji:'✨',ar:'سُبْحَانَ اللهِ',uz:'Subhanalloh — Alloh pokdir',n:33},
+  {emoji:'🙏',ar:'الْحَمْدُ لِلَّهِ',uz:'Alhamdulilloh — Allohga shukur',n:33},
+  {emoji:'🌟',ar:'اللهُ أَكْبَرُ',uz:'Allahu Akbar — Alloh buyuk',n:33},
+  {emoji:'💚',ar:'لَا إِلَهَ إِلَّا اللهُ',uz:"La ilaha illalloh — Allohdan boshqa iloh yo'q",n:100},
+  {emoji:'🤲',ar:'أَسْتَغْفِرُ اللهَ',uz:"Astagfirulloh — Allohdan kechim so'rayman",n:100},
+  {emoji:'💛',ar:'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ',uz:'Allohim! Muhammadga salovat',n:100},
+  {emoji:'✍️',ar:'',uz:"O'zim yozaman...",n:33,custom:true},
+];
+let tsbActiveZikr=0,tsbCount=0,tsbTotal=0,tsbRounds=0,tsbMaxRounds=0;
+let tsbMode='target'; // 'target' | 'infinite' | 'lap'
+let tsbCustomInf=false,tsbLapCount=0;
+const TSB_CIRC=534.07;
+
+function tsbCurrentZikr(){
+  const z=TSB_ZIKRS[tsbActiveZikr];
+  if(z.custom){
+    const ar=document.getElementById('tsbCustomAr');
+    const num=document.getElementById('tsbCustomNum');
+    return{ar:ar?ar.value||'اللهُ أَكْبَرُ':'اللهُ أَكْبَرُ',uz:"Shaxsiy zikr",emoji:'✍️',n:tsbCustomInf?Infinity:parseInt(num?num.value:33)||33,custom:true};
+  }
+  return z;
+}
+function tsbGetTarget(){
+  const z=tsbCurrentZikr();
+  if(tsbMode==='infinite')return Infinity;
+  return z.n||33;
+}
+
+function renderTasbeh(el){
+  const svgDefs=`<svg width="0" height="0" style="position:absolute;"><defs><linearGradient id="tsbGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#22c55e"/><stop offset="100%" stop-color="#d4a843"/></linearGradient><linearGradient id="tsbInfGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs></svg>`;
+
+  const z=tsbCurrentZikr();
+  const target=tsbGetTarget();
+  const isInf=!isFinite(target);
+  const pct=isInf?0:Math.min(tsbCount/target,1);
+  const offset=TSB_CIRC-(pct*TSB_CIRC);
+
+  el.innerHTML=`${svgDefs}
+  <div class="tasbeh-page">
+
+    <!-- Zikr tabs -->
+    <div class="tsb-tabs" id="tsbTabs">${TSB_ZIKRS.map((zk,i)=>`<button class="tsb-tab${i===tsbActiveZikr?' on':''}" onclick="tsbSelectZikr(${i})">${zk.emoji}${zk.custom?`<span>${zk.uz}</span>`:`<span class="tt-ar">${zk.ar.split(' ').slice(0,2).join(' ')}</span>`}</button>`).join('')}</div>
+
+    <!-- Custom panel -->
+    <div class="tsb-custom${TSB_ZIKRS[tsbActiveZikr].custom?' show':''}" id="tsbCustomPanel">
+      <div class="tc-label">📝 O'zingizning zikrini kiriting:</div>
+      <input class="tc-input" id="tsbCustomAr" placeholder="Masalan: Subhanalloh" maxlength="80" value="${TSB_ZIKRS[tsbActiveZikr].custom&&z.ar&&z.ar!=='اللهُ أَكْبَرُ'?z.ar:''}">
+      <div class="tc-row">
+        <span class="tc-lbl">🎯 Maqsad:</span>
+        <input class="tc-num" id="tsbCustomNum" type="number" value="${isFinite(z.n)?z.n:33}" min="1" max="9999" ${tsbCustomInf?'disabled':''}>
+        <button class="tc-inf${tsbCustomInf?' on':''}" id="tsbCustomInfBtn" onclick="tsbToggleCustomInf()">∞ Cheksiz</button>
+      </div>
+    </div>
+
+    <!-- Mode strip -->
+    <div class="tsb-modes">
+      <button class="tsb-mode${tsbMode==='target'?' on':''}" onclick="tsbSetMode('target')">🎯 Maqsadli</button>
+      <button class="tsb-mode${tsbMode==='infinite'?' on inf-mode':''}" onclick="tsbSetMode('infinite')">∞ Cheksiz</button>
+      <button class="tsb-mode${tsbMode==='lap'?' on lap-mode':''}" onclick="tsbSetMode('lap')">🔄 Davralik</button>
+    </div>
+
+    <!-- Counter -->
+    <div class="tsb-counter">
+      <div class="tsb-ring">
+        <svg class="tsb-ring-svg" viewBox="0 0 190 190">
+          <circle class="tr-track" cx="95" cy="95" r="85"/>
+          <circle class="tr-fill${isInf?' inf-stroke':''}" id="tsbFill" cx="95" cy="95" r="85" style="stroke-dashoffset:${offset}"/>
+        </svg>
+        <div class="tsb-ring-center">
+          <div class="tsb-num${tsbCount>0&&!isInf&&tsbCount>=target?' done':isInf?' inf-num':''}" id="tsbNum">${tsbCount}</div>
+          <div class="tsb-of${isInf?' inf-of':''}" id="tsbOf">${isInf?'Cheksiz':'/ '+target}</div>
+        </div>
+      </div>
+      <div class="tsb-zikr-info">
+        <div class="tzi-ar">${z.ar||z.uz}</div>
+        <div class="tzi-uz">${z.uz}</div>
+      </div>
+    </div>
+
+    <!-- Done banner -->
+    <div class="tsb-done${!isInf&&tsbCount>0&&tsbCount>=target?' show':''}" id="tsbDone">
+      <div class="td-ico">🎉</div>
+      <div class="td-title">${isFinite(target)?target+' marta bajardingiz!':'Ajoyib!'}</div>
+      <div class="td-sub">${z.ar||z.uz} — Barakalloh! 🤲</div>
+      <div class="td-cont" onclick="tsbContinue()">✅ Davom etish</div>
+    </div>
+
+    <!-- Tap button -->
+    <button class="tsb-tap${isInf?' inf-tap':''}" id="tsbTap">
+      <span class="tsb-tap-ico">${z.emoji}</span>
+      <span>${isInf?tsbCount+' — Bosing':'Bosing ('+tsbCount+'/'+target+')'}</span>
+    </button>
+
+    <!-- Stats -->
+    <div class="tsb-stats">
+      <div class="tsb-stat"><div class="tsb-sv" id="tsbStatTotal">${tsbTotal}</div><div class="tsb-sl">Jami bosish</div></div>
+      <div class="tsb-stat"><div class="tsb-sv blue" id="tsbStatRounds">${tsbRounds}</div><div class="tsb-sl">Bajarildi</div></div>
+      <div class="tsb-stat"><div class="tsb-sv gold" id="tsbStatMax">${tsbMaxRounds}</div><div class="tsb-sl">Rekord</div></div>
+    </div>
+
+    <!-- Reset -->
+    <button class="tsb-reset" onclick="tsbResetAll()">🔄 Hammasini qayta boshlash</button>
+
+  </div>`;
+
+  // Tap button event
+  document.getElementById('tsbTap').addEventListener('click',tsbHandleTap);
+  // Custom inputs live update
+  const ca=document.getElementById('tsbCustomAr');if(ca)ca.addEventListener('input',tsbRefreshDisplay);
+  const cn=document.getElementById('tsbCustomNum');if(cn)cn.addEventListener('input',tsbRefreshDisplay);
+}
+
+function tsbHandleTap(e){
+  const target=tsbGetTarget();
+  const isInf=!isFinite(target);
+  const wasDone=(!isInf&&tsbCount>=target);
+  if(wasDone){tsbCount=0;const done=document.getElementById('tsbDone');if(done)done.classList.remove('show');}
+  tsbCount++;tsbTotal++;
+  // vibrate
+  if(navigator.vibrate){if(!isInf&&tsbCount>=target)navigator.vibrate([60,30,60,30,120]);else navigator.vibrate(18);}
+  // ripple
+  tsbDoRipple(e.clientX,e.clientY,isInf);
+  // bounce
+  const numEl=document.getElementById('tsbNum');
+  if(numEl){numEl.classList.remove('bounce');void numEl.offsetWidth;numEl.classList.add('bounce');}
+  // check done
+  if(!isInf&&tsbCount>=target&&!wasDone){
+    tsbRounds++;if(tsbRounds>tsbMaxRounds)tsbMaxRounds=tsbRounds;
+    const done=document.getElementById('tsbDone');if(done)done.classList.add('show');
+  }
+  // lap mode auto-reset
+  if(tsbMode==='lap'&&!isInf&&tsbCount>=target){
+    tsbLapCount++;tsbShowToast(`${tsbLapCount}-davr yakunlandi! 🎯`);
+    setTimeout(()=>{tsbCount=0;const done=document.getElementById('tsbDone');if(done)done.classList.remove('show');tsbRefreshDisplay();},700);
+    return;
+  }
+  tsbRefreshDisplay();
+}
+
+function tsbRefreshDisplay(){
+  const target=tsbGetTarget();
+  const isInf=!isFinite(target);
+  const pct=isInf?0:Math.min(tsbCount/target,1);
+  const offset=TSB_CIRC-(pct*TSB_CIRC);
+  const fill=document.getElementById('tsbFill');if(fill){fill.style.strokeDashoffset=offset;fill.className='tr-fill'+(isInf?' inf-stroke':'');}
+  const numEl=document.getElementById('tsbNum');
+  if(numEl){numEl.textContent=tsbCount;numEl.className='tsb-num'+(!isInf&&tsbCount>=target?' done':isInf?' inf-num':'');}
+  const ofEl=document.getElementById('tsbOf');
+  if(ofEl){ofEl.textContent=isInf?'Cheksiz':'/ '+target;ofEl.className='tsb-of'+(isInf?' inf-of':'');}
+  const tapBtn=document.getElementById('tsbTap');
+  if(tapBtn){const z=tsbCurrentZikr();tapBtn.className='tsb-tap'+(isInf?' inf-tap':'');tapBtn.innerHTML=`<span class="tsb-tap-ico">${z.emoji}</span><span>${isInf?tsbCount+' — Bosing':'Bosing ('+tsbCount+'/'+target+')'}</span>`;
+    tapBtn.removeEventListener('click',tsbHandleTap);tapBtn.addEventListener('click',tsbHandleTap);}
+  const st=document.getElementById('tsbStatTotal');if(st)st.textContent=tsbTotal;
+  const sr=document.getElementById('tsbStatRounds');if(sr)sr.textContent=tsbRounds;
+  const sm=document.getElementById('tsbStatMax');if(sm)sm.textContent=tsbMaxRounds;
+}
+
+function tsbDoRipple(x,y,blue=false){
+  const r=document.createElement('div');r.className='tsb-ripple';
+  r.style.cssText=`left:${x-20}px;top:${y-20}px;width:40px;height:40px;background:${blue?'rgba(59,130,246,.25)':'rgba(34,197,94,.2)'};`;
+  document.body.appendChild(r);setTimeout(()=>r.remove(),500);
+}
+
+function tsbSelectZikr(i){
+  tsbActiveZikr=i;tsbCount=0;tsbRounds=0;
+  if(activeNTab===1)renderNTab();
+}
+function tsbSetMode(m){
+  tsbMode=m;tsbCount=0;tsbRounds=0;tsbLapCount=0;
+  if(activeNTab===1){renderNTab();const labels={'target':'🎯 Maqsadli','infinite':'∞ Cheksiz','lap':'🔄 Davralik'};tsbShowToast(labels[m]);}
+}
+function tsbToggleCustomInf(){
+  tsbCustomInf=!tsbCustomInf;tsbCount=0;
+  if(activeNTab===1)renderNTab();
+}
+function tsbContinue(){tsbCount=0;const done=document.getElementById('tsbDone');if(done)done.classList.remove('show');tsbRefreshDisplay();tsbShowToast('Yangi davr boshlandi ✨');}
+function tsbResetAll(){tsbCount=0;tsbRounds=0;tsbTotal=0;tsbMaxRounds=0;tsbLapCount=0;if(activeNTab===1){renderNTab();tsbShowToast('Sifir qilindi 🔄');}}
+
+let tsbToastTimer=null;
+function tsbShowToast(msg){
+  const el=document.getElementById('tsbToast');if(!el)return;
+  el.textContent=msg;el.classList.add('show');
+  if(tsbToastTimer)clearTimeout(tsbToastTimer);
+  tsbToastTimer=setTimeout(()=>el.classList.remove('show'),2000);
+}
+
+/* ─── Du'olar ─── */
+const DUA_CATS=['Kundalik','Namozdan keyin','Uxlash','Ovqat','Safar','Tahorat'];
+const DUAS={
+  'Kundalik':[
+    {title:'Ertalab uyg\'onishda',ar:'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا',tr:'Alhamdulillahil laziy ahyana ba\'da ma amatana',uz:'Bizni o\'ldirganidan keyin tiriltirgani uchun hamd bo\'lsin Allohga.'},
+    {title:'Uydan chiqishda',ar:'بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ',tr:'Bismillahi tavakkaltu alallah',uz:'Alloh nomi bilan. Allohga tavakkal qildim. Kuch va quvvat faqat Allohda.'},
+    {title:'Uyga kirishda',ar:'اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلِجِ وَخَيْرَ الْمَخْرَجِ',tr:'Allohumma inni as\'aluka khayral mawliji va khayral makhraj',uz:'Allohim! Uyga kirishda va chiqishda yaxshilik ato qilishingni so\'rayman.'},
+    {title:'Kechqurun',ar:'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ',tr:'Amsayna va amsal mulku lillahi valhamdulillah',uz:'Kechqururimiz ham, barcha mulk ham Allohga tegishli. Allohga hamd bo\'lsin.'},
+  ],
+  'Namozdan keyin':[
+    {title:'Namoz salomsidan keyin',ar:'أَسْتَغْفِرُ اللهَ (٣) اللَّهُمَّ أَنْتَ السَّلَامُ',tr:'Astagfirulloh (3 marta). Allohumma antas-salam...',uz:'Allohdan kechim so\'rayman (3 marta). Allohim! Sen Salomsan.'},
+    {title:'Oyat ul-Kursi',ar:'اللهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',tr:'Allahu la ilaha illa huwal-hayyul-qayyum',uz:'Alloh — Undan boshqa iloh yo\'q. U Tirik va Abadiydir.'},
+  ],
+  'Uxlash':[
+    {title:'Uxlashdan oldin',ar:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',tr:'Bismika Allohumma amutu va ahya',uz:'Allohim! Sening isming bilan o\'laman va yashaman.'},
+    {title:'Uyquda qo\'rqqanda',ar:'أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ',tr:'A\'uzu bikalimmatillahit-tammati...',uz:'Allohning to\'liq kalimalaridan panoh so\'rayman.'},
+  ],
+  'Ovqat':[
+    {title:'Ovqat oldidan',ar:'بِسْمِ اللهِ وَعَلَى بَرَكَةِ اللهِ',tr:'Bismillahi va ala barakatillah',uz:'Alloh nomi bilan va Allohning barakasi bilan.'},
+    {title:'Ovqatdan keyin',ar:'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا',tr:'Alhamdulillahil laziy at\'amana va saqana',uz:'Bizni yedirgan va ichirgan Allohga hamd bo\'lsin.'},
+  ],
+  'Safar':[
+    {title:'Safar uchun',ar:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا',tr:'Subhanalladzi sakhkhara lana haza...',uz:'Buni bizga bo\'ysundirgan Alloh pokladir.'},
+  ],
+  'Tahorat':[
+    {title:'Tahoratdan keyin',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',uz:'Allohdan boshqa iloh yo\'qligiga va Muhammadning Uning bandi va elchisi ekanligiga guvohlik beraman.'},
+  ],
+};
+let activeDuaCat=0;
+
+/* ══════════════════════════════════════════
+   NAMOZ O'RGATISH
+══════════════════════════════════════════ */
+let activeGender='male';
+
+const TAHORAT_STEPS=[
+  {ico:'🤲',ttl:'Niyat',ar:'نَوَيْتُ أَنْ أَتَوَضَّأَ',tr:'Navaytu an atavazza\'',desc:'Yurakda niyat qilish — Alloh uchun tahorat olaman.',mDiff:'',fDiff:''},
+  {ico:'🤲',ttl:'Bismillah aytish',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'Bismillahir rohmanir rohiym',desc:'Tahoratni Alloh nomi bilan boshlash sunnatidir.',mDiff:'',fDiff:''},
+  {ico:'👐',ttl:'Qo\'llarni yuvish (3x)',ar:'',tr:'',desc:'Bilak bo\'g\'imigacha ikkala qo\'lni 3 marta yuvish. Avval o\'ng, keyin chap.',mDiff:'',fDiff:''},
+  {ico:'💧',ttl:'Og\'izni chayish (3x)',ar:'',tr:'',desc:'Og\'izga suv olib yaxshilab chayqash — 3 marta.',mDiff:'',fDiff:''},
+  {ico:'💧',ttl:'Burun yuvish (3x)',ar:'',tr:'',desc:'Burunga suv tortib, keyin puflab chiqarish — 3 marta.',mDiff:'',fDiff:''},
+  {ico:'🫧',ttl:'Yuzni yuvish (3x)',ar:'',tr:'',desc:'Peshonadan iyak ostiga, ikki quloq o\'rtasini to\'liq — 3 marta.',mDiff:'Erkaklar soqolni barmoq bilan xilol qiladi',fDiff:''},
+  {ico:'💪',ttl:'Qo\'llar (tirsak bilan, 3x)',ar:'',tr:'',desc:'O\'ng qo\'lni tirsak bo\'g\'imigacha 3 marta, keyin chap qo\'lni.',mDiff:'',fDiff:''},
+  {ico:'🖐️',ttl:'Boshni masх qilish',ar:'',tr:'',desc:'Ho\'l qo\'l bilan boshni peshonadan orqaga bir marta masх qilish.',mDiff:'Erkaklar to\'liq boshini masх qiladi',fDiff:'Ayollar sochini masх qilmaydi, faqat bosh terisini'},
+  {ico:'👂',ttl:'Quloqlarni masх qilish',ar:'',tr:'',desc:'Bosh barmoq — quloq orqasi, ko\'rsatkich — quloq ichi.',mDiff:'',fDiff:''},
+  {ico:'🦶',ttl:'Oyoqlarni yuvish (3x)',ar:'',tr:'',desc:'O\'ng oyoqni to\'pig\'igacha 3 marta, keyin chap oyoqni. Barmoqlar orasi yuvilib chiqiladi.',mDiff:'',fDiff:''},
+  {ico:'🤲',ttl:'Tahorat duosi',ar:'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',tr:'Ashhadu alla ilaha illalloh va ashhadu anna Muhammadan abduhu va rosuluh',desc:'Tahorat tugagach osmonga qarab bu duoni aytish sunnat.',mDiff:'',fDiff:''},
+];
+
+const PRAYER_GUIDE_MALE=[
+  {ico:'🌅',name:'Bomdod (Fajr)',rakat:'2 sunnat + 2 farz',time:'Tong otishidan quyosh chiqqunga qadar',note:'',steps:[
+    {t:'Niyat (sunnat)',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْفَجْرِ',tr:'Navaytu usalli sunnatal fajr',uz:'Bomdod sunnatini o\'qishga niyat qildim — qibla tomonga turish. Erkaklar qo\'llarini quloq yoniga ko\'tarib takbir aytadi'},
+    {t:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Qo\'llar quloqqa tekiziladi, keyin ko\'krakka qo\'yiladi. O\'ng qo\'l chap ustiga',mNote:'Erkaklar qo\'lni kindik ustiga emas, ko\'krak ustiga qo\'yadi'},
+    {t:'Sano (yashirin o\'qiladi)',ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ',tr:'Subhanakallahumma va bihamdika va tabarokasmuka va ta\'ala jadduka va la ilaha gayruk',uz:'Allohim! Seni hamd bilan poklayapman'},
+    {t:'Ta\'avvuz va Basmala',ar:'أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ ۞ بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'A\'uzu billahi minash shaytanir rojim. Bismillahir rohmanir rohiym.',uz:''},
+    {t:'Fotiha + Sura (1-rakat)',ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...',tr:'Fotiha surasi to\'liq, keyin qo\'shimcha sura (Al-Ikhlos va b.)',uz:'Erkaklar yuzini Qiblaga qaratib, oyoqlarini yelka kengligida ochiq tutadi'},
+    {t:'Ruku\' (ta\'zim)',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',tr:'Subhana Rabbiyal Aziym (3x)',uz:'Erkaklar beliga qadar egiladi, qo\'llar tizzada, orqa tekis, bosh ters ketmaydi',mNote:'Erkaklar tizzaga qo\'yib, tirsaklarni yoyadi'},
+    {t:'Qiyom — ruku\'dan turgach',ar:'سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۞ رَبَّنَا لَكَ الْحَمْدُ',tr:'Sami\'allahu liman hamidah — Rabbana lakal hamd',uz:'Tiklanib, qo\'llar yoniga tushiriladi'},
+    {t:'Sajda (1-chi)',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'7 a\'zo yerni tutadi: peshona+burun, ikki kaft, ikki tizza, ikki oyoq barmoqlari. Erkaklar tirsak ko\'tarilgan, qorin sondan ko\'tarilgan'},
+    {t:'Jalsa (ikki sajda orasida)',ar:'رَبِّ اغْفِرْ لِي',tr:'Rabbigfirli',uz:'Erkaklar chap oyoq yozib, o\'ng oyoq barmoqlarini qiblaga qaratadi. Qo\'llar tizzada'},
+    {t:'Sajda (2-chi)',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'2-chi sajda ham xuddi birinchisi kabi'},
+    {t:'2-rakat — yana Fotiha+Sura',ar:'',tr:'',uz:'2-rakatda ham 1-rakat kabi o\'qiladi'},
+    {t:'Qa\'da — Attahiyyat',ar:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ ۞ السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ...',tr:'Attahiyyatu lillahi vas-salavatu vat-tayyibatu...',uz:'O\'tirib o\'qiladi. "Ash-hadu" deyilganda shahoda barmog\'i ko\'tariladi',mNote:'Erkaklar chap oyoq yozib, o\'ng oyoq tiklanadi. Qo\'llar tizzada'},
+    {t:'Salom',ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ',tr:'Assalamu alaykum wa rohmatulloh',uz:'O\'ng, so\'ng chap tomonga bosh burilib. Sunnat tamom. Endi 2 rakat farz'},
+  ]},
+  {ico:'🌤️',name:'Peshin (Zuhr)',rakat:'4 sunnat + 4 farz + 2 sunnat',time:'Quyosh tepadan og\'ishidan Asr vaqtigacha',steps:[
+    {t:'4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الظُّهْرِ',tr:'Navaytu usalli sunnatal zuhr',uz:'1-2: Fotiha+Sura. 3-4: faqat Fotiha. 2-rakatdan keyin Attahiyyat, oxirida Attahiyyat + Salovat + Salom'},
+    {t:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الظُّهْرِ',tr:'Navaytu usalli fardal zuhr',uz:'Farz niyati bilan — 4 rakat. Farzda 3-4 rakatda Fotiha yashirin o\'qiladi'},
+    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الظُّهْرِ الأَخِيرَةِ',tr:'Navaytu usalli sunnatal zuhril akhira',uz:'Oxirgi 2 rakat sunnat — Bomdod sunnatiga o\'xshash'},
+  ]},
+  {ico:'🌇',name:'Asr',rakat:'4 sunnat + 4 farz',time:'Peshin tugagandan Quyosh botgunga qadar',steps:[
+    {t:'4 rakat sunnat va farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعَصْرِ',tr:'Navaytu usalli fardal Asr',uz:'Peshin kabi 4 rakat o\'qiladi. Safarda (44+ km) 2 rakatga qisqaradi'},
+  ]},
+  {ico:'🌆',name:'Shom (Mag\'rib)',rakat:'3 farz + 2 sunnat',time:'Quyosh botishidan shafaq yo\'qolgunga qadar',steps:[
+    {t:'3 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْمَغْرِبِ',tr:'Navaytu usalli fardal Magrib',uz:'1-2: Fotiha+Sura. 3: faqat Fotiha. 2-rakatdan keyin Attahiyyat. 3-rakatdan keyin Attahiyyat+Salovat+Salom'},
+    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْمَغْرِبِ',tr:'Navaytu usalli sunnatal Magrib',uz:'2 rakat — Bomdod sunnatiga o\'xshash'},
+  ]},
+  {ico:'🌙',name:'Xufton (Isha)',rakat:'4 sunnat + 4 farz + 2 sunnat + 3 vitr',time:'Shafaq yo\'qolishidan tong otgunga qadar',steps:[
+    {t:'4 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْعِشَاءِ',tr:'Navaytu usalli sunnatal Isha',uz:'Peshin sunnatiga o\'xshash'},
+    {t:'4 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعِشَاءِ',tr:'Navaytu usalli fardal Isha',uz:'Peshin farziga o\'xshash'},
+    {t:'2 rakat sunnat',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْعِشَاءِ الأَخِيرَةِ',tr:'Navaytu usalli sunnatal ishal akhira',uz:'2 rakat'},
+    {t:'3 rakat Vitr (vojib)',ar:'نَوَيْتُ أُصَلِّيَ الْوِتْرَ',tr:'Navaytu usallas vitr',uz:'1-2 rakat + Attahiyyat. 3-rakat: Fotiha+Sura → ruku\'dan oldin Qunut duosi o\'qiladi'},
+    {t:'Qunut duosi (Vitrda)',ar:'اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ',tr:'Allohumma hdina fiman hadayt...',uz:'Allohim! Hidoyat berganlaringga qo\'shib bizni ham hidoyat qil'},
+  ]},
+];
+
+const PRAYER_GUIDE_FEMALE=[
+  {ico:'🌅',name:'Bomdod (Fajr)',rakat:'2 sunnat + 2 farz',time:'Tong otishidan quyosh chiqqunga qadar',note:'',steps:[
+    {t:'Niyat va turish',ar:'نَوَيْتُ أُصَلِّيَ سُنَّةَ الْفَجْرِ',tr:'Navaytu usalli sunnatal fajr',uz:'Niyat qilinadi. Ayollar oyoqlarini yopiq tutadi, ikkalasi birlashtirilgan holda turadi',fNote:'Ayollar oyoqlarini birga qo\'yib turadi (erkaklar kabi keng emas)'},
+    {t:'Takbiratul ihrom',ar:'اَللهُ أَكْبَرُ',tr:'Allahu Akbar',uz:'Qo\'llar yelka yoniga ko\'tariladi. Ayollar qo\'llarini ko\'krakdan ko\'tarmaydi',fNote:'Ayollar qo\'llarini ko\'krak bo\'g\'imgacha ko\'taradi, quloqqa emas'},
+    {t:'Sano',ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ',tr:'Subhanakallahumma va bihamdika...',uz:'Ayollar ikkala qo\'lini ko\'krak ustiga qo\'yadi. O\'ng qo\'l chap ustiga',fNote:'Ayollar qo\'lni ko\'krak ustiga, nafis tarzda tutadi'},
+    {t:'Ta\'avvuz, Basmala, Fotiha + Sura',ar:'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ',tr:'Bismillahir rohmanir rohiym → Fotiha → qo\'shimcha sura',uz:''},
+    {t:'Ruku\' (ta\'zim)',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',tr:'Subhana Rabbiyal Aziym (3x)',uz:'Ayollar egilib, qo\'llarini tizzaga qo\'yadi',fNote:'Ayollar oz egiladi — erkaklar kabi to\'la emas. Tizzalar oz bukiqligi ham mumkin. Tirsaklar yoniga yopilib turadi'},
+    {t:'Qiyom',ar:'سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۞ رَبَّنَا لَكَ الْحَمْدُ',tr:'Sami\'allahu liman hamidah — Rabbana lakal hamd',uz:'Tiklanib, qo\'llar yoniga tushiriladi'},
+    {t:'Sajda',ar:'سُبْحَانَ رَبِّيَ الأَعْلَى',tr:'Subhana Rabbiyal A\'la (3x)',uz:'7 a\'zo yerni tutadi',fNote:'Ayollar tirsagini yerga qo\'yadi (yoyinqirab emas). Qorin sonlarga tekib turadi. Barmoqlar qo\'shilgan holda'},
+    {t:'Jalsa (o\'tirish)',ar:'رَبِّ اغْفِرْ لِي',tr:'Rabbigfirli',uz:'',fNote:'Ayollar chap soniga o\'tirib, oyoqlarini o\'ng tomonga chiqaradi (tarabbu\' o\'tirish). Qo\'llar tizzada'},
+    {t:'Attahiyyat va Salom',ar:'التَّحِيَّاتُ لِلَّهِ...',tr:'Attahiyyatu...',uz:'O\'tirib o\'qiladi',fNote:'Ayollar ham chap soniga o\'tirib, oyoqlarini o\'ng tomonga chiqaradi'},
+  ]},
+  {ico:'🌤️',name:'Peshin (Zuhr)',rakat:'4 sunnat + 4 farz + 2 sunnat',time:'Quyosh tepadan og\'ishidan Asr vaqtigacha',steps:[
+    {t:'Peshin namozi',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الظُّهْرِ',tr:'Navaytu usalli fardal zuhr',uz:'Erkaklar kabi, lekin ayollar o\'tirish, ruku\', sajda uslublari yuqoridagi kabi',fNote:'Barcha namozlarda ayollar uslubi bir xil — sajda va o\'tirishda yuqoridagi farqlar saqlanadi'},
+  ]},
+  {ico:'🌇',name:'Asr',rakat:'4 sunnat + 4 farz',time:'',steps:[{t:'Asr namozi',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعَصْرِ',tr:'Navaytu usalli fardal Asr',uz:'Peshin kabi'}]},
+  {ico:'🌆',name:'Shom (Mag\'rib)',rakat:'3 farz + 2 sunnat',time:'Quyosh botishidan shafaq yo\'qolgunga qadar',steps:[{t:'3 rakat farz',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْمَغْرِبِ',tr:'Navaytu usalli fardal Magrib',uz:'Erkaklar kabi, ayollar o\'tirish uslubi bilan'}]},
+  {ico:'🌙',name:'Xufton (Isha)',rakat:'4 sunnat + 4 farz + 2 sunnat + 3 vitr',time:'',steps:[
+    {t:'Xufton namozi',ar:'نَوَيْتُ أُصَلِّيَ فَرْضَ الْعِشَاءِ',tr:'Navaytu usalli fardal Isha',uz:'Erkaklar kabi, lekin ayollar o\'tirish va sajdada o\'z uslubini saqlaydi'},
+    {t:'3 rakat Vitr',ar:'نَوَيْتُ أُصَلِّيَ الْوِتْرَ',tr:'Navaytu usallas vitr',uz:'Vojib namoz. Qunut duosi bilan'},
+  ]},
+];
+
+/* ══ RENDER FUNCTIONS ══ */
+function nTab(i){activeNTab=i;[0,1,2,3].forEach(j=>document.getElementById('nt'+j).classList.toggle('on',j===i));renderNTab();}
+function renderNTab(){
+  const el=document.getElementById('ncontent');el.innerHTML='';
+  if(activeNTab===0)renderPrayerTimes(el);
+  else if(activeNTab===1)renderTasbeh(el);
+  else if(activeNTab===2)renderDuas(el);
+  else renderGuide(el);
+}
+
+/* ── Prayer times ── */
+function renderPrayerTimes(el){
+  if(cdTimer){clearInterval(cdTimer);cdTimer=null;}
+  const now=new Date();
+  const hd=document.createElement('div');hd.className='pt-header';
+  hd.innerHTML=`<div class="pt-clock" id="liveClock">${now.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</div><div class="pt-date">${now.toLocaleDateString('uz-UZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>`;
+  el.appendChild(hd);
+  setInterval(()=>{const c=document.getElementById('liveClock');if(c)c.textContent=new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
+  const selWrap=document.createElement('div');
+  selWrap.innerHTML=`<select class="region-select" id="regionSel" onchange="onRegionChange(this.value*1)">${UZ_REGIONS.map((r,i)=>`<option value="${i}"${i===selectedRegionIdx?' selected':''}>${r.name}</option>`).join('')}</select>`;
+  el.appendChild(selWrap);
+  if(!prayerData){const msg=document.createElement('div');msg.className='info-box';msg.innerHTML='⏳ Namoz vaqtlari yuklanmoqda...';el.appendChild(msg);return;}
+  const nxt=getNextPrayer(),curAct=getCurrentActivePrayer();
+  const cdBanner=document.createElement('div');cdBanner.className='pt-countdown';
+  cdBanner.innerHTML=`<div class="pt-cd-label">Keyingi namozgacha</div><div class="pt-cd-prayer">${prayerIco(nxt)} ${prayerUzName(nxt)}</div><div class="pt-cd-time" id="cdDisplay">${fmtCD(getSecsToNext())}</div><div class="pt-cd-until">${prayerData[nxt]} da boshlanadi</div>`;
+  el.appendChild(cdBanner);
+  cdTimer=setInterval(()=>{const el2=document.getElementById('cdDisplay');if(!el2){clearInterval(cdTimer);cdTimer=null;return;}const secs=getSecsToNext();el2.textContent=fmtCD(secs);if(secs===0){clearInterval(cdTimer);cdTimer=null;setTimeout(()=>{if(activeNTab===0)renderNTab();},1500);}},1000);
+  const list=document.createElement('div');list.className='ptimes-list';
+  PNAMES.forEach(p=>{
+    const t=prayerData[p.key]||'--:--',isCur=p.key===curAct,isNxt=p.key===nxt;
+    const card=document.createElement('div');card.className='pt-card'+(isCur?' active':isNxt?' next-p':'');
+    card.innerHTML=`<div class="pt-ico">${p.ico}</div><div class="pt-info"><span class="pt-name">${p.uz}</span>${isCur?'<span class="pt-badge cur">Hozir</span>':isNxt?'<span class="pt-badge nxt">Keyingi</span>':''}</div><div class="pt-time">${t}</div>`;
+    list.appendChild(card);
+  });
+  el.appendChild(list);
+}
+
+/* ── Du'olar ── */
+function renderDuas(el){
+  const cats=document.createElement('div');cats.className='dua-cats';
+  DUA_CATS.forEach((c,i)=>{const b=document.createElement('button');b.className='dcat'+(i===activeDuaCat?' on':'');b.textContent=c;b.onclick=()=>{activeDuaCat=i;renderDuas(document.getElementById('ncontent'));};cats.appendChild(b);});
+  el.appendChild(cats);
+  const list=DUAS[DUA_CATS[activeDuaCat]]||[];
+  list.forEach(d=>{const card=document.createElement('div');card.className='dua-card';card.innerHTML=`<div class="dua-title">${d.title}</div><div class="dua-ar">${d.ar}</div><div class="dua-tr">${d.tr}</div><div class="dua-uz">${d.uz}</div>`;el.appendChild(card);});
+}
+
+/* ── Namoz o'rgatish ── */
+function renderGuide(el){
+  const gt=document.createElement('div');gt.className='gender-toggle';
+  gt.innerHTML=`<button class="gt-btn male${activeGender==='male'?' on':''}" onclick="setGender('male')">👨 Erkaklar uchun</button><button class="gt-btn female${activeGender==='female'?' on':''}" onclick="setGender('female')">👩 Ayollar uchun</button>`;
+  el.appendChild(gt);
+  if(activeGender==='male'){const infoM=document.createElement('div');infoM.className='info-box male-note';infoM.innerHTML='<b>👨 Erkak namozi:</b> Qo\'llar ko\'krakka, oyoqlar yelka kengligida, ruku\'da orqa tekis, sadjada tirsak ko\'tarilgan holda.';el.appendChild(infoM);}
+  else{const infoF=document.createElement('div');infoF.className='info-box female-note';infoF.innerHTML='<b>👩 Ayol namozi:</b> Oyoqlar birlashtirilgan, ruku\'da kamroq egilish, sadjada tirsak yonida, o\'tirishda oyoqlar o\'ng tomonga. Bu Hanafiy mazhabiga ko\'ra.';el.appendChild(infoF);}
+  const t1=document.createElement('div');t1.className='sec-label';t1.innerHTML='💧 Tahorat olish tartibi';el.appendChild(t1);
+  const ib=document.createElement('div');ib.className='info-box';ib.innerHTML='<b>Tahoratni buzuvchi narsalar:</b> hojatga borish, yel chiqarish, qon oqishi, uxlab qolish, behush bo\'lish.';el.appendChild(ib);
+  TAHORAT_STEPS.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='tahorat-step';
+    const diffNote=activeGender==='male'?s.mDiff:s.fDiff;
+    d.innerHTML=`<div class="ts-hd"><div class="ts-num">${i+1}</div><div class="ts-ico">${s.ico}</div><div class="ts-ttl">${s.ttl}</div><div class="ts-arr">▼</div></div><div class="ts-body"><div class="ts-inner">${s.ar?`<div class="ts-ar">${s.ar}</div>`:''}${s.tr?`<div class="ts-tr">${s.tr}</div>`:''}${s.desc?`<div class="ts-desc">${s.desc}</div>`:''}${diffNote?`<div class="ts-diff ${activeGender==='male'?'m':'f'}">${activeGender==='male'?'👨':'👩'} ${diffNote}</div>`:''}</div></div>`;
+    d.querySelector('.ts-hd').onclick=()=>d.classList.toggle('open');el.appendChild(d);
+  });
+  const t2=document.createElement('div');t2.className='sec-label';t2.style.marginTop='20px';t2.innerHTML='🕌 5 Vaqt Namoz';el.appendChild(t2);
+  const guide=activeGender==='male'?PRAYER_GUIDE_MALE:PRAYER_GUIDE_FEMALE;
+  guide.forEach(p=>{
+    const d=document.createElement('div');d.className='prayer-card';
+    d.innerHTML=`<div class="pc-hd"><div class="pc-ico">${p.ico}</div><div class="pc-info"><div class="pc-name">${p.name}</div><div class="pc-sub">${p.time}</div></div><div class="pc-rakat">${p.rakat}</div><div class="pc-arr">▼</div></div><div class="pc-body"><div class="pc-inner"><div class="pc-info-box">${p.rakat}${p.note?'<br>'+p.note:''}</div>${p.steps.map((s,i)=>`<div class="rakat-step"><div class="rs-num">${i+1}</div><div class="rs-cont"><div class="rs-ttl">${s.t}</div>${s.ar?`<div class="rs-ar">${s.ar}</div>`:''}${s.tr?`<div class="rs-tr">${s.tr}</div>`:''}${s.uz?`<div class="rs-uz">${s.uz}</div>`:''}${s.mNote&&activeGender==='male'?`<div class="rs-diff m">👨 ${s.mNote}</div>`:''}${s.fNote&&activeGender==='female'?`<div class="rs-diff f">👩 ${s.fNote}</div>`:''}</div></div>`).join('')}</div></div>`;
+    d.querySelector('.pc-hd').onclick=()=>d.classList.toggle('open');el.appendChild(d);
+  });
+}
+function setGender(g){activeGender=g;renderNTab();}
+
+/* ══ BOOT ══ */
+buildEditions();renderSuras(SURAHS);
+updateStaticQiblaUI();
+setLoc(41.2995,69.2401,"Toshkent, O'zbekiston");
+renderNTab();
+if(window.Telegram?.WebApp){const tg=Telegram.WebApp;tg.ready();tg.expand();tg.setHeaderColor?.('#070d17');tg.setBackgroundColor?.('#070d17');}
+startGPS();
+onRegionChange(1);
 </script>
 </body>
 </html>
